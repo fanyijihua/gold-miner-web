@@ -5,44 +5,33 @@
       <el-step title="进行试译"></el-step>
       <el-step title="提交申请"></el-step>
     </el-steps>
-    <!-- <el-row class="join__info">
+    <el-row class="join__info">
       <el-col :span="11" :offset="6">
         <el-form ref="form" :model="userInfo" label-width="100px">
-          <el-form-item label="公司" required>
-            <el-input v-model="userInfo.company" placeholder="如未毕业可填写学校名称"></el-input>
-          </el-form-item>
-          <el-form-item label="职位" required>
-            <el-select v-model="userInfo.job" placeholder="在校生可选择技术方向">
-              <el-option label="前端" value="frontend"></el-option>
-              <el-option label="后端" value="backend"></el-option>
-              <el-option label="Android" value="android"></el-option>
-              <el-option label="iOS" value="ios"></el-option>
-              <el-option label="设计" value="design"></el-option>
-              <el-option label="产品" value="product"></el-option>
-              <el-option label="其他" value="others"></el-option>
-            </el-select>
+          <el-form-item label="邮箱" required>
+            <el-input v-model="userInfo.email" placeholder="用于接收试译结果"></el-input>
           </el-form-item>
           <el-form-item label="擅长领域" required>
-            <el-checkbox-group v-model="userInfo.ability">
-              <el-checkbox label="前端" name="ability"></el-checkbox>
-              <el-checkbox label="后端" name="ability"></el-checkbox>
-              <el-checkbox label="Android" name="ability"></el-checkbox>
-              <el-checkbox label="iOS" name="ability"></el-checkbox>
-              <el-checkbox label="设计" name="ability"></el-checkbox>
-              <el-checkbox label="产品" name="ability"></el-checkbox>
-              <el-checkbox label="其他" name="ability"></el-checkbox>
+            <el-checkbox-group v-model="userInfo.skills">
+              <el-checkbox label="前端" name="skills"></el-checkbox>
+              <el-checkbox label="后端" name="skills"></el-checkbox>
+              <el-checkbox label="Android" name="skills"></el-checkbox>
+              <el-checkbox label="iOS" name="skills"></el-checkbox>
+              <el-checkbox label="设计" name="skills"></el-checkbox>
+              <el-checkbox label="产品" name="skills"></el-checkbox>
+              <el-checkbox label="其他" name="skills"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item label="翻译经验">
-            <el-input type="textarea" v-model="userInfo.experience"></el-input>
+          <el-form-item label="英语能力">
+            <el-input type="textarea" v-model="userInfo.ability"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitInfo">下一步</el-button>
           </el-form-item>
         </el-form>
       </el-col>
-    </el-row> -->
-    <el-row class="translation">
+    </el-row>
+    <!-- <el-row class="translation">
       <el-col :span="18" :offset="3">
         <h4 class="translation__title">请在 30 分种内对下列一段英文进行翻译：</h4>
         <p class="translation__text">The push for SVG icons over font icons has caught serious momentum in the web community. With an SVG icon system you can better meet accessibility standards, render higher quality visuals, and add/remove/modify icons in the library with ease. At Pivotal we’ve created an SVG icon system with React for use on our suite of products. This article is about my approach to styling the SVG icon system with CSS to make it easy and effective to use.The push for SVG icons over font icons has caught serious momentum in the web community. With an SVG icon system you can better meet accessibility standards.</p>
@@ -56,7 +45,7 @@
           </el-form-item>
         </el-form>
       </el-col>
-    </el-row>
+    </el-row> -->
   </div>
 </template>
 
@@ -70,10 +59,9 @@ export default {
         {},
       ],
       userInfo: {
-        company: '',
-        job: '',
-        ability: [],
-        experience: '',
+        email: '',
+        skills: [],
+        ability: '',
       },
       translation: {
         original: '',
