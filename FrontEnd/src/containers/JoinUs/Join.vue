@@ -33,7 +33,7 @@
     </el-row>
     <!-- <el-row class="translation">
       <el-col :span="18" :offset="3">
-        <h4 class="translation__title">请在 30 分种内对下列一段英文进行翻译：</h4>
+        <h4 class="translation__title">请对下列一段英文进行翻译：</h4>
         <p class="translation__text">The push for SVG icons over font icons has caught serious momentum in the web community. With an SVG icon system you can better meet accessibility standards, render higher quality visuals, and add/remove/modify icons in the library with ease. At Pivotal we’ve created an SVG icon system with React for use on our suite of products. This article is about my approach to styling the SVG icon system with CSS to make it easy and effective to use.The push for SVG icons over font icons has caught serious momentum in the web community. With an SVG icon system you can better meet accessibility standards.</p>
         <h4>译文</h4>
         <el-form>
@@ -99,7 +99,7 @@ export default {
   &__text {
     padding: 14px;
     border: 1px solid $gray;
-    border-radius: 6px;
+    border-radius: 4px;
     line-height: 24px;
     font-size: 14px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
