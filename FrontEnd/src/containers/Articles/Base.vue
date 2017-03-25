@@ -1,16 +1,12 @@
 <template>
-  <div class="join-us container">
+  <div class="articles container">
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'JoinUsBase',
-  data() {
-    return {
-    }
-  },
+  name: 'ArticlesBase',
 }
 </script>
 

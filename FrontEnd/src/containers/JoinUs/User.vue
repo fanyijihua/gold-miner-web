@@ -1,6 +1,11 @@
 <template>
   <div class="container join__container">
-    申请加入的某个译者的信息
+    <el-breadcrumb class="breadcrumb">
+      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/joinus/users' }">申请加入的用户列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: `/joinus/users/${id}` }">用户</el-breadcrumb-item>
+    </el-breadcrumb>
+    <h1>{{ id }}</h1>
   </div>
 </template>
 
@@ -11,7 +16,18 @@ export default {
     return {
     }
   },
+  computed: {
+    id() {
+      return this.$route.params.id
+    },
+  },
+  created() {
+    this.fetchData()
+  },
   methods: {
+    fetchData() {
+      console.log('fetchData')
+    },
   },
 }
 </script>

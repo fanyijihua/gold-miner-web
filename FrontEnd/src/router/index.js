@@ -5,6 +5,7 @@ import Index from '@/containers/Index'
 import Recommend from '@/containers/Recommend'
 import JoinUs from '@/containers/JoinUs'
 import Auth from '@/containers/Auth'
+import Articles from '@/containers/Articles'
 
 Vue.use(Router)
 
@@ -60,14 +61,44 @@ const router = new Router({
       ],
     },
     {
-      path: '/',
+      path: '/auth',
       name: 'Auth',
       component: Auth.Base,
       children: [
         {
-          path: 'auth/logout',
+          path: 'logout',
           name: 'Logout',
           component: Auth.Logout,
+        },
+      ],
+    },
+    {
+      path: '/articles',
+      name: 'Articles',
+      component: Articles.Base,
+      children: [
+        {
+          path: '',
+          name: 'ArticleList',
+          component: Articles.List,
+          meta: {
+            title: '文章列表',
+          },
+        },
+        {
+          path: ':id',
+          name: 'ArticleItem',
+          component: Articles.Item,
+        },
+        {
+          path: ':id/details',
+          name: 'ArticleDetail',
+          component: Articles.Detail,
+        },
+        {
+          path: ':id/referrals',
+          name: 'ArticleReferrals',
+          component: Articles.Referrals,
         },
       ],
     },
