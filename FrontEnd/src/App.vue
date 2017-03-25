@@ -31,7 +31,6 @@ export default {
   },
 }
 </script>
-</script>
 
 <style lang="scss" scope>
 @import "~styles/exports";
