@@ -1,0 +1,49 @@
+.container {
+  @include container-fixed;
+  width: 1080px;
+}
+
+.container-fluid {
+  @include container-fixed(0);
+}
+
+.clearfix {
+  @include clearfix;
+}
+.pull-left {
+  float: left !important;
+}
+.pull-right {
+  float: right !important;
+}
+
+.hidden {
+  display: none !important;
+}
+.show {
+  display: block !important;
+}
+.invisible {
+  visibility: hidden;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.img-responsive {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.img-rounded {
+  border-radius: 6px;
+}
+.img-circle {
+  border-radius: 50%;
+}
+
+.breadcrumb {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
