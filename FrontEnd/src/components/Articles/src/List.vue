@@ -1,5 +1,5 @@
 <template>
-  <el-tabs v-model="activeName" @tab-click="handleClick">
+  <el-tabs v-model="active" @tab-click="handleClick">
     <el-tab-pane v-for="tab in tabs" :label="tab.label" :name="tab.name" :key="tab.name">
       <article-item v-for="item in tab.data" :article="item" :key="item"></article-item>
       <div class="text-center load-more">
@@ -56,7 +56,7 @@ export default {
     }
   },
   computed: {
-    activeName() {
+    active() {
       return this.$store.state.user.logIn ? 'waiting' : 'lastest'
     },
   },

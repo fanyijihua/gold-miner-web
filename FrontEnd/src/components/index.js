@@ -1,11 +1,13 @@
 import Articles from './Articles'
 import Navbar from './Navbar'
 import Footer from './Footer'
+import Popover from './Popover'
 
 const components = [
   Articles,
   Navbar,
   Footer,
+  Popover,
 ]
 
 const install = function install(Vue) {

@@ -74,7 +74,6 @@ const router = new Router({
     },
     {
       path: '/articles',
-      name: 'Articles',
       component: Articles.Base,
       children: [
         {

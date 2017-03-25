@@ -17,10 +17,8 @@
               <el-menu-item class="navbar__messages" index="">
                 <el-badge class="item" :value="12" v-popover:popover>
                   <i class="el-icon-message"></i>
-                  <el-popover
-                    ref="popover"
-                    placement="top">
-                    abcd
+                  <el-popover ref="popover" placement="top">
+                    <popover></popover>
                   </el-popover>
                 </el-badge>
               </el-menu-item>
