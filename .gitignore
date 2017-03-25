@@ -175,3 +175,5 @@ ENV/
 # End of https://www.gitignore.io/api/laravel,node,python
 
 BackEnd/public/static
+
+BackEnd/resources/views/index.blade.php
