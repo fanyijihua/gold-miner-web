@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container users">
     <!-- <el-breadcrumb class="breadcrumb">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/joinus/users' }">申请加入的用户列表</el-breadcrumb-item>
@@ -53,4 +53,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.users {
+  margin-top: 30px;
+}
 </style>
