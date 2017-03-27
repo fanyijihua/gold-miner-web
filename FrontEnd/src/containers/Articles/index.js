@@ -1,8 +1,8 @@
-import Base from './Base'
-import List from './List'
-import Item from './Item'
-import Detail from './Detail'
-import Referrals from './Referrals'
+import Base from './src/Base'
+import List from './src/List'
+import Item from './src/Item'
+import Detail from './src/Detail'
+import Referrals from './src/Referrals'
 
 export default {
   Base,

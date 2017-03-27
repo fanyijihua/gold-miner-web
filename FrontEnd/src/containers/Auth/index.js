@@ -1,5 +1,5 @@
-import Base from './Base'
-import Logout from './Logout'
+import Base from './src/Base'
+import Logout from './src/Logout'
 
 export default {
   Base,

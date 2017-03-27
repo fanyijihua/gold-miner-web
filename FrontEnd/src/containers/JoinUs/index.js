@@ -1,7 +1,7 @@
-import Base from './Base'
-import Join from './Join'
-import JoinUsUsers from './Users'
-import JoinUsUser from './User'
+import Base from './src/Base'
+import Join from './src/Join'
+import JoinUsUsers from './src/Users'
+import JoinUsUser from './src/User'
 
 export default {
   Base,
