@@ -25,6 +25,7 @@
               <el-submenu class="user-submenu" index="user">
                 <template slot="title">{{ user.username }}</template>
                 <el-menu-item index="user-home">我的主页</el-menu-item>
+                <el-menu-item index="admin" :route="{ path: '/admin'}">后台管理</el-menu-item>
                 <el-menu-item index="user-settings">个人设置</el-menu-item>
                 <el-menu-item index="logout" :route="{ path: '/auth/logout' }">退出</el-menu-item>
               </el-submenu>
