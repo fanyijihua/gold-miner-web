@@ -15,13 +15,8 @@
 </template>
 
 <script>
-// import Articles from '@/components/articles'
-
 export default {
   name: 'Index',
-  components: {
-    // articles: Articles.List,
-  },
 }
 </script>
 

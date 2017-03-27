@@ -1,29 +1,29 @@
 <template>
-  <div class="callback container" v-loading="loading" element-loading-text="我们正在处理一些事情">
-    <div class="result-alerts text-center">
-      <el-alert v-if="!loading" :title="`退出成功，${seconds} 秒后将自动为您跳转至首页。`" type="success" :closable="false" show-icon></el-alert>
+  <div class="callback container">
+    <div class="result-alerts text-center" v-loading="loading.status" element-loading-text="我们正在处理一些事情">
+      <el-alert v-if="!loading.status" :title="`退出成功，${seconds} 秒后将自动为您跳转至首页。`" type="success" :closable="false" show-icon></el-alert>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'Logout',
   data() {
     return {
-      loading: true,
       seconds: 3,
     }
+  },
+  computed: {
+    ...mapState(['user', 'loading']),
   },
   methods: {
     ...mapActions(['logout']),
   },
   created() {
     const logoutCallback = () => {
-      this.loading = false
-
       const timer = setInterval(() => {
         this.seconds -= 1
 

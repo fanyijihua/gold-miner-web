@@ -22,8 +22,11 @@ const mutations = {
 
 const actions = {
   logout(context) {
+    context.commit('showLoading')
+
     return user.logout().then(() => {
       context.commit('removeCurrentUser')
+      context.commit('hideLoading')
     })
   },
 }
