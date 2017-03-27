@@ -52,7 +52,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
 .navbar {
   &__header {
     float: left;
