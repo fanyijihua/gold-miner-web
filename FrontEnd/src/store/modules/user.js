@@ -13,7 +13,7 @@ const getters = {
 
 const mutations = {
   setUserInfo(state, payload) {
-    Object.assign(state, state, payload, { logIn: true })
+    Object.assign(state, payload, { logIn: true })
   },
   removeCurrentUser(state) {
     Object.assign(state, { logIn: false })

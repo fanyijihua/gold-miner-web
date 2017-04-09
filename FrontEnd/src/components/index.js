@@ -1,11 +1,11 @@
-import Articles from './Articles'
+import Article from './Article'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import Popover from './Popover'
 import Card from './Card'
 
 const components = [
-  Articles,
+  Article,
   Navbar,
   Footer,
   Popover,
