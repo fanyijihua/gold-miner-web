@@ -7,10 +7,19 @@
 - BackEnd: backend service.
 - FrontEnd: Front-End service.
 
+## Develop
+
+```
+cd FrontEnd
+npm install
+npm run dev
+npm run mock
+```
+
 ## Deploy
 
 ```
 cd FrontEnd
-npm i
+npm install --production
 npm run build
 ```
