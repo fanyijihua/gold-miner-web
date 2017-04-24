@@ -74,6 +74,7 @@ export default {
   },
   methods: {
     fetchData() {
+      // eslint-disable-next-line
       console.log('fetchData')
     },
   },

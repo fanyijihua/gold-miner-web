@@ -44,6 +44,7 @@ const actions = {
         data,
       })
 
+      // eslint-disable-next-line
       console.log(context.state)
     })
   },
