@@ -20,6 +20,6 @@ npm run mock
 
 ```
 cd FrontEnd
-npm install --production
+npm install
 npm run build
 ```
