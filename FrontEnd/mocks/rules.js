@@ -29,6 +29,8 @@ router.all('*', (req, res, next) => {
   next()
 })
 
+router.get('/auth/login', (req, res) => res.redirect('/#/?login=true'))
+
 router.get('/auth/logout', (req, res) => {
   sleep(2).then(() => {
     res.end()

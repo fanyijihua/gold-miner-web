@@ -12,10 +12,10 @@ const getters = {
 }
 
 const mutations = {
-  setUserInfo(state, payload) {
+  login(state, payload) {
     Object.assign(state, payload, { logIn: true })
   },
-  removeCurrentUser(state) {
+  logout(state) {
     Object.assign(state, { logIn: false })
   },
 }
@@ -25,7 +25,7 @@ const actions = {
     context.commit('showLoading')
 
     return user.logout().then(() => {
-      context.commit('removeCurrentUser')
+      context.commit('logout')
       context.commit('hideLoading')
     })
   },

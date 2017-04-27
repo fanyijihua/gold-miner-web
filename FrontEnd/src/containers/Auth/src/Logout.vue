@@ -29,7 +29,7 @@ export default {
 
         if (this.seconds <= 0) {
           clearInterval(timer)
-          location.href = '/?logout=true'
+          location.href = '/'
         }
       }, 1000)
     }

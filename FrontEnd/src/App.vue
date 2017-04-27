@@ -20,13 +20,23 @@ export default {
     ...mapState(['user']),
   },
   methods: {
-    ...mapMutations(['setUserInfo']),
+    ...mapMutations(['login']),
   },
   created() {
+    if (this.$route.query.login) {
+      // eslint-disable-next-line
+      window.__USER__ = JSON.stringify({
+        id: 1,
+        username: '根号三',
+        avatar: '/static/avatar.png',
+        rules: ['admin'],
+      })
+    }
+
     // eslint-disable-next-line
     if (window.__USER__) {
       // eslint-disable-next-line
-      this.setUserInfo(JSON.parse(window.__USER__))
+      this.login(JSON.parse(window.__USER__))
     }
   },
 }
