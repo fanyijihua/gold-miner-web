@@ -14,3 +14,9 @@
 Route::get('/', function () {
     return view('index');
 });
+
+Route::get('auth/login', 'Auth\LoginController@index');
+
+Route::get('auth/getToken', 'Auth\LoginController@getToken');
+
+Route::get('user/info', 'User\UserInfoController@getInfo');
