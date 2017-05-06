@@ -1,6 +1,6 @@
 # gold-miner-web
 
-掘金翻译计划 web 端
+掘金翻译计划 web 端，正在开发阶段。
 
 ## Table
 
