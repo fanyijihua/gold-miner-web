@@ -4,6 +4,8 @@ export const logout = function logout() {
   return axios.get('/api/auth/logout')
 }
 
-export const user = function logout() {
-  return axios.get('/api/user')
+export const validateInvitationCode = function validateInvitationCode(invitationCode) {
+  return axios.post('/api/auth/validate-invitation-code', {
+    invitationCode,
+  })
 }

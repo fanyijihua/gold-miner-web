@@ -1,8 +1,6 @@
 <template>
   <div class="callback container">
-    <div class="result-alerts text-center" v-loading="loading.status" element-loading-text="我们正在处理一些事情">
-      <el-alert v-if="!loading.status" :title="`退出成功，${seconds} 秒后将自动为您跳转至首页。`" type="success" :closable="false" show-icon></el-alert>
-    </div>
+    <div class="result-alerts text-center" v-loading="loading.status" element-loading-text="正在退出..."></div>
   </div>
 </template>
 
@@ -24,14 +22,8 @@ export default {
   },
   created() {
     const logoutCallback = () => {
-      const timer = setInterval(() => {
-        this.seconds -= 1
-
-        if (this.seconds <= 0) {
-          clearInterval(timer)
-          location.href = '/'
-        }
-      }, 1000)
+      this.$message.success('退出成功。')
+      this.$router.replace('/')
     }
 
     this.logout().then(logoutCallback).catch(logoutCallback)

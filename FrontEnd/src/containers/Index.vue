@@ -14,8 +14,8 @@
       </el-col>
       <el-col class="grid__col-gutter" :span="6">
         <div class="card">
-          <h3 class="card__title">编辑精选</h3>
-          <div><img class="img-rounded" src="http://upload-images.jianshu.io/upload_images/1315889-06996eba6ac2c4f7.png" alt=""></div>
+          <h3 class="card__title">加入我们</h3>
+          <div><img class="img-rounded" src="https://cdn.dribbble.com/users/505523/screenshots/2827970/_______.jpg" alt=""></div>
         </div>
       </el-col>
     </el-row>

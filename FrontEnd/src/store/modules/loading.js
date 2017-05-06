@@ -1,5 +1,5 @@
 const state = {
-  text: '',
+  text: '拼命加载中',
   status: false,
 }
 
@@ -9,6 +9,7 @@ const mutations = {
   },
   hideLoading(state) {
     state.status = false
+    state.text = '拼命加载中'
   },
   setLoadingText(state, text) {
     state.text = text

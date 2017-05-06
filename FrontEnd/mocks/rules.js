@@ -29,7 +29,23 @@ router.all('*', (req, res, next) => {
   next()
 })
 
-router.get('/auth/login', (req, res) => res.redirect('/#/?login=true'))
+router.get('/auth/login', (req, res) => {
+  sleep(2).then(() => {
+    res.redirect('/#/joinus')
+  })
+})
+
+router.post('/auth/validate-invitation-code', (req, res) => {
+  const random = Math.round(Math.random())
+
+  sleep(2).then(() => {
+    if (random) {
+      res.json({ isValid: true })
+    } else {
+      res.status(401).json({ message: '邀请码无效。' })
+    }
+  })
+})
 
 router.get('/auth/logout', (req, res) => {
   sleep(2).then(() => {
