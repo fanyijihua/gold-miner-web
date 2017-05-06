@@ -1,0 +1,5 @@
+@mixin container-fixed($gutter: $grid-gutter-width) {
+  margin-right: auto;
+  margin-left: auto;
+  @include clearfix;
+}
