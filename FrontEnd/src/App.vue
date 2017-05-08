@@ -43,6 +43,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~nprogress/nprogress.css';
 @import "~styles/exports";
 
 .navbar {

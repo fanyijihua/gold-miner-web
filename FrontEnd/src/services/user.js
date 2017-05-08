@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from './axios'
 
 export const logout = function logout() {
   return axios.get('/api/auth/logout')

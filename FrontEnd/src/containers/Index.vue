@@ -53,6 +53,10 @@ export default {
       return this.$store.state.user.logIn ? 'waiting' : 'lastest'
     },
   },
+  beforeRouteLeave(to, from, next) {
+    this.$store.commit('hideLoading')
+    next()
+  },
   methods: {
     ...mapActions(['fetchArticles']),
   },
