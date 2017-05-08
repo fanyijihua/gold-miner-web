@@ -54,11 +54,14 @@ class UserController extends Controller
                     ->value('id');
 
         if($userId == false){
-            $this->create();
+            $userId = $this->create();
         }else{
             $this->update($userId);
         }
 
+        $this->updateToken($userId);
+
+        return redirect('/');
     }
 
     /**
@@ -70,14 +73,15 @@ class UserController extends Controller
     {
         //
         $user = array(
-                'name'      => $this->userInfo->login,
-                'email'     => $this->userInfo->email,
-                'avatar'    => $this->userInfo->avatar_url,
-                'status'    => 1,
-                'isadvanced'=> 0,
-                'isadmin'   => 0,
-                'udate'     => date('Y-m-d H:i:s'),
-                'cdate'     => date('Y-m-d H:i:s')
+                'name'          => $this->userInfo->login,
+                'email'         => $this->userInfo->email,
+                'avatar'        => $this->userInfo->avatar_url,
+                'status'        => 1,
+                'isadvanced'    => 0,
+                'isadmin'       => 0,
+                'istranslator'  => 0,
+                'udate'         => date('Y-m-d H:i:s'),
+                'cdate'         => date('Y-m-d H:i:s')
             );
 
         $insertId = DB::table('user')->insertGetId($user);
@@ -104,7 +108,7 @@ class UserController extends Controller
             return json_encode($this->ret);
         }
 
-        return json_encode($this->ret);
+        return $insertId;
     }
 
     /**
@@ -166,8 +170,6 @@ class UserController extends Controller
 
             return json_encode($this->ret);
         }
-
-        return json_encode($this->ret);
     }
 
     /**
@@ -179,5 +181,52 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+    /**
+     * [updateToken description]
+     * @param  [type] $userId [description]
+     * @return [type]         [description]
+     */
+    public function updateToken($userId)
+    {
+        $token = $this->generateToken($userId);
+
+        $user = array(
+                'uid'       => $userId,
+                'token'     => $token,
+                'expiry'    => date('Y-m-d H:i:s', strtotime('+1 week')),
+                'udate'     => date('Y-m-d H:i:s')
+            );
+        
+        $record = DB::table('userToken')
+                    ->where('uid', $userId)
+                    ->value('id');
+
+        if($record){
+            $result = DB::table('userToken')
+                        ->where('id', $record)
+                        ->update($user);
+        }else{
+            $user['cdate'] = date('Y-m-d H:i:s');
+            $result = DB::table('userToken')
+                        ->insert($user);
+        }
+
+        if($result === false){
+            $this->ret['status'] = 500;
+            $this->ret['message'] = '更新 token 失败！';
+
+            return json_encode($this->ret);
+        }
+    }
+
+    /**
+     * [generateToken description]
+     * @param  [type] $userId [description]
+     * @return [type]         [description]
+     */
+    public function generateToken($userId)
+    {
+        return md5($this->randomString(32).time().$userId);
     }
 }
