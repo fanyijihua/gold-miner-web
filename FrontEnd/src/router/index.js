@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import nprogress from 'nprogress'
 
 import Index from '@/containers/Index'
 import Recommend from '@/containers/Recommend'
@@ -116,8 +117,9 @@ const router = new Router({
   ],
 })
 
-router.afterEach(route => (
-  document.title = route.meta.title || '掘金翻译计划'
-))
+router.afterEach((to) => {
+  nprogress.done()
+  document.title = to.meta.title || '掘金翻译计划'
+})
 
 export default router
