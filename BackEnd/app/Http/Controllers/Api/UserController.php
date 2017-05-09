@@ -11,9 +11,9 @@ class UserController extends Controller
     protected $userInfo;
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * 从 GitHub 获取用户信息并创建或更新用户
+     * @param  Request  $request   应包含 state 和 code
+     * @return 重定向
      */
     public function index(Request $request)
     {
@@ -30,7 +30,7 @@ class UserController extends Controller
 
         if(!isset($token['access_token'])){
             $this->ret['status']    = 500;
-            $this->ret['message']   = '获取 GuitHb token 信息失败！';
+            $this->ret['message']   = '获取 GitHb token 信息失败！';
 
             return json_encode($this->ret);
         }
@@ -55,19 +55,24 @@ class UserController extends Controller
 
         if($userId == false){
             $userId = $this->create();
+            $newUser = true;
         }else{
             $this->update($userId);
+            $newUser = false;
         }
 
         $this->updateToken($userId);
+
+        if($newUser){
+            return redirect('/joinus');
+        }
 
         return redirect('/');
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * 创建新用户
+     * @return mixed
      */
     public function create()
     {
@@ -145,11 +150,10 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 更新用户信息
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  int  $userid     用户 id
+     * @return mixed
      */
     public function update($userid)
     {
@@ -183,9 +187,9 @@ class UserController extends Controller
         //
     }
     /**
-     * [updateToken description]
-     * @param  [type] $userId [description]
-     * @return [type]         [description]
+     * 更新登陆 token
+     * @param   int     $userId     用户 id
+     * @return  mixed
      */
     public function updateToken($userId)
     {
@@ -220,13 +224,4 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * [generateToken description]
-     * @param  [type] $userId [description]
-     * @return [type]         [description]
-     */
-    public function generateToken($userId)
-    {
-        return md5($this->randomString(32).time().$userId);
-    }
 }

@@ -87,4 +87,14 @@ class Controller extends BaseController
 
         return $ret;
     }
+
+    /**
+     * 生成随机的唯一的 token
+     * @param  string   $flag   用户标志（唯一）
+     * @return string   token
+     */
+    public function generateToken($flag)
+    {
+        return md5($this->randomString(32).time().$flag);
+    }
 }
