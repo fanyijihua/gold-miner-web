@@ -1,6 +1,6 @@
 <template>
   <div class="container join__container" v-loading="loading.status" :element-loading-text="loading.text">
-    <el-steps :space="300" :align-center="true" :center="true" :active="active"process-status="finish" finish-status="success">
+    <el-steps :space="300" :align-center="true" :center="true" :active="active" :process-status="status" finish-status="success">
       <el-step title="填写资料"></el-step>
       <el-step title="进行试译"></el-step>
       <el-step title="提交申请"></el-step>
@@ -34,23 +34,40 @@
     <el-row class="translation" v-if="active === 1">
       <el-col :span="18" :offset="3">
         <h4 class="translation__title">请对下列一段英文进行翻译：</h4>
-        <p class="translation__text">The push for SVG icons over font icons has caught serious momentum in the web community. With an SVG icon system you can better meet accessibility standards, render higher quality visuals, and add/remove/modify icons in the library with ease. At Pivotal we’ve created an SVG icon system with React for use on our suite of products. This article is about my approach to styling the SVG icon system with CSS to make it easy and effective to use.The push for SVG icons over font icons has caught serious momentum in the web community. With an SVG icon system you can better meet accessibility standards.</p>
+        <p class="translation__text">{{ text.text }}</p>
         <h4>译文</h4>
         <el-form>
           <el-form-item>
-            <el-input type="textarea" v-model="translation.result" :rows="8"></el-input>
+            <el-input type="textarea" v-model="translation" :rows="8"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button class="pull-right" type="primary">下一步</el-button>
+            <el-button class="pull-right" type="primary" @click="submitRequest">下一步</el-button>
           </el-form-item>
         </el-form>
+      </el-col>
+    </el-row>
+    <el-row class="result" v-if="active === 2">
+      <el-col :span="8" :offset="8">
+        <el-alert v-if="result.type ==='success'" :title="result.message" type="success" show-icon :closable="false"></el-alert>
+        <el-alert v-if="result.type ==='failure'" :title="result.message" type="error" show-icon :closable="false"></el-alert>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
+
+/* eslint-disable */
+const dictionary = {
+  "前端": "frontend",
+  "后端": "backend",
+  "Android": "android",
+  "产品": "product",
+  "iOS": "ios",
+  "设计": "design",
+  "其他": "others",
+}
 
 const store = require('store')
 
@@ -59,17 +76,17 @@ export default {
   data() {
     return {
       active: 0,
-      steps: [
-        {},
-      ],
+      status: 'finish',
+      text: {},
       userInfo: {
         email: '',
         skills: [],
         ability: '',
       },
-      translation: {
-        original: '',
-        result: '',
+      translation: '',
+      result: {
+        type: '',
+        message: '',
       },
     }
   },
@@ -77,15 +94,50 @@ export default {
     ...mapState(['user', 'loading']),
   },
   methods: {
-    ...mapActions(['validateInvitationCode']),
+    // 提交第一步中的基本信息
     submitInfo() {
-      const { email, skills, ability } = this.userInfo
+      const { email, skills } = this.userInfo
 
       if (!email || !skills.length) return
 
+      const skillsFields = skills.map(item => dictionary[item])
+
+      // 下一步
       this.active = 1
-      // eslint-disable-next-line
-      console.log(email, skills, ability)
+
+      // 获取试译的英文稿
+      this.$store.dispatch('fetchTexts', { types: skillsFields }).then((data) => {
+        this.text = data[Math.floor(Math.random() * data.length)]
+      })
+    },
+    // 提交翻译的译文和最终数据
+    submitRequest() {
+      if (!this.translation) return
+
+      const { email, skills, ability } = this.userInfo
+
+      // 提交申请信息和翻译数据
+      this.$store.dispatch('submitRequest', {
+        email,
+        skills,
+        ability,
+        text: this.text,
+        translation: this.translation
+      }).then((data) => {
+        this.active = 2
+        this.status = 'success'
+        this.result = {
+          type: 'success',
+          message: `你的请求已成功提交，我们稍后会将结果发送至您的邮箱 ${data.email}，请注意查收。`
+        }
+      }).catch(err => {
+        this.active = 2
+        this.status = 'error'
+        this.result = {
+          type: 'failure',
+          message: err.message
+        }
+      })
     },
   },
   created() {
@@ -104,8 +156,9 @@ export default {
     invitationCode = store.get('invitationCode')
 
     if (invitationCode) {
+      // 本地存在邀请码，则验证该邀请码是否有效，并从本地删除该邀请码。
       store.remove('invitationCode')
-      this.validateInvitationCode(invitationCode).then((response) => {
+      this.$store.dispatch('validateInvitationCode', invitationCode).then((response) => {
         if (response.isValid) {
           this.$message.success('恭喜你成为了我们的新译者。')
           this.$router.replace('/')
@@ -146,5 +199,10 @@ export default {
     font-size: 14px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   }
+}
+
+.result {
+  margin-top: 60px;
+  margin-bottom: 82px;
 }
 </style>
