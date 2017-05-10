@@ -32,7 +32,7 @@
             </template>
             <template v-else>
               <el-menu-item index="joinus" :route="{ path: '/joinus' }">加入我们</el-menu-item>
-              <el-menu-item index=""><a href="/api/auth/login">使用 GitHub 登录</a></el-menu-item>
+              <el-menu-item index=""><a href="/auth/login">使用 GitHub 登录</a></el-menu-item>
             </template>
           </li>
         </el-menu>
