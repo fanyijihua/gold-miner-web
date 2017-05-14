@@ -63,6 +63,8 @@ class UserController extends Controller
 
         $this->updateToken($userId);
 
+        session(['user' => $this->userInfo]);
+
         if($newUser){
             return redirect('/joinus');
         }
@@ -222,6 +224,8 @@ class UserController extends Controller
 
             return json_encode($this->ret);
         }
+
+        $this->userInfo->token = $token;
     }
 
 }

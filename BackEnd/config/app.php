@@ -2,7 +2,7 @@
 
 return [
 
-    'name'                  =>  'Laravel',
+    'name'                  =>  'translate',
 
     'env'                   =>  env('APP_ENV', 'develop'),
 
@@ -24,9 +24,9 @@ return [
 
     'log_level'             =>  env('APP_LOG_LEVEL', 'debug'),
 
-    'github_client_id'      =>  'c846cde270a97d98d957',
+    'github_client_id'      =>  env('GITHUB_CLIENT_ID'),
 
-    'github_client_secret'  =>  'a7b14c8343bded979f1cad9df3964c1ca1047239',
+    'github_client_secret'  =>  env('GITHUB_CLIENT_SECRET'),
 
     'providers'             =>  [
 

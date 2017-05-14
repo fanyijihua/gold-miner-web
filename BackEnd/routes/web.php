@@ -1,8 +1,6 @@
 <?php
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', 'Auth\LoginController@index');
 
 Route::get('/auth/login', 'Auth\LoginController@oAuth');
 
