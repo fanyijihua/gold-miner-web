@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller
@@ -23,4 +24,10 @@ class LoginController extends Controller
         return redirect($url);
     }
 
+    public function logout(Request $request)
+    {
+        $result = DB::table('userToken')->where('token', $token)->delete();
+        $request->session()->forget('user');
+        $token = $request->input('token');
+    }
 }
