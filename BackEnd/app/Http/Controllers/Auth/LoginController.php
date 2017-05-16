@@ -11,7 +11,7 @@ class LoginController extends Controller
 	{
 		$user = session('user') ? session('user') : null;
 
-		return view('index', ['user' => json_encode($user)]);
+		return view('index', ['user' => urlencode(json_encode($user))]);
 	}
 
     public function oAuth()
