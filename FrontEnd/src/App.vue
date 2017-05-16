@@ -23,20 +23,21 @@ export default {
     ...mapMutations(['login']),
   },
   created() {
-    if (this.$route.query.login) {
-      // eslint-disable-next-line
-      window.__USER__ = JSON.stringify({
-        id: 1,
-        username: '根号三',
-        avatar: '/static/avatar.png',
-        rules: ['admin'],
-      })
-    }
+    let user = null
 
     // eslint-disable-next-line
     if (window.__USER__) {
-      // eslint-disable-next-line
-      this.login(JSON.parse(window.__USER__))
+      try {
+        // eslint-disable-next-line
+        user = JSON.parse(decodeURIComponent(window.__USER__))
+      } catch (err) {
+        // eslint-disable-next-line
+        console.error(err)
+      }
+    }
+
+    if (user) {
+      this.login(user)
     }
   },
 }
