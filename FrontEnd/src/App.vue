@@ -17,7 +17,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user']),
+    ...mapState(['users']),
+    user() {
+      return this.$store.getters.currentUser
+    },
   },
   methods: {
     ...mapMutations(['login']),
