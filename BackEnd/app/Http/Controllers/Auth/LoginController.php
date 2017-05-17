@@ -26,8 +26,11 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+
+        $token = $request->header('authorization');
         $result = DB::table('userToken')->where('token', $token)->delete();
         $request->session()->forget('user');
-        $token = $request->input('token');
+
+        return redirect('/');
     }
 }

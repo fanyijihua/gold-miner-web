@@ -8,7 +8,7 @@ const instance = axios.create()
 instance.interceptors.request.use((config) => {
   const { token } = store.get('user') || {}
 
-  config.headers.Authorization = `token ${token}`
+  config.headers.Authorization = token
 
   nprogress.start()
 

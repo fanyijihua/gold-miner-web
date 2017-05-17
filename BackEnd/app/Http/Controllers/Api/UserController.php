@@ -63,7 +63,7 @@ class UserController extends Controller
 
         $this->updateToken($userId);
 
-        session(['user' => $this->userInfo]);
+        session(['user' => $this->loadUserById($userId)]);
 
         if($newUser){
             return redirect('/joinus');
@@ -188,6 +188,29 @@ class UserController extends Controller
     {
         //
     }
+    
+    /**
+     * 通过用户 ID 获取用户信息
+     * @param  int  $userId     用户 ID
+     * @return Object           用户信息
+     */
+    public function loadUserById($userId)
+    {
+        $userInfo = DB::table('user')
+                    ->join('userDetail', 'user.id', '=', 'userDetail.uid')
+                    ->where('user.id', $userId)
+                    ->select();
+
+        if($userInfo == false){
+            $this->ret['status'] = 500;
+            $this->ret['message'] = '获取用户信息失败！';
+
+            return json_encode($this->ret);
+        }
+
+        return $userInfo;
+    }
+
     /**
      * 更新登陆 token
      * @param   int     $userId     用户 id

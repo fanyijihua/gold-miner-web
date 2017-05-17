@@ -2,6 +2,12 @@
 
 Route::get('/', 'Auth\LoginController@index');
 
-Route::get('/auth/login', 'Auth\LoginController@oAuth');
+Route::group(['prefix' => 'auth'], function () {
+	Route::get('login', 'Auth\LoginController@oAuth');
+	Route::get('logout', 'Auth\LoginController@logout');
+});
 
-Route::resource('/api/user', 'Api\UserController');
+Route::group(['prefix' => 'api'], function () {
+	Route::resource('user', 'Api\UserController');
+})
+
