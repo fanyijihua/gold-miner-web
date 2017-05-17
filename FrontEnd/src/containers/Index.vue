@@ -50,7 +50,7 @@ export default {
   computed: {
     ...mapState(['loading', 'articles']),
     activeTab() {
-      return this.$store.state.user.logIn ? 'waiting' : 'lastest'
+      return this.$store.getters.currentUser.istranslator ? 'waiting' : 'lastest'
     },
   },
   beforeRouteLeave(to, from, next) {

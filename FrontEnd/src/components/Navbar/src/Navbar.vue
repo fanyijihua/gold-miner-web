@@ -11,8 +11,8 @@
           <el-menu-item index="articles">文章集</el-menu-item>
           <el-menu-item index="ranks">排行榜</el-menu-item> -->
           <li class="pull-right">
-            <template v-if="user.logIn">
-              <el-menu-item v-if="user.rules.length" index="recomment" :route="{ path: '/recommend' }">推荐文章</el-menu-item>
+            <template v-if="logIn">
+              <el-menu-item v-if="user.istranslator" index="recomment" :route="{ path: '/recommend' }">推荐文章</el-menu-item>
               <el-menu-item v-else index="joinus" :route="{ path: '/joinus' }">加入我们</el-menu-item>
               <el-menu-item class="navbar__messages" index="">
                 <el-badge class="item" :value="12" v-popover:popover>
@@ -23,7 +23,7 @@
                 </el-badge>
               </el-menu-item>
               <el-submenu class="user-submenu" index="user">
-                <template slot="title">{{ user.username }}</template>
+                <template slot="title">{{ user.name }}</template>
                 <el-menu-item index="user-home">我的主页</el-menu-item>
                 <el-menu-item index="admin" :route="{ path: '/admin'}">后台管理</el-menu-item>
                 <el-menu-item index="user-settings">个人设置</el-menu-item>
@@ -45,6 +45,11 @@
 export default {
   name: 'Navbar',
   props: ['user'],
+  computed: {
+    logIn() {
+      return this.$store.getters.logIn
+    },
+  },
   data() {
     return {
       activeIndex: 'index',

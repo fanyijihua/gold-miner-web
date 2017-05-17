@@ -1,22 +1,39 @@
-import * as user from '@/services/user'
+import * as user from '@/services/users'
 
 const state = {
-  logIn: false,
-  username: '',
-  avatar: '',
-  rules: [],
+  oAuth: {
+    logIn: false,
+    token: '',
+    id: '',
+  },
+  id: [],
+  data: {},
 }
 
 const getters = {
-  getUserName: state => state.username,
+  logIn: state => state.oAuth.logIn,
+  currentUser: state => state.data[state.oAuth.id] || {},
 }
 
 const mutations = {
   login(state, payload) {
-    Object.assign(state, payload, { logIn: true })
+    if (!state.data[payload.id]) {
+      state.id.push(payload.id)
+      state.data[payload.id] = {}
+    }
+
+    state.oAuth.logIn = true
+    state.oAuth.token = payload.token
+    state.oAuth.id = payload.id
+
+    Object.assign(state.data[payload.id], payload)
   },
   logout(state) {
-    Object.assign(state, { logIn: false })
+    Object.assign(state.oAuth, {
+      logIn: false,
+      token: '',
+      id: '',
+    })
   },
 }
 

@@ -15,7 +15,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user', 'loading']),
+    ...mapState(['loading']),
   },
   methods: {
     ...mapActions(['logout']),

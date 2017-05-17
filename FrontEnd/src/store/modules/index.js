@@ -1,11 +1,11 @@
 import loading from './loading'
-import user from './user'
+import users from './users'
 import articles from './articles'
 import joinus from './joinus'
 
 export default {
   loading,
-  user,
+  users,
   articles,
   joinus,
 }
