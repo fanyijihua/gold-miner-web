@@ -9,6 +9,8 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 
+const store = require('store')
+
 export default {
   name: 'app',
   data() {
@@ -41,6 +43,10 @@ export default {
 
     if (user) {
       this.login(user)
+      store.set('user', user)
+    } else {
+      // 长时间未登录导致 session 失效时需要清空本地数据
+      store.remove('user')
     }
   },
 }

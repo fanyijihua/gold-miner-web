@@ -10,9 +10,7 @@ import { mapState, mapActions } from 'vuex'
 export default {
   name: 'Logout',
   data() {
-    return {
-      seconds: 3,
-    }
+    return {}
   },
   computed: {
     ...mapState(['loading']),
