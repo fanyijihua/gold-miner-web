@@ -199,7 +199,8 @@ class UserController extends Controller
         $userInfo = DB::table('user')
                     ->join('userDetail', 'user.id', '=', 'userDetail.uid')
                     ->where('user.id', $userId)
-                    ->select();
+                    ->select('user.*', 'userDetail.major', 'userDetail.bio')
+                    ->first();
 
         if($userInfo == false){
             $this->ret['status'] = 500;
