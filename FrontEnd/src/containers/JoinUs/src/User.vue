@@ -1,10 +1,10 @@
 <template>
   <div class="container joinus">
-    <!-- <el-breadcrumb class="breadcrumb">
+    <el-breadcrumb class="breadcrumb">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/joinus/users' }">申请加入的用户列表</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: `/joinus/users/${id}` }">用户</el-breadcrumb-item>
-    </el-breadcrumb> -->
+    </el-breadcrumb>
     <card title="申请成为译者">
       <section class="section">
         <h4 class="section__title">申请人信息</h4>

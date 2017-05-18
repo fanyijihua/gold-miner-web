@@ -7,7 +7,6 @@ import Recommend from '@/containers/Recommend'
 import JoinUs from '@/containers/JoinUs'
 import Auth from '@/containers/Auth'
 import Articles from '@/containers/Articles'
-import Admin from '@/containers/Admin'
 
 Vue.use(Router)
 
@@ -60,6 +59,14 @@ const router = new Router({
             title: '加入我们',
           },
         },
+        {
+          path: 'texts',
+          name: 'JoinUsTexts',
+          component: JoinUs.JoinUsTexts,
+          meta: {
+            title: '试译文本管理',
+          },
+        },
       ],
     },
     {
@@ -100,17 +107,6 @@ const router = new Router({
           path: ':id/referrals',
           name: 'ArticleReferrals',
           component: Articles.Referrals,
-        },
-      ],
-    },
-    {
-      path: '/admin',
-      component: Admin.Base,
-      children: [
-        {
-          path: 'texts',
-          name: 'TestTexts',
-          component: Admin.TestTexts,
         },
       ],
     },

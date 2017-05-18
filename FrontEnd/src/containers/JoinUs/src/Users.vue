@@ -1,9 +1,16 @@
 <template>
   <div class="container users">
-    <!-- <el-breadcrumb class="breadcrumb">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/joinus/users' }">申请加入的用户列表</el-breadcrumb-item>
-    </el-breadcrumb> -->
+    <div class="el-tabs">
+      <div class="el-tabs__header">
+        <div class="el-tabs__nav-wrap">
+          <div class="el-tabs__nav">
+            <div class="el-tabs__active-bar" style="width: 88px; transform: translateX(0px);"></div>
+            <router-link class="el-tabs__item is-active" :to="'/joinus/users'">译者申请</router-link>
+            <router-link class="el-tabs__item" :to="'/joinus/texts'">试译文本</router-link>
+          </div>
+        </div>
+      </div>
+    </div>
     <el-table :data="users" border>
       <el-table-column prop="date" label="申请日期"></el-table-column>
       <el-table-column prop="skills" label="擅长领域"></el-table-column>
@@ -54,6 +61,6 @@ export default {
 
 <style lang="scss" scoped>
 .users {
-  margin-top: 30px;
+  margin-top: 10px;
 }
 </style>
