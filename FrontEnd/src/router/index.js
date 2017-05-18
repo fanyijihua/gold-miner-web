@@ -4,7 +4,7 @@ import nprogress from 'nprogress'
 
 import Index from '@/containers/Index'
 import Recommend from '@/containers/Recommend'
-import JoinUs from '@/containers/JoinUs'
+import Applications from '@/containers/Applications'
 import Auth from '@/containers/Auth'
 import Articles from '@/containers/Articles'
 
@@ -21,7 +21,7 @@ const router = new Router({
       },
     },
     {
-      path: '/Recommend',
+      path: '/recommend',
       name: 'Recommend',
       component: Recommend,
       meta: {
@@ -29,40 +29,40 @@ const router = new Router({
       },
     },
     {
-      path: '/joinus',
-      component: JoinUs.Base,
+      path: '/applications',
+      component: Applications.Base,
       meta: {
         title: '加入我们',
       },
       children: [
         {
-          path: '',
-          name: 'JoinUs',
-          component: JoinUs.Join,
+          path: 'apply',
+          name: 'Apply',
+          component: Applications.Apply,
           meta: {
             title: '加入我们',
           },
         },
         {
-          path: 'users',
-          name: 'JoinUsUsers',
-          component: JoinUs.JoinUsUsers,
+          path: 'applicants',
+          name: 'applicants',
+          component: Applications.Applicants,
           meta: {
             title: '加入我们',
           },
         },
         {
-          path: 'users/:id',
-          name: 'JoinUsUser',
-          component: JoinUs.JoinUsUser,
+          path: 'applicants/:id',
+          name: 'applicant',
+          component: Applications.Applicant,
           meta: {
             title: '加入我们',
           },
         },
         {
           path: 'texts',
-          name: 'JoinUsTexts',
-          component: JoinUs.JoinUsTexts,
+          name: 'TextsForApplication',
+          component: Applications.Texts,
           meta: {
             title: '试译文本管理',
           },

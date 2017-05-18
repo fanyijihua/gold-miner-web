@@ -1,11 +1,11 @@
 <template>
-  <div class="container join__container" v-loading="loading.status" :element-loading-text="loading.text">
+  <div class="container apply__container" v-loading="loading.status" :element-loading-text="loading.text">
     <el-steps :space="300" :align-center="true" :center="true" :active="active" :process-status="status" finish-status="success">
       <el-step title="填写资料"></el-step>
       <el-step title="进行试译"></el-step>
       <el-step title="提交申请"></el-step>
     </el-steps>
-    <el-row class="join__info" v-if="active === 0">
+    <el-row class="apply__info" v-if="active === 0">
       <el-col :span="11" :offset="6">
         <el-form ref="form" :model="userInfo" label-width="100px">
           <el-form-item label="邮箱" required>
@@ -72,7 +72,7 @@ const dictionary = {
 const store = require('store')
 
 export default {
-  name: 'JoinUs',
+  name: 'ApplyUs',
   data() {
     return {
       active: 0,
@@ -176,7 +176,7 @@ export default {
 <style lang="scss" scoped>
 @import "~styles/exports";
 
-.join {
+.apply {
   &__container {
     margin-top: 40px;
   }

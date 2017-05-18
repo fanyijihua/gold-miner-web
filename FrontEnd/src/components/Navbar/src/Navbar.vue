@@ -13,7 +13,7 @@
           <li class="pull-right">
             <template v-if="logIn">
               <el-menu-item v-if="user.istranslator" index="recomment" :route="{ path: '/recommend' }">推荐文章</el-menu-item>
-              <el-menu-item v-else index="joinus" :route="{ path: '/joinus' }">加入我们</el-menu-item>
+              <el-menu-item v-else index="Apply" :route="{ path: '/applications/apply' }">加入我们</el-menu-item>
               <el-menu-item class="navbar__messages" index="">
                 <el-badge class="item" :value="12" v-popover:popover>
                   <i class="el-icon-message"></i>
@@ -30,7 +30,7 @@
               </el-submenu>
             </template>
             <template v-else>
-              <el-menu-item index="joinus" :route="{ path: '/joinus' }">加入我们</el-menu-item>
+              <el-menu-item index="Apply" :route="{ path: '/applications/apply' }">加入我们</el-menu-item>
               <el-menu-item index=""><a href="/auth/login">使用 GitHub 登录</a></el-menu-item>
             </template>
           </li>

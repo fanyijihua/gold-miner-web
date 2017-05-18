@@ -1,9 +1,9 @@
 <template>
-  <div class="container joinus">
+  <div class="container applications">
     <el-breadcrumb class="breadcrumb">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/joinus/users' }">申请加入的用户列表</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: `/joinus/users/${id}` }">用户</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/applications/applicants' }">申请加入的用户列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: `/applications/applicants/${id}` }">用户</el-breadcrumb-item>
     </el-breadcrumb>
     <card title="申请成为译者">
       <section class="section">
@@ -64,7 +64,7 @@ const mock = [
 ]
 
 export default {
-  name: 'JoinUsUser',
+  name: 'ApplicationUser',
   data() {
     return {
       opinions: mock,
@@ -91,8 +91,8 @@ export default {
 <style lang="scss" scoped>
 @import "~styles/exports";
 
-.joinus {
-  margin-top: 30px;
+.applications {
+  margin-top: 6px;
 }
 .information {
   padding-left: 0;

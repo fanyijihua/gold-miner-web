@@ -1,6 +1,17 @@
 <template>
-  <div class="texts">
-    <el-button class="pull-right" type="primary">添加文本</el-button>
+  <div class="container texts">
+    <div class="el-tabs">
+      <div class="el-tabs__header">
+        <div class="el-tabs__nav-wrap">
+          <div class="el-tabs__nav">
+            <div class="el-tabs__active-bar" style="width: 88px; transform: translateX(88px);"></div>
+            <router-link class="el-tabs__item" :to="'/applications/applicants'">译者申请</router-link>
+            <router-link class="el-tabs__item is-active" :to="'/applications/texts'">试译文本</router-link>
+          </div>
+          <el-button class="pull-right" type="primary">添加文本</el-button>
+        </div>
+      </div>
+    </div>
     <div class="texts__list">
       <el-table :data="tableData" border>
         <el-table-column prop="title" label="标题"></el-table-column>
@@ -46,8 +57,9 @@ const mock = [
     rate: 0.2,
   },
 ]
+
 export default {
-  name: 'TestTexts',
+  name: 'ApplicationTexts',
   data() {
     return {
       tableData: mock,
@@ -60,9 +72,6 @@ export default {
 
 <style lang="scss" scoped>
 .texts {
-  &__list {
-    padding-top: 14px;
-    clear: both;
-  }
+  margin-top: 10px;
 }
 </style>
