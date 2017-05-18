@@ -198,8 +198,9 @@ class UserController extends Controller
     {
         $userInfo = DB::table('user')
                     ->join('userDetail', 'user.id', '=', 'userDetail.uid')
+                    ->join('userToken', 'user.id', '=', 'userToken.uid')
                     ->where('user.id', $userId)
-                    ->select('user.*', 'userDetail.major', 'userDetail.bio')
+                    ->select('user.*', 'userDetail.major', 'userDetail.bio', 'userToken.token')
                     ->first();
 
         if($userInfo == false){
@@ -248,8 +249,6 @@ class UserController extends Controller
 
             return json_encode($this->ret);
         }
-
-        $this->userInfo->token = $token;
     }
 
 }
