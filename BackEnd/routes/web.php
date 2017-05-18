@@ -10,4 +10,3 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['prefix' => 'api'], function () {
 	Route::resource('user', 'Api\UserController');
 });
-

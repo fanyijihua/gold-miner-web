@@ -7,6 +7,8 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 
+const store = require('store')
+
 export default {
   name: 'Logout',
   data() {
@@ -22,6 +24,8 @@ export default {
     const logoutCallback = () => {
       this.$message.success('退出成功。')
       this.$router.replace('/')
+
+      store.remove('user')
     }
 
     this.logout().then(logoutCallback).catch(logoutCallback)
