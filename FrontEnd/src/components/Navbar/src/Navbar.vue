@@ -13,7 +13,7 @@
           <li class="pull-right">
             <template v-if="logIn">
               <el-menu-item v-if="user.istranslator" index="recomment" :route="{ path: '/recommend' }">推荐文章</el-menu-item>
-              <el-menu-item v-else index="joinus" :route="{ path: '/joinus' }">加入我们</el-menu-item>
+              <el-menu-item v-else index="Apply" :route="{ path: '/applications/apply' }">加入我们</el-menu-item>
               <el-menu-item class="navbar__messages" index="">
                 <el-badge class="item" :value="12" v-popover:popover>
                   <i class="el-icon-message"></i>
@@ -24,14 +24,13 @@
               </el-menu-item>
               <el-submenu class="user-submenu" index="user">
                 <template slot="title">{{ user.name }}</template>
-                <el-menu-item index="user-home">我的主页</el-menu-item>
-                <el-menu-item index="admin" :route="{ path: '/admin'}">后台管理</el-menu-item>
-                <el-menu-item index="user-settings">个人设置</el-menu-item>
+                <el-menu-item index="user-home" :route="{ path: `/users/${user.name}` }">我的主页</el-menu-item>
+                <el-menu-item index="user-settings" :route="{ path: `/users/${user.name}/settings` }">个人设置</el-menu-item>
                 <el-menu-item index="logout" :route="{ path: '/auth/logout' }">退出</el-menu-item>
               </el-submenu>
             </template>
             <template v-else>
-              <el-menu-item index="joinus" :route="{ path: '/joinus' }">加入我们</el-menu-item>
+              <el-menu-item index="Apply" :route="{ path: '/applications/apply' }">加入我们</el-menu-item>
               <el-menu-item index=""><a href="/auth/login">使用 GitHub 登录</a></el-menu-item>
             </template>
           </li>

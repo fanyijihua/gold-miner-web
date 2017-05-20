@@ -1,4 +1,4 @@
-import * as joinus from '@/services/joinus'
+import * as applications from '@/services/applications'
 
 const state = {
   texts: {
@@ -36,7 +36,7 @@ const actions = {
   fetchTexts(context, payload) {
     context.commit('showLoading')
 
-    return joinus.fetchTexts(payload).then((response) => {
+    return applications.fetchTexts(payload).then((response) => {
       context.commit('hideLoading')
       context.commit('addTexts', response.data)
       return Promise.resolve(response.data)
@@ -54,7 +54,7 @@ const actions = {
   submitRequest(context, payload) {
     context.commit('showLoading')
 
-    return joinus.submitRequest(payload).then((response) => {
+    return applications.submitRequest(payload).then((response) => {
       context.commit('hideLoading')
       return Promise.resolve(response.data)
     }).catch((err) => {

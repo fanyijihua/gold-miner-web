@@ -25,7 +25,7 @@ const mock = {
         avatar: '/static/avatar.png',
       },
       date: '2017-01-11',
-      link: '/joinus/users/1',
+      link: '/applications/applicants/1',
     },
     {
       title: '申请译者',
@@ -36,7 +36,7 @@ const mock = {
         avatar: '/static/avatar.png',
       },
       date: '2017-03-25',
-      link: '/joinus/users/2',
+      link: '/applications/applicants/2',
     },
   ],
   articles: [
