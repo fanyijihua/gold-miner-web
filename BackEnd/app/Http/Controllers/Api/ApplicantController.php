@@ -38,6 +38,7 @@ class ApplicantController extends Controller
     {
         //
         $data = array(
+                'uid'           => $request->input('uid'),
                 'email'         => $request->input('email'),
                 'major'         => $request->input('major'),
                 'description'   => $request->input('description'),
@@ -128,8 +129,27 @@ class ApplicantController extends Controller
         return rand(1,100);
     }
 
-    public function checkEmail()
+    public function checkApplicantEmail( $email )
     {
-        // $email = 
+        if ( false == preg_match('/(.*?)@(.*?)\.(.*?)/', $email) ) {
+            $this->ret['status'] = 500;
+            $this->ret['message'] = 'Invalid Email!';
+            echo json_encode($this->ret);
+            return;
+        }
+
+        $result = DB::table('applicant')
+                    ->where('email', $email)
+                    ->first();
+
+        if ( $result == false ) {
+            echo json_encode($this->ret);
+            return;
+        }
+
+        $this->ret['status'] = 500;
+        $this->ret['message'] = 'Duplicated Email!';
+        echo json_encode($this->ret);
+        return;
     }
 }
