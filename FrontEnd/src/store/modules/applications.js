@@ -1,14 +1,20 @@
 import * as applications from '@/services/applications'
+import * as _ from 'lodash'
 
 const state = {
   texts: {
     id: [],
     data: {},
   },
-  requests: [],
+  applicants: {
+    id: [],
+    data: {},
+  },
 }
 
 const getters = {
+  applicants: state => state.applicants.id.map(item => state.applicants.data[item]),
+  texts: state => state.texts.id.map(item => state.texts.data[item]),
 }
 
 const mutations = {
@@ -16,14 +22,56 @@ const mutations = {
    * 将试译的英文稿进行存储
    * @param {Array} payload 试译的英文稿数据
    */
-  addTexts(state, payload) {
-    payload.forEach((item) => {
-      if (!state.texts.id.includes(item.id)) {
-        state.texts.id.push(item.id)
-      }
+  updateTexts(state, payload) {
+    state.texts.id = payload.map(item => item.id)
+    const data = {}
 
-      state.texts.data[item.id] = item
+    payload.forEach((item) => {
+      data[item.id] = item
     })
+
+    state.texts.data = data
+  },
+
+  /**
+   * 添加一个新的试译文稿
+   * @param {Object} payload 试译的英文稿数据
+   */
+  addText(state, payload) {
+    state.texts.id.unshift(payload.id)
+    state.texts.data[payload.id] = payload
+  },
+
+  /**
+   * 更新一个试译文稿
+   * @param {Object} payload 试译的英文稿数据
+   */
+  updateText(state, payload) {
+    state.texts.data[payload.id] = payload
+  },
+
+  /**
+   * 删除一个试译文稿
+   * @param  {Number} id    要删除的文本 ID
+   */
+  deleteText(state, id) {
+    _.pull(state.texts.id, id)
+    state.texts.data = _.omit(state.texts.data, [id])
+  },
+
+  /**
+   * 将所有的译者申请信息进行存储
+   * @param  {Array} payload 译者申请信息
+   */
+  updateApplicants(state, payload) {
+    state.applicants.id = payload.map(item => item.id)
+    const data = {}
+
+    payload.forEach((item) => {
+      data[item.id] = item
+    })
+
+    state.applicants.data = data
   },
 }
 
@@ -34,11 +82,33 @@ const actions = {
    * @return {Promise}
    */
   fetchTexts(context, payload) {
+    return applications.fetchTexts(payload).then((response) => {
+      context.commit('updateTexts', response.data)
+      return Promise.resolve(response.data)
+    }).catch(err => Promise.reject(err.response.data))
+  },
+
+  /**
+   * 获取申请者列表
+   * @return {Promise}
+   */
+  fetchApplicants(context) {
+    return applications.fetchApplicants().then((response) => {
+      context.commit('updateApplicants', response.data)
+      return Promise.resolve(response.data)
+    }).catch(err => Promise.reject(err.response.data))
+  },
+
+  /**
+   * 提交翻译的译文和最终数据
+   * @param  {Object} payload 申请信息和翻译结果
+   * @return {Promise}
+   */
+  submitApplication(context, payload) {
     context.commit('showLoading')
 
-    return applications.fetchTexts(payload).then((response) => {
+    return applications.submitApplication(payload).then((response) => {
       context.commit('hideLoading')
-      context.commit('addTexts', response.data)
       return Promise.resolve(response.data)
     }).catch((err) => {
       context.commit('hideLoading')
@@ -47,20 +117,38 @@ const actions = {
   },
 
   /**
-   * 提交翻译的译文和最终数据
-   * @param  {Object} payload 申请信息和翻译结果
+   * 创建新试译文本
+   * @param  {Object} payload 新试译文本的一些信息
    * @return {Promise}
    */
-  submitRequest(context, payload) {
-    context.commit('showLoading')
-
-    return applications.submitRequest(payload).then((response) => {
-      context.commit('hideLoading')
+  addText(context, payload) {
+    return applications.addText(payload).then((response) => {
+      context.commit('addText', response.data)
       return Promise.resolve(response.data)
-    }).catch((err) => {
-      context.commit('hideLoading')
-      return Promise.reject(err.response.data)
-    })
+    }).catch(err => Promise.reject(err.response.data))
+  },
+
+  /**
+   * 更新试译文本
+   * @param  {Object} payload 试译文本的一些信息
+   * @return {Promise}
+   */
+  updateText(context, payload) {
+    return applications.updateText(payload).then((response) => {
+      context.commit('updateText', response.data)
+      return Promise.resolve(response.data)
+    }).catch(err => Promise.reject(err.response.data))
+  },
+
+  /**
+   * 删除试译文本
+   * @param  {Number} id      要删除的文本 ID
+   */
+  deleteText(context, id) {
+    return applications.deleteText(id).then((response) => {
+      context.commit('deleteText', id)
+      return Promise.resolve(response.data)
+    }).catch(err => Promise.reject(err.response.data))
   },
 }
 

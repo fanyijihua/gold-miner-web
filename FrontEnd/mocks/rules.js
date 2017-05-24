@@ -29,7 +29,7 @@ router.all('*', (req, res, next) => {
 })
 
 router.get('/auth/login', (req, res) => {
-  res.redirect('/#/joinus')
+  res.redirect('/#/applications')
 })
 
 router.post('/auth/validate-invitation-code', (req, res) => {
@@ -46,31 +46,66 @@ router.get('/auth/logout', (req, res) => {
   res.end()
 })
 
-router.get('/joinus/texts', (req, res) => {
-  const data = mock({
-    'texts|10': [{
-      id: 1,
-      type: 'frontend',
-      text: '@paragraph',
+router
+  .get('/applications/texts', (req, res) => {
+    const data = mock({
+      'texts|10': [{
+        id: 1,
+        type: 'frontend',
+        title: '@title',
+        text: '@paragraph',
+        creatorId: 1,
+        cdate: 1494422649139,
+        udate: 1494422649139,
+      }],
+    })
+
+    data.texts.forEach((item, index) => {
+      item.id = index + 1
+      return item
+    })
+
+    res.json(data.texts)
+  })
+  .post('/applications/texts', (req, res) => {
+    res.json(Object.assign({}, req.body, {
+      id: 100,
       creatorId: 1,
-      createdAt: 1494422649139,
-      updatedAt: 1494422649139,
-    }],
+      cdate: 1494422649139,
+      udate: 1494422649139,
+    }))
+  })
+  .put('/applications/texts/:id', (req, res) => {
+    res.json(Object.assign({}, req.body, {
+      creatorId: 1,
+      cdate: 1494422649139,
+      udate: 1494422649139,
+    }))
+  })
+  .delete('/applications/texts/:id', (req, res) => {
+    res.json({ message: '删除成功' })
   })
 
-  data.texts.forEach((item, index) => {
-    item.id = index + 1
-    return item
-  })
+router
+  .get('/applications/applicants', (req, res) => {
+    const data = mock({
+      'applicants|10': [{
+        'id|+1': 1,
+        major: 'frontend',
+        ability: '过了 4 级',
+        texts: 1,
+        translation: '@cparagraph',
+        cdate: '@date',
+      }]
+    })
 
-  res.json(data.texts)
-})
-
-router.post('/joinus/requests', (req, res) => {
-  return res.json({
-    email: req.body.email,
+    return res.json(data.applicants)
   })
-})
+  .post('/applications/applicants', (req, res) => {
+    return res.json({
+      email: req.body.email,
+    })
+  })
 
 router.get('/articles', (req, res) => {
   const data = mock({
@@ -91,6 +126,10 @@ router.get('/articles', (req, res) => {
   })
 
   res.json(data.articles)
+})
+
+router.all('*', (req, res) => {
+  res.status(404).json({ message: '404 Not found.' })
 })
 
 module.exports = router

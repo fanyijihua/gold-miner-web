@@ -117,7 +117,7 @@ export default {
       const { email, skills, ability } = this.userInfo
 
       // 提交申请信息和翻译数据
-      this.$store.dispatch('submitRequest', {
+      this.$store.dispatch('submitApplication', {
         email,
         skills,
         ability,

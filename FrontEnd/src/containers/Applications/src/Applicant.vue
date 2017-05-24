@@ -3,7 +3,7 @@
     <el-breadcrumb class="breadcrumb">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/applications/applicants' }">申请加入的用户列表</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: `/applications/applicants/${id}` }">用户</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: `/applications/applicants/${id}` }">新译者</el-breadcrumb-item>
     </el-breadcrumb>
     <card title="申请成为译者">
       <section class="section">

@@ -48,7 +48,7 @@ const router = new Router({
           name: 'applicants',
           component: Applications.Applicants,
           meta: {
-            title: '加入我们',
+            title: '译者申请列表',
           },
         },
         {
@@ -56,7 +56,7 @@ const router = new Router({
           name: 'applicant',
           component: Applications.Applicant,
           meta: {
-            title: '加入我们',
+            title: '译者申请',
           },
         },
         {
@@ -64,7 +64,7 @@ const router = new Router({
           name: 'TextsForApplication',
           component: Applications.Texts,
           meta: {
-            title: '试译文本管理',
+            title: '试译文本列表',
           },
         },
       ],

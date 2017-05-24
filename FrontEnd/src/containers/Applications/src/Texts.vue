@@ -8,64 +8,120 @@
             <router-link class="el-tabs__item" :to="'/applications/applicants'">译者申请</router-link>
             <router-link class="el-tabs__item is-active" :to="'/applications/texts'">试译文本</router-link>
           </div>
-          <el-button class="pull-right" type="primary">添加文本</el-button>
+          <el-button class="pull-right" type="primary" @click="addText">添加文本</el-button>
         </div>
       </div>
     </div>
     <div class="texts__list">
-      <el-table :data="tableData" border>
+      <el-table :data="texts" border>
         <el-table-column prop="title" label="标题"></el-table-column>
-        <el-table-column prop="category" label="分类"></el-table-column>
-        <el-table-column prop="date" label="创建日期"></el-table-column>
-        <el-table-column prop="rate" label="通过率"></el-table-column>
+        <el-table-column prop="type" label="分类"></el-table-column>
+        <el-table-column prop="cdate" label="创建日期"></el-table-column>
         <el-table-column label="操作">
           <template scope="scope">
-            <el-button type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small" @click="editText(scope.row.id)">编辑</el-button>
+            <el-button type="text" size="small" @click="deleteText(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <el-dialog :title="dialog.title" :visible.sync="dialog.isVisible" @close="closeDialog">
+      <el-form :model="form" label-position="top" label-width="80px">
+        <el-form-item label="标题">
+          <el-input v-model="form.title" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="分类">
+          <el-select v-model="form.type" placeholder="请选择分类">
+            <el-option label="前端" value="frontend"></el-option>
+            <el-option label="后端" value="backend"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="英文文本">
+          <el-input type="textarea" v-model="form.text" auto-complete="off" :rows="6"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closeDialog">取 消</el-button>
+        <el-button type="primary" @click="saveChange" :loading="loading">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-const mock = [
-  {
-    title: '标题 1',
-    date: '2016-05-02',
-    category: '前端',
-    rate: 0.2,
-  },
-  {
-    title: '标题 2',
-    date: '2016-05-02',
-    category: '前端',
-    rate: 0.2,
-  },
-  {
-    title: '标题 3',
-    date: '2016-05-02',
-    category: '前端',
-    rate: 0.2,
-  },
-  {
-    title: '标题 4',
-    date: '2016-05-02',
-    category: '前端',
-    rate: 0.2,
-  },
-]
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ApplicationTexts',
   data() {
     return {
-      tableData: mock,
+      dialog: {
+        title: '',
+        isVisible: false,
+      },
+      form: {
+        id: '',
+        title: '',
+        type: '',
+        text: '',
+      },
+      loading: false,
     }
   },
+  computed: {
+    ...mapGetters(['texts']),
+  },
   methods: {
+    addText() {
+      this.dialog = { isVisible: true, title: '添加文本' }
+    },
+    editText(id) {
+      this.dialog = { isVisible: true, title: '编辑文本' }
+      const text = this.$store.state.applications.texts.data[id]
+
+      this.form = {
+        id: text.id,
+        title: text.title,
+        type: text.type,
+        text: text.text,
+      }
+    },
+    closeDialog() {
+      this.dialog.isVisible = false
+      this.form = {
+        id: '',
+        title: '',
+        type: '',
+        text: '',
+      }
+    },
+    saveChange() {
+      let action = ''
+
+      if (this.form.id) {
+        action = 'updateText'
+      } else {
+        action = 'addText'
+      }
+
+      this.loading = true
+
+      this.$store.dispatch(action, this.form).then(() => {
+        this.closeDialog()
+        this.loading = false
+      }).catch((err) => {
+        this.$message.error(err.message)
+        this.loading = false
+      })
+    },
+    deleteText(id) {
+      this.$store.dispatch('deleteText', id).catch((err) => {
+        this.$message.error(err.message)
+      })
+    },
+  },
+  created() {
+    this.$store.dispatch('fetchTexts')
   },
 }
 </script>
