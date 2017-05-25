@@ -12,4 +12,5 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 	Route::resource('user', 'UserController');	
 	Route::resource('article', 'ArticleController');
 	Route::get('checkApplicantEmail/{email}', 'ApplicantController@checkApplicantEmail');
+	Route::get('getRandomArticle/{field}', 'ArticleController@getRandomArticle');
 });

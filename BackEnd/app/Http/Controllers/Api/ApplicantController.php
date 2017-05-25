@@ -9,13 +9,22 @@ use App\Http\Controllers\Controller;
 class ApplicantController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * 获取全部申请者信息
+     * @return json_encode(Object)  全部申请者（分页）
      */
     public function index()
     {
         //
+        $applicants = DB::table('applicant')
+                        ->join('category', 'applicant.major', '=', 'category.id')
+                        ->where('status', 0)
+                        ->select('applicant.id', 'applicant.name', 'applicant.email', 'applicant.cdate', 'category.category')
+                        ->orderBy('status', 'asc')
+                        ->skip($this->start)
+                        ->take($this->offset)
+                        ->get();
+
+        echo json_encode($applicants);
     }
 
     /**
@@ -29,22 +38,28 @@ class ApplicantController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * 添加申请者
+     * @param  int      $uid            用户 ID（对应 user 表，如果有的话）
+     * @param  string   $name           昵称
+     * @param  string   $email          邮箱
+     * @param  int      $major          擅长领域
+     * @param  string   $description    自我描述
+     * @param  string   $translation    试译内容
+     * @param  int      $articleId      试译文章 ID
+     * @return json_encode(Array)        
      */
     public function store(Request $request)
     {
         //
         $data = array(
                 'uid'           => $request->input('uid'),
+                'name'          => $request->input('name'),
                 'email'         => $request->input('email'),
                 'major'         => $request->input('major'),
                 'description'   => $request->input('description'),
                 'translation'   => $request->input('translation'),
-                'articleid'     => $this->getArticle(),
-                'result'        => 0,
+                'articleid'     => $request->input('articleId'),
+                'status'        => 0,
                 'udate'         => date('Y-m-d H:i:s'),
                 'cdate'         => date('Y-m-d H:i:s')
             );
@@ -55,20 +70,36 @@ class ApplicantController extends Controller
         if($result === false){
             $this->ret['status'] = 500;
             $this->ret['message'] = '申请失败！';
+            echo json_encode($this->ret);
+            return;
         }
 
         echo json_encode($this->ret);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * 获取单个试译者详细信息
+     * @param  int  $id     试译者 ID
+     * @return json_encode(Object)     
      */
     public function show($id)
     {
         //
+        $applicant = DB::table('applicant')
+                        ->join('category', 'applicant.major', '=', 'category.id')
+                        ->join('article', 'applicant.articleid', '=', 'article.id')
+                        ->where('id', $id)
+                        ->select('applicant.id', 'applicant.name', 'applicant.email', 'applicant.status', 'applicant.description', 'applicant.translation', 'applicant.udate', 'applicant.cdate', 'category.category', 'article.content')
+                        ->first();
+
+        if ( $applicant === null ) {
+            $this->ret['status'] = 500;
+            $this->ret['message'] = '非法参数！';
+            echo json_encode($this->ret);
+            return;
+        }
+
+        echo json_encode($applicant);
     }
 
     /**
@@ -83,19 +114,21 @@ class ApplicantController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * 更新申请结果
+     * @param  bool     $result     申请结果，true 为成功，false 为失败
+     * @param  int      $id         申请记录的 ID
+     * @return json_encode(Array)           
      */
     public function update(Request $request, $id)
     {
         //
-        $data = array(
-                'invitation'    => $this->generationToken($id),
-                'udate'         => date('Y-m-d H:i:s')
-            );
+        $data = array( 'udate' => date('Y-m-d H:i:s') );
+        if ( $request->input('result') == true ) {
+            $data['invitation'] = $this->generationToken($id);
+            $data['status'] = 1;
+        } else {
+            $data['status'] = 2;
+        }
 
         $result = DB::table('applicant')
                     ->where('id', $id)
@@ -104,6 +137,8 @@ class ApplicantController extends Controller
         if($result === false){
             $this->ret['status'] = 500;
             $this->ret['message'] = '更新信息失败！';
+            echo json_encode($this->ret);
+            return;
         }
 
         echo json_encode($this->ret);
@@ -120,20 +155,16 @@ class ApplicantController extends Controller
         //
     }
 
-    public function getArticle()
-    {
-        // $article = DB::table('article')
-        //                 ->inRandomOrder()
-        //                 ->first();
-        // return $article->id;
-        return rand(1,100);
-    }
-
+    /**
+     * 检查邮箱是否被占用
+     * @param  string   $email  邮箱
+     * @return json_encode(Array)
+     */
     public function checkApplicantEmail( $email )
     {
         if ( false == preg_match('/(.*?)@(.*?)\.(.*?)/', $email) ) {
             $this->ret['status'] = 500;
-            $this->ret['message'] = 'Invalid Email!';
+            $this->ret['message'] = '邮箱格式错误！';
             echo json_encode($this->ret);
             return;
         }
@@ -148,8 +179,7 @@ class ApplicantController extends Controller
         }
 
         $this->ret['status'] = 500;
-        $this->ret['message'] = 'Duplicated Email!';
+        $this->ret['message'] = '邮箱已被占用！';
         echo json_encode($this->ret);
-        return;
     }
 }

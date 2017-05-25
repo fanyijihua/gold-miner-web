@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -15,13 +16,13 @@ class Controller extends BaseController
      * GitHub 注册应用 client_id
      * @var string
      */
-    protected $client_id 		= '';//config('app.github_client_id');
+    protected $client_id;
 
     /**
      * GitHub 注册应用 client_secret
      * @var string
      */
-    protected $client_secret 	= '';//config('app.github_client_secret');
+    protected $client_secret;
 
     /**
      * 状态响应内容
@@ -29,12 +30,32 @@ class Controller extends BaseController
      */
     protected $ret = array();
 
-    public function __construct()
+    /**
+     * 获取数据起始位置
+     * @var integer
+     */
+    protected $start = 0;
+
+    /**
+     * 每次获取数据量
+     * @var integer
+     */
+    protected $offset = 10;
+
+    public function __construct(Request $request)
     {
     	$this->client_id = config('app.github_client_id');
     	$this->client_secret = config('app.github_client_secret');
     	$this->ret['status'] = 200;
     	$this->ret['message'] = 'OK';
+
+        if ( $request->has('per_page') ) {
+            $this->offset = $request->input('per_page');
+        }
+
+        if ( $request->has('page') ) {
+            $this->start = ($request->input('page') - 1) * $this->offset;
+        }
     }
 
     /**
