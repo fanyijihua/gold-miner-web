@@ -93,8 +93,16 @@ router
         'id|+1': 1,
         major: 'frontend',
         ability: '过了 4 级',
-        texts: 1,
+        text: 1,
         translation: '@cparagraph',
+        "opinions|2-5": [
+          {
+            username: '@cname',
+            opinion: '瞎胡点的',
+            result: true,
+            date: '@date',
+          },
+        ],
         cdate: '@date',
       }]
     })
@@ -104,6 +112,15 @@ router
   .post('/applications/applicants', (req, res) => {
     return res.json({
       email: req.body.email,
+    })
+  })
+  .post('/applications/applicants/:id/opinions', (req, res) => {
+    return res.json({
+      id: 1,
+      username: '@cname',
+      opinion: '瞎胡点的',
+      result: true,
+      date: '@date',
     })
   })
 

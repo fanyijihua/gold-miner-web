@@ -23,3 +23,7 @@ export const fetchApplicants = function fetchApplicants() {
 export const submitApplication = function submitRequest(options) {
   return axios.post('/api/applications/applicants', options)
 }
+
+export const submitOpinion = function submitOpinion(options) {
+  return axios.post(`/api/applications/applicants/${options.id}/opinions`, options)
+}

@@ -73,21 +73,21 @@ const mutations = {
 
     state.applicants.data = data
   },
+
+  /**
+   * 将审核意见更新至对应的译者申请数据中
+   * @param  {Object} payload 审核意见
+   */
+  submitOpinion(state, payload) {
+    if (!state.applicants.data[payload.id].opinions) {
+      state.applicants.data[payload.id].opinions = []
+    }
+
+    state.applicants.data[payload.id].opinions.push(payload)
+  },
 }
 
 const actions = {
-  /**
-   * 获取试译的英文稿
-   * @param  {Array} payload 指定要获取的类别
-   * @return {Promise}
-   */
-  fetchTexts(context, payload) {
-    return applications.fetchTexts(payload).then((response) => {
-      context.commit('updateTexts', response.data)
-      return Promise.resolve(response.data)
-    }).catch(err => Promise.reject(err.response.data))
-  },
-
   /**
    * 获取申请者列表
    * @return {Promise}
@@ -114,6 +114,30 @@ const actions = {
       context.commit('hideLoading')
       return Promise.reject(err.response.data)
     })
+  },
+
+  /**
+   * 针对译者申请提出审核意见
+   * @param  {Object} payload 审核意见
+   * @return {Promise}
+   */
+  submitOpinion(context, payload) {
+    return applications.submitOpinion(payload).then((response) => {
+      context.commit('submitOpinion', response.data)
+      return Promise.resolve(response.data)
+    }).catch(err => Promise.reject(err.response.data))
+  },
+
+  /**
+   * 获取所有的试译文本
+   * @param  {Array} payload 指定要获取的类别
+   * @return {Promise}
+   */
+  fetchTexts(context, payload) {
+    return applications.fetchTexts(payload).then((response) => {
+      context.commit('updateTexts', response.data)
+      return Promise.resolve(response.data)
+    }).catch(err => Promise.reject(err.response.data))
   },
 
   /**
