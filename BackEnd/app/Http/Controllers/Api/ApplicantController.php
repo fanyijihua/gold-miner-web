@@ -17,7 +17,6 @@ class ApplicantController extends Controller
         //
         $applicants = DB::table('applicant')
                         ->join('category', 'applicant.major', '=', 'category.id')
-                        ->where('status', 0)
                         ->select('applicant.id', 'applicant.name', 'applicant.email', 'applicant.cdate', 'category.category')
                         ->orderBy('status', 'asc')
                         ->skip($this->start)
@@ -88,7 +87,7 @@ class ApplicantController extends Controller
         $applicant = DB::table('applicant')
                         ->join('category', 'applicant.major', '=', 'category.id')
                         ->join('article', 'applicant.articleid', '=', 'article.id')
-                        ->where('id', $id)
+                        ->where('applicant.id', $id)
                         ->select('applicant.id', 'applicant.name', 'applicant.email', 'applicant.status', 'applicant.description', 'applicant.translation', 'applicant.udate', 'applicant.cdate', 'category.category', 'article.content')
                         ->first();
 
@@ -160,7 +159,7 @@ class ApplicantController extends Controller
      * @param  string   $email  邮箱
      * @return json_encode(Array)
      */
-    public function checkApplicantEmail( $email )
+    public function checkEmail( $email )
     {
         if ( false == preg_match('/(.*?)@(.*?)\.(.*?)/', $email) ) {
             $this->ret['status'] = 500;
@@ -181,5 +180,18 @@ class ApplicantController extends Controller
         $this->ret['status'] = 500;
         $this->ret['message'] = '邮箱已被占用！';
         echo json_encode($this->ret);
+    }
+
+    /**
+     * 获取未处理申请数量
+     * @return  Int     未处理申请数量
+     */
+    public function getUndoNum()
+    {
+        $number = DB::table('applicant')
+                    ->where('status', 0)
+                    ->count();
+
+        echo $number;
     }
 }
