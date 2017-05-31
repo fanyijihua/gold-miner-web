@@ -123,6 +123,7 @@ class ArticleController extends Controller
         //
         $data = array(
                 'category'  => $request->input('category'),
+                'title'     => $request->input('title'),
                 'operator'  => $request->input('operator'),
                 'content'   => $request->input('content'),
                 'udate'     => date('Y-m-d H:i:s')
