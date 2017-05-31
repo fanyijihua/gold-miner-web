@@ -1,7 +1,6 @@
 <?php
 
 Route::get('/', 'Auth\LoginController@index');
-Route::get('/joinus', 'Auth\LoginController@index');
 
 Route::group(['prefix' => 'auth'], function () {
 	Route::get('login', 'Auth\LoginController@oAuth');

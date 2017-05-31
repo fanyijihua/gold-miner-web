@@ -65,10 +65,6 @@ class UserController extends Controller
 
         session(['user' => $this->loadUserById($userId)]);
 
-        if($newUser){
-            return redirect('/joinus');
-        }
-
         return redirect('/');
     }
 

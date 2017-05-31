@@ -17,7 +17,8 @@ class ApplicantController extends Controller
         //
         $applicants = DB::table('applicant')
                         ->join('category', 'applicant.major', '=', 'category.id')
-                        ->select('applicant.id', 'applicant.name', 'applicant.email', 'applicant.cdate', 'category.category')
+                        ->join('article', 'applicant.articleid', '=', 'article.id')
+                        ->select('applicant.id', 'applicant.name', 'applicant.email', 'applicant.status', 'applicant.description', 'applicant.translation', 'applicant.udate', 'applicant.cdate', 'category.category', 'article.content')
                         ->orderBy('status', 'asc')
                         ->skip($this->start)
                         ->take($this->offset)

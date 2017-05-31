@@ -19,7 +19,7 @@ class ArticleController extends Controller
                         ->join('category', 'article.category', '=', 'category.id')
                         ->join('user', 'article.operator', '=', 'user.id')
                         ->where('article.isdel', 0)
-                        ->select('article.id', 'article.status', 'article.passed', 'article.failed', 'article.cdate', 'category.category', 'user.name as operator')
+                        ->select('article.*', 'category.category', 'user.name as operator')
                         ->orderBy('article.id', 'desc')
                         ->skip($this->start)
                         ->take($this->offset)
@@ -49,6 +49,7 @@ class ArticleController extends Controller
     {
         //
         $data = array(
+                'title'     => $request->input('title'),
                 'category'  => $request->input('category'),
                 'status'    => 0,
                 'isdel'     => 0,
@@ -238,7 +239,7 @@ class ArticleController extends Controller
 
         $article = DB::table('article')
                         ->where($rules)
-                        ->select('id', 'content')
+                        ->select('id', 'title', 'content')
                         ->inRandomOrder()
                         ->first();
 
