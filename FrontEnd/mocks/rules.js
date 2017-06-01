@@ -58,9 +58,9 @@ router
       udate: 1494422649139,
     }))
   })
-  .get('/applications/texts', (req, res) => {
+  .get('/articles', (req, res) => {
     const data = mock({
-      'texts|10': [{
+      'articles|10': [{
         id: 1,
         type: 'frontend',
         title: '@title',
@@ -71,14 +71,14 @@ router
       }],
     })
 
-    data.texts.forEach((item, index) => {
+    data.articles.forEach((item, index) => {
       item.id = index + 1
       return item
     })
 
-    res.json(data.texts)
+    res.json(data.articles)
   })
-  .post('/applications/texts', (req, res) => {
+  .post('/articles', (req, res) => {
     res.json(Object.assign({}, req.body, {
       id: 100,
       creatorId: 1,
@@ -86,19 +86,19 @@ router
       udate: 1494422649139,
     }))
   })
-  .put('/applications/texts/:id', (req, res) => {
+  .put('/articles/:id', (req, res) => {
     res.json(Object.assign({}, req.body, {
       creatorId: 1,
       cdate: 1494422649139,
       udate: 1494422649139,
     }))
   })
-  .delete('/applications/texts/:id', (req, res) => {
+  .delete('/articles/:id', (req, res) => {
     res.json({ message: '删除成功' })
   })
 
 router
-  .get('/applications/applicants', (req, res) => {
+  .get('/applicants', (req, res) => {
     const data = mock({
       'applicants|10': [{
         'id|+1': 1,
@@ -120,7 +120,7 @@ router
 
     return res.json(data.applicants)
   })
-  .post('/applications/applicants', (req, res) => {
+  .post('/applicants', (req, res) => {
     return res.json({
       email: req.body.email,
     })
