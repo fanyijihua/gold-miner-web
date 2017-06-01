@@ -129,6 +129,17 @@ const actions = {
   },
 
   /**
+   * 获取随机的一个试译文本
+   * @param  {String} payload 指定要获取的类别（可选）
+   * @return {Promise}
+   */
+  fetchRandomText(context, payload) {
+    return applications.fetchRandomText(payload)
+      .then(response => Promise.resolve(response.data))
+      .catch(err => Promise.reject(err.response.data))
+  },
+
+  /**
    * 获取所有的试译文本
    * @param  {Array} payload 指定要获取的类别
    * @return {Promise}

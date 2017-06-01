@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     submitOpinion(result) {
-      if (!result && !this.opinion) return alert('留一下意见了啦~')
+      if (!result && !this.opinion) return this.$message({ message: '留一下意见了啦~', type: 'warning' })
 
       return this.$store.dispatch('submitOpinion', {
         id: this.applicantId,

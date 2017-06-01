@@ -106,8 +106,8 @@ export default {
       this.active = 1
 
       // 获取试译的英文稿
-      this.$store.dispatch('fetchTexts', { types: skillsFields }).then((data) => {
-        this.text = data[Math.floor(Math.random() * data.length)]
+      this.$store.dispatch('fetchRandomText', skills[0]).then((data) => {
+        this.text = data
       })
     },
     // 提交翻译的译文和最终数据

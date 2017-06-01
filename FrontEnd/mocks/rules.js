@@ -47,6 +47,17 @@ router.get('/auth/logout', (req, res) => {
 })
 
 router
+  .get('/articles/random/:category', (req, res) => {
+    res.json(mock({
+      id: 1,
+      type: 'frontend',
+      title: '@title',
+      text: '@paragraph',
+      creatorId: 1,
+      cdate: 1494422649139,
+      udate: 1494422649139,
+    }))
+  })
   .get('/applications/texts', (req, res) => {
     const data = mock({
       'texts|10': [{

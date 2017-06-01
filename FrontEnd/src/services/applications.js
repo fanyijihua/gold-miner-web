@@ -1,5 +1,9 @@
 import axios from './axios'
 
+export const fetchRandomText = function fetchRandomText(category) {
+  return axios.get(`/api/articles/random/${category}`)
+}
+
 export const fetchTexts = function fetchTexts(options) {
   return axios.get('/api/applications/texts', { params: options })
 }
