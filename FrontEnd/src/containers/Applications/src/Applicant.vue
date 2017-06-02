@@ -10,14 +10,14 @@
         <h4 class="section__title">申请人信息</h4>
         <ul class="information clearfix">
           <li class="information__item"><span class="information__label">申请时间：</span><strong class="information__value">{{ applicantInfo.cdate }}</strong></li>
-          <li class="information__item"><span class="information__label">擅长的领域：</span><strong class="information__value">{{ applicantInfo.major }}</strong></li>
-          <li class="information__item"><span class="information__label">翻译经验：</span><strong class="information__value">{{ applicantInfo.ability }}</strong></li>
+          <li class="information__item"><span class="information__label">擅长的领域：</span><strong class="information__value">{{ applicantInfo.category }}</strong></li>
+          <li class="information__item"><span class="information__label">翻译经验：</span><strong class="information__value">{{ applicantInfo.description }}</strong></li>
         </ul>
       </section>
       <hr>
       <section class="section">
         <h4 class="section__title">试译文本</h4>
-        <p class="text">{{ applications.texts.data[applicantInfo.text] ? applications.texts.data[applicantInfo.text].text : '' }}</p>
+        <p class="text">{{ applications.texts.data[applicantInfo.content] ? applications.texts.data[applicantInfo.content].text : '' }}</p>
       </section>
       <section class="section">
         <h4>译文</h4>

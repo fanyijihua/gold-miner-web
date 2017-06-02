@@ -62,9 +62,9 @@ router
     const data = mock({
       'articles|10': [{
         id: 1,
-        type: 'frontend',
+        category: 'frontend',
         title: '@title',
-        text: '@paragraph',
+        content: '@paragraph',
         creatorId: 1,
         cdate: 1494422649139,
         udate: 1494422649139,
@@ -102,9 +102,9 @@ router
     const data = mock({
       'applicants|10': [{
         'id|+1': 1,
-        major: 'frontend',
-        ability: '过了 4 级',
-        text: 1,
+        category: 'frontend',
+        description: '过了 4 级',
+        content: 1,
         translation: '@cparagraph',
         "opinions|2-5": [
           {

@@ -15,7 +15,7 @@
     <div class="texts__list">
       <el-table :data="texts" border>
         <el-table-column prop="title" label="标题"></el-table-column>
-        <el-table-column prop="type" label="分类"></el-table-column>
+        <el-table-column prop="category" label="分类"></el-table-column>
         <el-table-column prop="cdate" label="创建日期"></el-table-column>
         <el-table-column label="操作">
           <template scope="scope">
@@ -31,13 +31,13 @@
           <el-input v-model="form.title" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="分类">
-          <el-select v-model="form.type" placeholder="请选择分类">
+          <el-select v-model="form.category" placeholder="请选择分类">
             <el-option label="前端" value="frontend"></el-option>
             <el-option label="后端" value="backend"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="英文文本">
-          <el-input type="textarea" v-model="form.text" auto-complete="off" :rows="6"></el-input>
+          <el-input type="textarea" v-model="form.content" auto-complete="off" :rows="6"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -62,8 +62,8 @@ export default {
       form: {
         id: '',
         title: '',
-        type: '',
-        text: '',
+        category: '',
+        content: '',
       },
       loading: false,
     }
@@ -82,8 +82,8 @@ export default {
       this.form = {
         id: text.id,
         title: text.title,
-        type: text.type,
-        text: text.text,
+        category: text.category,
+        content: text.content,
       }
     },
     closeDialog() {
@@ -91,8 +91,8 @@ export default {
       this.form = {
         id: '',
         title: '',
-        type: '',
-        text: '',
+        category: '',
+        content: '',
       }
     },
     saveChange() {
