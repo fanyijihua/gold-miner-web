@@ -12,18 +12,18 @@
             <el-input v-model="userInfo.email" placeholder="用于接收试译结果"></el-input>
           </el-form-item>
           <el-form-item label="擅长领域" required>
-            <el-checkbox-group v-model="userInfo.skills">
-              <el-checkbox label="前端" name="skills"></el-checkbox>
-              <el-checkbox label="后端" name="skills"></el-checkbox>
-              <el-checkbox label="Android" name="skills"></el-checkbox>
-              <el-checkbox label="iOS" name="skills"></el-checkbox>
-              <el-checkbox label="设计" name="skills"></el-checkbox>
-              <el-checkbox label="产品" name="skills"></el-checkbox>
-              <el-checkbox label="其他" name="skills"></el-checkbox>
+            <el-checkbox-group v-model="userInfo.majors">
+              <el-checkbox label="前端" name="majors"></el-checkbox>
+              <el-checkbox label="后端" name="majors"></el-checkbox>
+              <el-checkbox label="Android" name="majors"></el-checkbox>
+              <el-checkbox label="iOS" name="majors"></el-checkbox>
+              <el-checkbox label="设计" name="majors"></el-checkbox>
+              <el-checkbox label="产品" name="majors"></el-checkbox>
+              <el-checkbox label="其他" name="majors"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="英语能力简述">
-            <el-input type="textarea" v-model="userInfo.ability"></el-input>
+            <el-input type="textarea" v-model="userInfo.decription"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitInfo">下一步</el-button>
@@ -34,7 +34,7 @@
     <el-row class="translation" v-if="active === 1">
       <el-col :span="18" :offset="3">
         <h4 class="translation__title">请对下列一段英文进行翻译：</h4>
-        <p class="translation__text">{{ text.text }}</p>
+        <p class="translation__text">{{ article.content }}</p>
         <h4>译文</h4>
         <el-form>
           <el-form-item>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 /* eslint-disable */
 const dictionary = {
@@ -77,11 +77,11 @@ export default {
     return {
       active: 0,
       status: 'finish',
-      text: {},
+      article: {},
       userInfo: {
         email: '',
-        skills: [],
-        ability: '',
+        majors: [],
+        decription: '',
       },
       translation: '',
       result: {
@@ -91,44 +91,47 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user', 'loading']),
+    ...mapState(['users', 'loading']),
+    ...mapGetters(['currentUser']),
   },
   methods: {
     // 提交第一步中的基本信息
     submitInfo() {
-      const { email, skills } = this.userInfo
+      const { email, majors } = this.userInfo
 
-      if (!email || !skills.length) return
+      if (!email || !majors.length) return
 
-      const skillsFields = skills.map(item => dictionary[item])
+      const majorsFields = majors.map(item => dictionary[item])
 
       // 下一步
       this.active = 1
 
       // 获取试译的英文稿
-      this.$store.dispatch('fetchRandomText', skills[0]).then((data) => {
-        this.text = data
+      this.$store.dispatch('fetchRandomText', majors[0]).then((data) => {
+        this.article = data
       })
     },
     // 提交翻译的译文和最终数据
     submitRequest() {
       if (!this.translation) return
 
-      const { email, skills, ability } = this.userInfo
+      const { email, majors, decription } = this.userInfo
+      const { name } = this.currentUser
 
       // 提交申请信息和翻译数据
       this.$store.dispatch('submitApplication', {
+        name,
         email,
-        skills,
-        ability,
-        text: this.text,
+        majors,
+        decription,
+        articleid: this.article.id,
         translation: this.translation
       }).then((data) => {
         this.active = 2
         this.status = 'success'
         this.result = {
           type: 'success',
-          message: `你的请求已成功提交，我们稍后会将结果发送至您的邮箱 ${data.email}，请注意查收。`
+          message: `你的请求已成功提交，我们稍后会将结果发送至您的邮箱 ${email}，请注意查收。`
         }
       }).catch(err => {
         this.active = 2
@@ -168,6 +171,14 @@ export default {
       }).catch((err) => {
         this.$message.error(err.message)
       })
+
+      return
+    }
+
+    const { email } = this.currentUser
+
+    if (email) {
+      this.userInfo.email = email
     }
   },
 }

@@ -52,7 +52,7 @@ router
       id: 1,
       type: 'frontend',
       title: '@title',
-      text: '@paragraph',
+      content: '@paragraph',
       creatorId: 1,
       cdate: 1494422649139,
       udate: 1494422649139,
