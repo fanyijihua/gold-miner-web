@@ -46,6 +46,28 @@ router.get('/auth/logout', (req, res) => {
   res.end()
 })
 
+router.get('/notifications', (req, res) => {
+  return res.json(mock({
+    "applicants|1-3": [
+      {
+        "id|+1": 1,
+        "name": "@cname",
+        "avatar": "",
+        "cdate": "2017-06-03"
+      }
+    ],
+    "articles|1-3": [
+      {
+        "id|+1": 1,
+        "name": "@cname",
+        "avatar": "avatar url",
+        "title": "@ctitle",
+        "cdate": "2017-06-03"
+      }
+    ]
+  }))
+})
+
 router
   .get('/articles/random/:category', (req, res) => {
     res.json(mock({

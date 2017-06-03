@@ -38,6 +38,11 @@ const mutations = {
 }
 
 const actions = {
+  /**
+   * 验证邀请码是否有效
+   * @param  {String} invitationCode 邀请码
+   * @return {Promise}
+   */
   validateInvitationCode(context, invitationCode) {
     context.commit('showLoading')
     context.commit('setLoadingText', '我们正在为您开辟专享通道，请稍后。')
@@ -50,6 +55,11 @@ const actions = {
       return Promise.reject(err.response.data)
     })
   },
+
+  /**
+   * 退出
+   * @return {Promise}
+   */
   logout(context) {
     context.commit('showLoading')
 

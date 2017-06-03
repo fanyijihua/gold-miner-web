@@ -9,3 +9,7 @@ export const validateInvitationCode = function validateInvitationCode(invitation
     invitationCode,
   })
 }
+
+export const fetchNotifications = function fetchNotifications() {
+  return axios.get('/api/notifications')
+}

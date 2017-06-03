@@ -15,10 +15,10 @@
               <el-menu-item v-if="user.istranslator" index="recomment" :route="{ path: '/recommend' }">推荐文章</el-menu-item>
               <el-menu-item v-else index="Apply" :route="{ path: '/applications/apply' }">加入我们</el-menu-item>
               <el-menu-item class="navbar__messages" index="">
-                <el-badge class="item" :value="12" v-popover:popover>
+                <el-badge class="item" :value="totalNumberOfNotifications" v-popover:popover>
                   <i class="el-icon-message"></i>
                   <el-popover ref="popover" placement="top">
-                    <popover></popover>
+                    <popover :notifications="notifications"></popover>
                   </el-popover>
                 </el-badge>
               </el-menu-item>
@@ -31,7 +31,7 @@
             </template>
             <template v-else>
               <el-menu-item index="Apply" :route="{ path: '/applications/apply' }">加入我们</el-menu-item>
-              <el-menu-item index=""><a href="/auth/login">使用 GitHub 登录</a></el-menu-item>
+              <el-menu-item><a href="/auth/login">使用 GitHub 登录</a></el-menu-item>
             </template>
           </li>
         </el-menu>
@@ -41,18 +41,28 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from 'vuex'
+
 export default {
   name: 'Navbar',
   props: ['user'],
-  computed: {
-    logIn() {
-      return this.$store.getters.logIn
-    },
-  },
   data() {
     return {
       activeIndex: 'index',
     }
+  },
+  computed: {
+    ...mapState(['notifications']),
+    ...mapGetters(['totalNumberOfNotifications']),
+    logIn() {
+      return this.$store.getters.logIn
+    },
+  },
+  methods: {
+    ...mapActions(['fetchNotifications']),
+  },
+  created() {
+    this.fetchNotifications()
   },
 }
 </script>
