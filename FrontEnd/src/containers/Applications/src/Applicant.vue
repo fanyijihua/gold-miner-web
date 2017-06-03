@@ -17,7 +17,7 @@
       <hr>
       <section class="section">
         <h4 class="section__title">试译文本</h4>
-        <p class="text">{{ applications.texts.data[applicantInfo.content] ? applications.texts.data[applicantInfo.content].text : '' }}</p>
+        <p class="text">{{ applications.texts.data[applicantInfo.content] ? applications.texts.data[applicantInfo.content].content : '' }}</p>
       </section>
       <section class="section">
         <h4>译文</h4>
