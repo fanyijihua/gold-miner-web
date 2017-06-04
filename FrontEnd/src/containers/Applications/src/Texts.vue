@@ -69,7 +69,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['texts']),
+    ...mapGetters(['currentUser', 'texts']),
   },
   methods: {
     addText() {
@@ -104,14 +104,15 @@ export default {
         action = 'addText'
       }
 
+      const data = Object.assign(this.form, { operator: this.currentUser.id })
       this.loading = true
 
-      this.$store.dispatch(action, this.form).then(() => {
+      this.$store.dispatch(action, data).then(() => {
+        this.loading = false
         this.closeDialog()
-        this.loading = false
       }).catch((err) => {
-        this.$message.error(err.message)
         this.loading = false
+        this.$message.error(err.message)
       })
     },
     deleteText(id) {
