@@ -8,11 +8,10 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
-	Route::get('applicant/getUndoNum', 'ApplicantController@getUndoNum');
-	Route::get('applicant/checkEmail/{email}', 'ApplicantController@checkEmail');
-	Route::get('article/updateStatus/{id}', 'ArticleController@updateStatus');
-	Route::get('article/random/{category}', 'ArticleController@getRandomArticle');
-	Route::resource('user', 'UserController');	
-	Route::resource('article', 'ArticleController');
-	Route::resource('applicant', 'ApplicantController');
+	Route::get('applicants/checkEmail/{email}', 'ApplicantController@checkEmail');
+	Route::get('articles/random/{category}', 'ArticleController@getRandomArticle');
+	Route::resource('users', 'UserController');	
+	Route::resource('articles', 'ArticleController');
+	Route::resource('applicants', 'ApplicantController');
+	Route::resource('notifications', 'NotificationController');
 });

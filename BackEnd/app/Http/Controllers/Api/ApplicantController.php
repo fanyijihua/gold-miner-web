@@ -182,17 +182,4 @@ class ApplicantController extends Controller
         $this->ret['message'] = '邮箱已被占用！';
         echo json_encode($this->ret);
     }
-
-    /**
-     * 获取未处理申请数量
-     * @return  Int     未处理申请数量
-     */
-    public function getUndoNum()
-    {
-        $number = DB::table('applicant')
-                    ->where('status', 0)
-                    ->count();
-
-        echo $number;
-    }
 }
