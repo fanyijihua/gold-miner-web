@@ -107,7 +107,7 @@ export default {
       this.active = 1
 
       // 获取试译的英文稿
-      this.$store.dispatch('fetchRandomText', majors[0]).then((data) => {
+      this.$store.dispatch('fetchRandomText', dictionary[majors[0]]).then((data) => {
         this.article = data
       })
     },
