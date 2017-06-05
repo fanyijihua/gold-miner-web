@@ -2,11 +2,12 @@ import * as user from '@/services/users'
 
 const state = {
   applicants: [],
-  articles: [],
+  recommends: [],
+  total: 0,
 }
 
 const getters = {
-  totalNumberOfNotifications: state => state.applicants.length + state.articles.length,
+
 }
 
 const mutations = {
@@ -30,7 +31,7 @@ const actions = {
         link: `/applications/applicants/${item.id}`,
       }))
 
-      response.data.articles.map((item) => {
+      response.data.recommends.map((item) => {
         item.link = `/articles/${item.id}`
 
         return item

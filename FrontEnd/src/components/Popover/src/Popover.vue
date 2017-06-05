@@ -4,8 +4,8 @@
       <el-tab-pane v-if="notifications.applicants" label="译者申请" name="applicants">
         <message :messages="notifications.applicants"></message>
       </el-tab-pane>
-      <el-tab-pane v-if="notifications.articles" label="推荐的文章" name="articles">
-        <message :messages="notifications.articles"></message>
+      <el-tab-pane v-if="notifications.recommends" label="推荐的文章" name="articles">
+        <message :messages="notifications.recommends"></message>
       </el-tab-pane>
     </el-tabs>
   </div>
