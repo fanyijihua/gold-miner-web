@@ -15,7 +15,7 @@
               <el-menu-item v-if="user.istranslator" index="recomment" :route="{ path: '/recommend' }">推荐文章</el-menu-item>
               <el-menu-item v-else index="Apply" :route="{ path: '/applications/apply' }">加入我们</el-menu-item>
               <el-menu-item class="navbar__messages" index="">
-                <el-badge class="item" :value="totalNumberOfNotifications" v-popover:popover>
+                <el-badge class="item" :value="notifications.total" v-popover:popover>
                   <i class="el-icon-message"></i>
                   <el-popover ref="popover" placement="top">
                     <popover :notifications="notifications"></popover>
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'Navbar',
@@ -53,7 +53,6 @@ export default {
   },
   computed: {
     ...mapState(['notifications']),
-    ...mapGetters(['totalNumberOfNotifications']),
     logIn() {
       return this.$store.getters.logIn
     },
