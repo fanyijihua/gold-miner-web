@@ -56,7 +56,7 @@ router.get('/notifications', (req, res) => {
         "cdate": "2017-06-03"
       }
     ],
-    "articles|1-3": [
+    "recommends|1-3": [
       {
         "id|+1": 1,
         "name": "@cname",
@@ -64,7 +64,8 @@ router.get('/notifications', (req, res) => {
         "title": "@ctitle",
         "cdate": "2017-06-03"
       }
-    ]
+    ],
+    total: 10,
   }))
 })
 
