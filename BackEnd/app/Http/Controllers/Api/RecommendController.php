@@ -162,14 +162,14 @@ class RecommendController extends Controller
     public function result($id, $result = true)
     {
         $data = array(
-                'status' = 1
+                'status' => 1
             );
 
         if ($result == false) {
             $data['status'] = 2;
         }
 
-        $result = DB::table('article')
+        $result = DB::table('recommend')
                     ->where('id', $id)
                     ->update($data);
 

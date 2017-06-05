@@ -8,6 +8,7 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
+	Route::put('recommends/result/{id}/{result}', 'RecommendController@result');
 	Route::get('applicants/checkEmail/{email}', 'ApplicantController@checkEmail');
 	Route::get('articles/random/{category}', 'ArticleController@getRandomArticle');
 	Route::resource('users', 'UserController');	
