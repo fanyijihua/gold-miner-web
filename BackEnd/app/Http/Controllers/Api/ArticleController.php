@@ -40,9 +40,11 @@ class ArticleController extends Controller
 
     /**
      * 添加试译文章
-     * @param  int      $request    文章分类（对应 category 表）
-     * @param  int      $request    操作者（对应 user 表）
-     * @param  string   $request    文章内容
+     * @param  string   $title      文章标题
+     * @param  int      $category   文章分类（对应 category 表）
+     * @param  string   $url        文章来源地址
+     * @param  int      $operator   操作者（对应 user 表）
+     * @param  string   $content    文章内容
      * @return json_encode(Array)
      */
     public function store(Request $request)
@@ -51,6 +53,7 @@ class ArticleController extends Controller
         $data = array(
                 'title'     => $request->input('title'),
                 'category'  => $request->input('category'),
+                'url'       => $request->input('url'),
                 'status'    => 0,
                 'isdel'     => 0,
                 'passed'    => 0,
@@ -124,6 +127,7 @@ class ArticleController extends Controller
         $data = array(
                 'category'  => $request->input('category'),
                 'title'     => $request->input('title'),
+                'url'       => $request->input('url'),
                 'operator'  => $request->input('operator'),
                 'content'   => $request->input('content'),
                 'udate'     => date('Y-m-d H:i:s')
@@ -240,7 +244,7 @@ class ArticleController extends Controller
 
         $article = DB::table('article')
                         ->where($rules)
-                        ->select('id', 'title', 'content')
+                        ->select('id', 'title', 'url', 'content')
                         ->inRandomOrder()
                         ->first();
 
