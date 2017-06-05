@@ -13,9 +13,9 @@
       </div>
     </div>
     <div class="texts__list">
-      <el-table :data="texts" border>
+      <el-table :data="textTable" border>
         <el-table-column prop="title" label="标题"></el-table-column>
-        <el-table-column prop="category" label="分类"></el-table-column>
+        <el-table-column prop="categoryName" label="分类"></el-table-column>
         <el-table-column prop="cdate" label="创建日期"></el-table-column>
         <el-table-column label="操作">
           <template scope="scope">
@@ -32,8 +32,7 @@
         </el-form-item>
         <el-form-item label="分类">
           <el-select v-model="form.category" placeholder="请选择分类">
-            <el-option label="前端" value="frontend"></el-option>
-            <el-option label="后端" value="backend"></el-option>
+            <el-option v-for="item in categories.id"  :key="item" :label="categories.data[item].category" :value="item"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="英文文本">
@@ -49,7 +48,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'ApplicationTexts',
@@ -69,7 +68,16 @@ export default {
     }
   },
   computed: {
+    ...mapState(['categories']),
     ...mapGetters(['currentUser', 'texts']),
+    textTable() {
+      return this.texts.map((item) => {
+        const category = this.categories.data[item.category]
+        item.categoryName = category ? category.category : ''
+
+        return item
+      })
+    },
   },
   methods: {
     addText() {
@@ -123,6 +131,7 @@ export default {
   },
   created() {
     this.$store.dispatch('fetchTexts')
+    this.$store.dispatch('fetchCategories')
   },
 }
 </script>

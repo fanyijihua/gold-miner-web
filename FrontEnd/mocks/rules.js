@@ -84,7 +84,7 @@ router
     const data = mock({
       'articles|10': [{
         id: 1,
-        category: 'frontend',
+        'category|1': [1, 2, 3],
         title: '@title',
         content: '@paragraph',
         creatorId: 1,
@@ -117,6 +117,21 @@ router
   })
   .delete('/articles/:id', (req, res) => {
     res.json({ message: '删除成功' })
+  })
+
+router
+  .get('/categories', (req, res) => {
+    const json = mock({
+      "data|3-7": [
+        {
+          "id|+1":1,
+          "category":"@word",
+          "description":"@cparagraph"
+        }
+      ]
+    })
+
+    return res.json(json.data)
   })
 
 router

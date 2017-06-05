@@ -13,13 +13,7 @@
           </el-form-item>
           <el-form-item label="擅长领域" required>
             <el-checkbox-group v-model="userInfo.majors">
-              <el-checkbox label="前端" name="majors"></el-checkbox>
-              <el-checkbox label="后端" name="majors"></el-checkbox>
-              <el-checkbox label="Android" name="majors"></el-checkbox>
-              <el-checkbox label="iOS" name="majors"></el-checkbox>
-              <el-checkbox label="设计" name="majors"></el-checkbox>
-              <el-checkbox label="产品" name="majors"></el-checkbox>
-              <el-checkbox label="其他" name="majors"></el-checkbox>
+              <el-checkbox v-for="item in categories.id" :key="item" :label="item" name="majors">{{ categories.data[item].category }}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="英语能力简述">
@@ -58,17 +52,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 
-/* eslint-disable */
-const dictionary = {
-  "前端": "frontend",
-  "后端": "backend",
-  "Android": "android",
-  "产品": "product",
-  "iOS": "ios",
-  "设计": "design",
-  "其他": "others",
-}
-
 const store = require('store')
 
 export default {
@@ -91,7 +74,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['users', 'loading']),
+    ...mapState(['users', 'loading', 'categories']),
     ...mapGetters(['currentUser']),
   },
   methods: {
@@ -101,13 +84,11 @@ export default {
 
       if (!email || !majors.length) return
 
-      const majorsFields = majors.map(item => dictionary[item])
-
       // 下一步
       this.active = 1
 
       // 获取试译的英文稿
-      this.$store.dispatch('fetchRandomText', dictionary[majors[0]]).then((data) => {
+      this.$store.dispatch('fetchRandomText', majors[0]).then((data) => {
         this.article = data
       })
     },
@@ -125,20 +106,20 @@ export default {
         majors,
         decription,
         articleid: this.article.id,
-        translation: this.translation
-      }).then((data) => {
+        translation: this.translation,
+      }).then(() => {
         this.active = 2
         this.status = 'success'
         this.result = {
           type: 'success',
-          message: `你的请求已成功提交，我们稍后会将结果发送至您的邮箱 ${email}，请注意查收。`
+          message: `你的请求已成功提交，我们稍后会将结果发送至您的邮箱 ${email}，请注意查收。`,
         }
-      }).catch(err => {
+      }).catch((err) => {
         this.active = 2
         this.status = 'error'
         this.result = {
           type: 'failure',
-          message: err.message
+          message: err.message,
         }
       })
     },
@@ -180,6 +161,8 @@ export default {
     if (email) {
       this.userInfo.email = email
     }
+
+    this.$store.dispatch('fetchCategories')
   },
 }
 </script>
