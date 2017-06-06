@@ -12,9 +12,9 @@
             <el-input v-model="userInfo.email" placeholder="用于接收试译结果"></el-input>
           </el-form-item>
           <el-form-item label="擅长领域" required>
-            <el-checkbox-group v-model="userInfo.majors">
-              <el-checkbox v-for="item in categories.id" :key="item" :label="item" name="majors">{{ categories.data[item].category }}</el-checkbox>
-            </el-checkbox-group>
+            <el-select v-model="userInfo.major" placeholder="擅长领域" required>
+              <el-option v-for="item in categories.id" :key="item" :label="categories.data[item].category" :value="item"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="英语能力简述">
             <el-input type="textarea" v-model="userInfo.decription"></el-input>
@@ -63,7 +63,7 @@ export default {
       article: {},
       userInfo: {
         email: '',
-        majors: [],
+        major: '',
         decription: '',
       },
       translation: '',
@@ -80,15 +80,15 @@ export default {
   methods: {
     // 提交第一步中的基本信息
     submitInfo() {
-      const { email, majors } = this.userInfo
+      const { email, major } = this.userInfo
 
-      if (!email || !majors.length) return
+      if (!email || !major) return
 
       // 下一步
       this.active = 1
 
       // 获取试译的英文稿
-      this.$store.dispatch('fetchRandomText', majors[0]).then((data) => {
+      this.$store.dispatch('fetchRandomText', major).then((data) => {
         this.article = data
       })
     },
@@ -96,16 +96,16 @@ export default {
     submitRequest() {
       if (!this.translation) return
 
-      const { email, majors, decription } = this.userInfo
+      const { email, major, decription } = this.userInfo
       const { name } = this.currentUser
 
       // 提交申请信息和翻译数据
       this.$store.dispatch('submitApplication', {
         name,
         email,
-        majors,
+        major,
         decription,
-        articleid: this.article.id,
+        articleId: this.article.id,
         translation: this.translation,
       }).then(() => {
         this.active = 2
