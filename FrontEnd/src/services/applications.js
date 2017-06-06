@@ -29,5 +29,5 @@ export const submitApplication = function submitRequest(options) {
 }
 
 export const submitOpinion = function submitOpinion(options) {
-  return axios.post(`/api/applications/applicants/${options.id}/opinions`, options)
+  return axios.patch(`/api/applicants/${options.id}`, options)
 }

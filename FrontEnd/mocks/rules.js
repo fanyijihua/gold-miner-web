@@ -163,13 +163,13 @@ router
       email: req.body.email,
     })
   })
-  .post('/applications/applicants/:id/opinions', (req, res) => {
+  .post('/applicants/:id', (req, res) => {
     return res.json({
       id: 1,
       username: '@cname',
       opinion: '瞎胡点的',
+      cdate: '@date',
       result: true,
-      date: '@date',
     })
   })
 
