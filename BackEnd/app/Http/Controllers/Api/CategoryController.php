@@ -41,6 +41,12 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         //
+        $this->isNotNull(array(
+                $request->input('category')
+            ));
+        $this->isUnique('category', array(
+                'category' => $request->input('category')
+            ));
         $data = array(
                 'category'      => $request->input('category'),
                 'description'   => $request->input('description'),
@@ -48,17 +54,15 @@ class CategoryController extends Controller
                 'cdate'         => date('Y-m-d H:i:s')
             );
 
-        $result = DB::table('category')
-                    ->insert($data);
+        $lastId = DB::table('category')
+                    ->insertGetId($data);
 
-        if ( $result == false ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '添加类别失败！';
-            echo json_encode($this->ret);
+        if ( $lastId == false ) {
+            header("HTTP/1.1 503 Service Unavailable");
             return;
         }
 
-        echo json_encode($this->ret);
+        $this->show($lastId);
     }
 
     /**
@@ -70,6 +74,18 @@ class CategoryController extends Controller
     public function show($id)
     {
         //
+        $category = DB::table('category')
+                    ->where('id', $id)
+                    ->select('id', 'category', 'description')
+                    ->first();
+
+        if ( $category == false ) {
+            header("HTTP/1.1 400 Bad Request");
+            echo '参数错误！';
+            return;
+        }
+
+        echo json_encode($category);
     }
 
     /**
@@ -93,6 +109,14 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $this->isNotNull(array(
+                $request->input('category'),
+                $request->input('description')
+            ));
+        $this->isUnique('category', array(
+                'category'      => $request->input('category'),
+                'description'   => $request->input('description')
+            ));
         $data = array(
                 'category'      => $request->input('category'),
                 'description'   => $request->input('description'),
@@ -104,13 +128,9 @@ class CategoryController extends Controller
                     ->update($data);
 
         if ( $result == false ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '更新类别失败！';
-            echo json_encode($this->ret);
+            header("HTTP/1.1 503 Service Unavailable");
             return;
         }
-
-        echo json_encode($this->ret);
     }
 
     /**
@@ -126,12 +146,8 @@ class CategoryController extends Controller
                     ->delete();
 
         if ( $result == false ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '删除类别失败！';
-            echo json_encode($this->ret);
+            header("HTTP/1.1 503 Service Unavailable");
             return;
         }
-
-        echo json_encode($this->ret);
     }
 }

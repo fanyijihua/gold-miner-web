@@ -16,10 +16,9 @@ class ArticleController extends Controller
     {
         //
         $articles = DB::table('article')
-                        ->join('category', 'article.category', '=', 'category.id')
                         ->join('user', 'article.operator', '=', 'user.id')
                         ->where('article.isdel', 0)
-                        ->select('article.*', 'category.category', 'user.name as operator')
+                        ->select('article.*', 'user.name as operator')
                         ->orderBy('article.id', 'desc')
                         ->skip($this->start)
                         ->take($this->offset)
@@ -50,11 +49,20 @@ class ArticleController extends Controller
     public function store(Request $request)
     {
         //
+        $this->isNotNull(array(
+                $request->input('title'),
+                $request->input('category'),
+                $request->input('operator'),
+                $request->input('content')
+            ));
+        $this->isUnique('article', array(
+                'title' => $request->input('title')
+            ));
         $data = array(
                 'title'     => $request->input('title'),
                 'category'  => $request->input('category'),
                 'url'       => $request->input('url'),
-                'status'    => 0,
+                'status'    => 1,
                 'isdel'     => 0,
                 'passed'    => 0,
                 'failed'    => 0,
@@ -64,17 +72,15 @@ class ArticleController extends Controller
                 'cdate'     => date('Y-m-d H:i:s')
             );
 
-        $result = DB::table('article')
-                    ->insert($data);
+        $lastId = DB::table('article')
+                    ->insertGetId($data);
 
-        if ( $result == false ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '添加试译文章失败！';
-            echo json_encode($this->ret);
+        if ( $lastId == false ) {
+            header("HTTP/1.1 503 Service Unavailable");
             return;
         }
 
-        echo json_encode($this->ret);
+        $this->show($lastId);
     }
 
     /**
@@ -86,16 +92,14 @@ class ArticleController extends Controller
     {
         //
         $article = DB::table('article')
-                        ->join('category', 'article.category', '=', 'category.id')
                         ->join('user', 'article.operator', '=', 'user.id')
-                        ->select('article.*', 'category.category as category', 'user.name as operator')
+                        ->select('article.*', 'user.name as operator')
                         ->where('article.id', $id)
                         ->first();
 
-        if ( $article === null ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '非法参数！';
-            echo json_encode($this->ret);
+        if ( $article == false ) {
+            header("HTTP/1.1 400 Bad Request");
+            echo '参数错误！';
             return;
         }
                         
@@ -124,6 +128,15 @@ class ArticleController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $this->isNotNull(array(
+                $request->input('category'),
+                $request->input('title'),
+                $request->input('operator'),
+                $request->input('content')
+            ));
+        $this->isUnique('article', array(
+                'title' => $request->input('title')
+            ));
         $data = array(
                 'category'  => $request->input('category'),
                 'title'     => $request->input('title'),
@@ -138,13 +151,9 @@ class ArticleController extends Controller
                     ->update($data);
 
         if ( $result == false ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '修改失败！';
-            echo json_encode($this->ret);
+            header("HTTP/1.1 503 Service Unavailable");
             return;
         }
-
-        echo json_encode($this->ret);
     }
 
     /**
@@ -160,13 +169,9 @@ class ArticleController extends Controller
                     ->update(['isdel' => 1]);
 
         if ( $result == false ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '删除失败！';
-            echo json_encode($this->ret);
+            header("HTTP/1.1 503 Service Unavailable");
             return;
         }
-
-        echo json_encode($this->ret);
     }
 
     /**
@@ -181,9 +186,8 @@ class ArticleController extends Controller
                     ->value('status');
 
         if ( $currentStatus === null ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '非法参数！';
-            echo json_encode($this->ret);
+            header("HTTP/1.1 400 Bad Request");
+            echo "参数错误！";
             return;
         }
 
@@ -192,13 +196,9 @@ class ArticleController extends Controller
                     ->update(['status' => !$currentStatus]);
 
         if ( $result == false ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '更新文章状态失败！';
-            echo json_encode($this->ret);
+            header("HTTP/1.1 503 Service Unavailable");
             return;
         }
-
-        echo json_encode($this->ret);
     }
 
     /**
@@ -220,13 +220,9 @@ class ArticleController extends Controller
                     ->increment($category);
 
         if ( $result == false ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '更新文章结果失败！';
-            echo json_encode($this->ret);
+            header("HTTP/1.1 503 Service Unavailable");
             return;
         }
-
-        echo json_encode($this->ret);
     }
 
     /**
@@ -249,13 +245,11 @@ class ArticleController extends Controller
                         ->first();
 
         if ( $article == false ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '本分类下暂无试译文章！';
-            echo json_encode($this->ret);
+            header("HTTP/1.1 400 Bad Request");
+            echo "本分类下暂无试译文章！";
             return;
         }
                         
         echo json_encode($article);
     }
-
 }

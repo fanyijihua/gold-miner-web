@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -117,5 +118,58 @@ class Controller extends BaseController
     public function generateToken($flag)
     {
         return md5($this->randomString(32).time().$flag);
+    }
+
+    /**
+     * 检查参数是否为空
+     * @param  array  $params 被检查参数列表
+     * @return void 
+     */
+    public function isNotNull($params = array())
+    {
+        foreach ($params as $v) {
+            if (empty($v)) {
+                header("HTTP/1.1 400 Bad Request");
+                die("参数不能为空！");
+            }
+        }
+    }
+
+    /**
+     * 检查参数是否唯一
+     * @param  string  $table  目标数据表
+     * @param  array   $fields 目标参数
+     * @return viod 
+     */
+    public function isUnique($table, $fields = array())
+    {
+        $where = '';
+        foreach ($fields as $k => $v) {
+            $where .= $k."='".$v."' OR ";
+        }
+
+        $record = DB::select("SELECT * FROM ".$table." WHERE ".rtrim($where, 'OR '));
+
+        if ($record) {
+            foreach ($fields as $k => $v) {
+                if ($v == $record[0]->$k) {
+                    header("HTTP/1.1 409 Conflict");
+                    die($k.' 参数重复！');
+                }
+            }
+        }
+    }
+
+    /**
+     * 检查邮箱格式
+     * @param  string   $email  邮箱
+     * @return json_encode(Array)
+     */
+    protected function checkEmail( $email )
+    {
+        if ( false == preg_match('/(.*?)@(.*?)\.(.*?)/', $email) ) {
+            header("HTTP/1.1 400 Bad Request");
+            die('邮箱格式错误！');
+        }
     }
 }

@@ -63,9 +63,7 @@ class UserController extends Controller
 
         $this->updateToken($userId);
 
-        session(['user' => $this->loadUserById($userId)]);
-
-        return redirect('/');
+        return view('index', ['user' => urlencode(json_encode($this->loadUserById($userId)))]);
     }
 
     /**

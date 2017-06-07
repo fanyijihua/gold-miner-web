@@ -16,9 +16,9 @@ class ApplicantController extends Controller
     {
         //
         $applicants = DB::table('applicant')
-                        ->join('category', 'applicant.major', '=', 'category.id')
-                        ->join('article', 'applicant.articleid', '=', 'article.id')
-                        ->select('applicant.id', 'applicant.name', 'applicant.email', 'applicant.status', 'applicant.description', 'applicant.translation', 'applicant.udate', 'applicant.cdate', 'category.category', 'article.content')
+                        ->leftjoin('category', 'applicant.major', '=', 'category.id')
+                        ->leftjoin('article', 'applicant.articleid', '=', 'article.id')
+                        ->select('applicant.id', 'applicant.name', 'applicant.email', 'applicant.status', 'applicant.description', 'applicant.translation', 'applicant.udate', 'applicant.cdate', 'category.category as major', 'article.content')
                         ->orderBy('status', 'asc')
                         ->skip($this->start)
                         ->take($this->offset)
@@ -51,6 +51,18 @@ class ApplicantController extends Controller
     public function store(Request $request)
     {
         //
+        $this->isNotNull(array(
+                $request->input("email"),
+                $request->input("major"),
+                $request->input("translation"),
+                $request->input("articleId"),
+            ));
+
+        $this->checkEmail($request->input('email'));
+        $this->isUnique('applicant', array(
+                'email' => $request->input("email")
+            ));
+
         $data = array(
                 'uid'           => $request->input('uid'),
                 'name'          => $request->input('name'),
@@ -64,17 +76,15 @@ class ApplicantController extends Controller
                 'cdate'         => date('Y-m-d H:i:s')
             );
 
-        $result = DB::table('applicant')
-                        ->insert($data);
+        $lastId = DB::table('applicant')
+                        ->insertGetId($data);
 
-        if($result === false){
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '申请失败！';
-            echo json_encode($this->ret);
+        if($lastId === false){
+            header("HTTP/1.1 503 Service Unavailable");
             return;
         }
 
-        echo json_encode($this->ret);
+        $this->show($lastId);
     }
 
     /**
@@ -86,16 +96,15 @@ class ApplicantController extends Controller
     {
         //
         $applicant = DB::table('applicant')
-                        ->join('category', 'applicant.major', '=', 'category.id')
-                        ->join('article', 'applicant.articleid', '=', 'article.id')
+                        ->leftjoin('category', 'applicant.major', '=', 'category.id')
+                        ->leftjoin('article', 'applicant.articleid', '=', 'article.id')
                         ->where('applicant.id', $id)
-                        ->select('applicant.id', 'applicant.name', 'applicant.email', 'applicant.status', 'applicant.description', 'applicant.translation', 'applicant.udate', 'applicant.cdate', 'category.category', 'article.content')
+                        ->select('applicant.id', 'applicant.name', 'applicant.email', 'applicant.status', 'applicant.description', 'applicant.translation', 'applicant.udate', 'applicant.cdate', 'category.category as major', 'article.content')
                         ->first();
 
         if ( $applicant === null ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '非法参数！';
-            echo json_encode($this->ret);
+            header("HTTP/1.1 400 Bad Request");
+            echo '参数错误！';
             return;
         }
 
@@ -124,7 +133,7 @@ class ApplicantController extends Controller
         //
         $data = array( 'udate' => date('Y-m-d H:i:s') );
         if ( $request->input('result') == true ) {
-            $data['invitation'] = $this->generationToken($id);
+            $data['invitation'] = $this->generateToken($id);
             $data['status'] = 1;
         } else {
             $data['status'] = 2;
@@ -132,16 +141,13 @@ class ApplicantController extends Controller
 
         $result = DB::table('applicant')
                     ->where('id', $id)
+                    ->select('id', '')
                     ->update($data);
 
         if($result === false){
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '更新信息失败！';
-            echo json_encode($this->ret);
+            header("HTTP/1.1 503 Service Unavailable");
             return;
         }
-
-        echo json_encode($this->ret);
     }
 
     /**
@@ -153,33 +159,5 @@ class ApplicantController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    /**
-     * 检查邮箱是否被占用
-     * @param  string   $email  邮箱
-     * @return json_encode(Array)
-     */
-    public function checkEmail( $email )
-    {
-        if ( false == preg_match('/(.*?)@(.*?)\.(.*?)/', $email) ) {
-            $this->ret['status'] = 500;
-            $this->ret['message'] = '邮箱格式错误！';
-            echo json_encode($this->ret);
-            return;
-        }
-
-        $result = DB::table('applicant')
-                    ->where('email', $email)
-                    ->first();
-
-        if ( $result == false ) {
-            echo json_encode($this->ret);
-            return;
-        }
-
-        $this->ret['status'] = 500;
-        $this->ret['message'] = '邮箱已被占用！';
-        echo json_encode($this->ret);
     }
 }
