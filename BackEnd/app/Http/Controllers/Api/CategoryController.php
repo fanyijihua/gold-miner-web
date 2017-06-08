@@ -131,6 +131,8 @@ class CategoryController extends Controller
             header("HTTP/1.1 503 Service Unavailable");
             return;
         }
+
+        $this->show($id);
     }
 
     /**

@@ -17,8 +17,7 @@ class ApplicantController extends Controller
         //
         $applicants = DB::table('applicant')
                         ->leftjoin('category', 'applicant.major', '=', 'category.id')
-                        ->leftjoin('article', 'applicant.articleid', '=', 'article.id')
-                        ->select('applicant.id', 'applicant.name', 'applicant.email', 'applicant.status', 'applicant.description', 'applicant.translation', 'applicant.udate', 'applicant.cdate', 'category.category as major', 'article.content')
+                        ->select('applicant.*', 'category.category as major')
                         ->orderBy('status', 'asc')
                         ->skip($this->start)
                         ->take($this->offset)
@@ -83,8 +82,6 @@ class ApplicantController extends Controller
             header("HTTP/1.1 503 Service Unavailable");
             return;
         }
-
-        $this->show($lastId);
     }
 
     /**
