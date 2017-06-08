@@ -112,6 +112,11 @@ const actions = {
       return Promise.resolve(response.data)
     }).catch((err) => {
       context.commit('hideLoading')
+
+      if (err.response.status === 409) {
+        err.response.data.message = '该邮箱已经申请过啦，请耐心等待结果就好啦。'
+      }
+
       return Promise.reject(err.response.data)
     })
   },

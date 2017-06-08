@@ -13,7 +13,7 @@
     </div>
     <el-table :data="applicants" border>
       <el-table-column prop="cdate" label="申请日期"></el-table-column>
-      <el-table-column prop="category" label="擅长领域"></el-table-column>
+      <el-table-column prop="major" label="擅长领域"></el-table-column>
       <el-table-column prop="description" label="英语能力"></el-table-column>
       <el-table-column label="详情">
         <template scope="scope">

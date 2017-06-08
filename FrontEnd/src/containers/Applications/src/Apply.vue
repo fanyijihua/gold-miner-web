@@ -17,7 +17,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="英语能力简述">
-            <el-input type="textarea" v-model="userInfo.decription"></el-input>
+            <el-input type="textarea" v-model="userInfo.description"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitInfo">下一步</el-button>
@@ -64,7 +64,7 @@ export default {
       userInfo: {
         email: '',
         major: '',
-        decription: '',
+        description: '',
       },
       translation: '',
       result: {
@@ -96,7 +96,7 @@ export default {
     submitRequest() {
       if (!this.translation) return
 
-      const { email, major, decription } = this.userInfo
+      const { email, major, description } = this.userInfo
       const { name } = this.currentUser
 
       // 提交申请信息和翻译数据
@@ -104,7 +104,7 @@ export default {
         name,
         email,
         major,
-        decription,
+        description,
         articleId: this.article.id,
         translation: this.translation,
       }).then(() => {
