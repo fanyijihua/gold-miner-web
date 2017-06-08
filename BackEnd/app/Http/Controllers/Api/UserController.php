@@ -63,13 +63,7 @@ class UserController extends Controller
 
         $this->updateToken($userId);
 
-        session(['user' => $this->loadUserById($userId)]);
-
-        if($newUser){
-            return redirect('/joinus');
-        }
-
-        return redirect('/');
+        return view('index', ['user' => urlencode(json_encode($this->loadUserById($userId)))]);
     }
 
     /**

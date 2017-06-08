@@ -29,24 +29,34 @@ export default {
   },
   created() {
     let user = null
+    let isNewUser = false
 
     // eslint-disable-next-line
     if (window.__USER__) {
       try {
         // eslint-disable-next-line
         user = JSON.parse(decodeURIComponent(window.__USER__))
+        isNewUser = true
       } catch (err) {
         // eslint-disable-next-line
         console.error(err)
       }
+    } else {
+      user = store.get('user')
     }
 
-    if (user) {
-      this.login(user)
+    if (!user) return
+
+    this.login(user)
+
+    if (isNewUser) {
       store.set('user', user)
-    } else {
-      // 长时间未登录导致 session 失效时需要清空本地数据
-      store.remove('user')
+
+      if (user.istranslator) {
+        this.$router.replace('/')
+      } else {
+        this.$router.replace('/applications/apply')
+      }
     }
   },
 }

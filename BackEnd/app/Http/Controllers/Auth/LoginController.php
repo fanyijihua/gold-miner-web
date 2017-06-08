@@ -8,13 +8,6 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-	public function index()
-	{
-		$user = session('user') ? session('user') : null;
-
-		return view('index', ['user' => urlencode(json_encode($user))]);
-	}
-
     public function oAuth()
     {
         $url = "https://github.com/login/oauth/authorize";
@@ -29,8 +22,11 @@ class LoginController extends Controller
 
         $token = $request->header('authorization');
         $result = DB::table('userToken')->where('token', $token)->delete();
-        $request->session()->forget('user');
 
-        return redirect('/');
+        if ($result) {
+            header('HTTP/1.1 200 ok');
+        } else {
+            header('HTTP/1.1 501 Not Implemented');
+        }
     }
 }

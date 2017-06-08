@@ -4,10 +4,9 @@ import nprogress from 'nprogress'
 
 import Index from '@/containers/Index'
 import Recommend from '@/containers/Recommend'
-import JoinUs from '@/containers/JoinUs'
+import Applications from '@/containers/Applications'
 import Auth from '@/containers/Auth'
 import Articles from '@/containers/Articles'
-import Admin from '@/containers/Admin'
 
 Vue.use(Router)
 
@@ -22,7 +21,7 @@ const router = new Router({
       },
     },
     {
-      path: '/Recommend',
+      path: '/recommend',
       name: 'Recommend',
       component: Recommend,
       meta: {
@@ -30,34 +29,42 @@ const router = new Router({
       },
     },
     {
-      path: '/joinus',
-      component: JoinUs.Base,
+      path: '/applications',
+      component: Applications.Base,
       meta: {
         title: '加入我们',
       },
       children: [
         {
-          path: '',
-          name: 'JoinUs',
-          component: JoinUs.Join,
+          path: 'apply',
+          name: 'Apply',
+          component: Applications.Apply,
           meta: {
             title: '加入我们',
           },
         },
         {
-          path: 'users',
-          name: 'JoinUsUsers',
-          component: JoinUs.JoinUsUsers,
+          path: 'applicants',
+          name: 'applicants',
+          component: Applications.Applicants,
           meta: {
-            title: '加入我们',
+            title: '译者申请列表',
           },
         },
         {
-          path: 'users/:id',
-          name: 'JoinUsUser',
-          component: JoinUs.JoinUsUser,
+          path: 'applicants/:id',
+          name: 'applicant',
+          component: Applications.Applicant,
           meta: {
-            title: '加入我们',
+            title: '译者申请',
+          },
+        },
+        {
+          path: 'texts',
+          name: 'TextsForApplication',
+          component: Applications.Texts,
+          meta: {
+            title: '试译文本列表',
           },
         },
       ],
@@ -100,17 +107,6 @@ const router = new Router({
           path: ':id/referrals',
           name: 'ArticleReferrals',
           component: Articles.Referrals,
-        },
-      ],
-    },
-    {
-      path: '/admin',
-      component: Admin.Base,
-      children: [
-        {
-          path: 'texts',
-          name: 'TestTexts',
-          component: Admin.TestTexts,
         },
       ],
     },

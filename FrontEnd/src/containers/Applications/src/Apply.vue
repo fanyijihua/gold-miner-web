@@ -1,29 +1,23 @@
 <template>
-  <div class="container join__container" v-loading="loading.status" :element-loading-text="loading.text">
+  <div class="container apply__container" v-loading="loading.status" :element-loading-text="loading.text">
     <el-steps :space="300" :align-center="true" :center="true" :active="active" :process-status="status" finish-status="success">
       <el-step title="填写资料"></el-step>
       <el-step title="进行试译"></el-step>
       <el-step title="提交申请"></el-step>
     </el-steps>
-    <el-row class="join__info" v-if="active === 0">
+    <el-row class="apply__info" v-if="active === 0">
       <el-col :span="11" :offset="6">
         <el-form ref="form" :model="userInfo" label-width="100px">
           <el-form-item label="邮箱" required>
             <el-input v-model="userInfo.email" placeholder="用于接收试译结果"></el-input>
           </el-form-item>
           <el-form-item label="擅长领域" required>
-            <el-checkbox-group v-model="userInfo.skills">
-              <el-checkbox label="前端" name="skills"></el-checkbox>
-              <el-checkbox label="后端" name="skills"></el-checkbox>
-              <el-checkbox label="Android" name="skills"></el-checkbox>
-              <el-checkbox label="iOS" name="skills"></el-checkbox>
-              <el-checkbox label="设计" name="skills"></el-checkbox>
-              <el-checkbox label="产品" name="skills"></el-checkbox>
-              <el-checkbox label="其他" name="skills"></el-checkbox>
-            </el-checkbox-group>
+            <el-select v-model="userInfo.major" placeholder="擅长领域" required>
+              <el-option v-for="item in categories.id" :key="item" :label="categories.data[item].category" :value="item"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="英语能力简述">
-            <el-input type="textarea" v-model="userInfo.ability"></el-input>
+            <el-input type="textarea" v-model="userInfo.description"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitInfo">下一步</el-button>
@@ -34,7 +28,7 @@
     <el-row class="translation" v-if="active === 1">
       <el-col :span="18" :offset="3">
         <h4 class="translation__title">请对下列一段英文进行翻译：</h4>
-        <p class="translation__text">{{ text.text }}</p>
+        <p class="translation__text">{{ article.content }}</p>
         <h4>译文</h4>
         <el-form>
           <el-form-item>
@@ -56,32 +50,21 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
-/* eslint-disable */
-const dictionary = {
-  "前端": "frontend",
-  "后端": "backend",
-  "Android": "android",
-  "产品": "product",
-  "iOS": "ios",
-  "设计": "design",
-  "其他": "others",
-}
+import { mapState, mapGetters } from 'vuex'
 
 const store = require('store')
 
 export default {
-  name: 'JoinUs',
+  name: 'ApplyUs',
   data() {
     return {
       active: 0,
       status: 'finish',
-      text: {},
+      article: {},
       userInfo: {
         email: '',
-        skills: [],
-        ability: '',
+        major: '',
+        description: '',
       },
       translation: '',
       result: {
@@ -91,51 +74,52 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user', 'loading']),
+    ...mapState(['users', 'loading', 'categories']),
+    ...mapGetters(['currentUser']),
   },
   methods: {
     // 提交第一步中的基本信息
     submitInfo() {
-      const { email, skills } = this.userInfo
+      const { email, major } = this.userInfo
 
-      if (!email || !skills.length) return
-
-      const skillsFields = skills.map(item => dictionary[item])
+      if (!email || !major) return
 
       // 下一步
       this.active = 1
 
       // 获取试译的英文稿
-      this.$store.dispatch('fetchTexts', { types: skillsFields }).then((data) => {
-        this.text = data[Math.floor(Math.random() * data.length)]
+      this.$store.dispatch('fetchRandomText', major).then((data) => {
+        this.article = data
       })
     },
     // 提交翻译的译文和最终数据
     submitRequest() {
       if (!this.translation) return
 
-      const { email, skills, ability } = this.userInfo
+      const { email, major, description } = this.userInfo
+      const { name } = this.currentUser
 
       // 提交申请信息和翻译数据
-      this.$store.dispatch('submitRequest', {
+      this.$store.dispatch('submitApplication', {
+        name,
         email,
-        skills,
-        ability,
-        text: this.text,
-        translation: this.translation
-      }).then((data) => {
+        major,
+        description,
+        articleId: this.article.id,
+        translation: this.translation,
+      }).then(() => {
         this.active = 2
         this.status = 'success'
         this.result = {
           type: 'success',
-          message: `你的请求已成功提交，我们稍后会将结果发送至您的邮箱 ${data.email}，请注意查收。`
+          message: `你的请求已成功提交，我们稍后会将结果发送至您的邮箱 ${email}，请注意查收。`,
         }
-      }).catch(err => {
+      }).catch((err) => {
         this.active = 2
         this.status = 'error'
         this.result = {
           type: 'failure',
-          message: err.message
+          message: err.message,
         }
       })
     },
@@ -168,7 +152,17 @@ export default {
       }).catch((err) => {
         this.$message.error(err.message)
       })
+
+      return
     }
+
+    const { email } = this.currentUser
+
+    if (email) {
+      this.userInfo.email = email
+    }
+
+    this.$store.dispatch('fetchCategories')
   },
 }
 </script>
@@ -176,7 +170,7 @@ export default {
 <style lang="scss" scoped>
 @import "~styles/exports";
 
-.join {
+.apply {
   &__container {
     margin-top: 40px;
   }
