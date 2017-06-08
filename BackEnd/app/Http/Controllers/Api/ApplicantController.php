@@ -104,7 +104,7 @@ class ApplicantController extends Controller
 
         if ( $applicant === null ) {
             header("HTTP/1.1 400 Bad Request");
-            echo '参数错误！';
+            echo json_encode(['message' => '参数错误！']);
             return;
         }
 

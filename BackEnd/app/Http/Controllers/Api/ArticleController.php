@@ -99,7 +99,7 @@ class ArticleController extends Controller
 
         if ( $article == false ) {
             header("HTTP/1.1 400 Bad Request");
-            echo '参数错误！';
+            echo json_encode(['message' => '参数错误！']);
             return;
         }
                         
@@ -134,7 +134,7 @@ class ArticleController extends Controller
                 $request->input('operator'),
                 $request->input('content')
             ));
-        $this->isUnique('article', array(
+        $this->isUpdateConflict('article', $id, array(
                 'title' => $request->input('title')
             ));
         $data = array(
@@ -187,7 +187,7 @@ class ArticleController extends Controller
 
         if ( $currentStatus === null ) {
             header("HTTP/1.1 400 Bad Request");
-            echo "参数错误！";
+            echo json_encode(['message' => '参数错误！']);
             return;
         }
 
@@ -246,7 +246,7 @@ class ArticleController extends Controller
 
         if ( $article == false ) {
             header("HTTP/1.1 400 Bad Request");
-            echo "本分类下暂无试译文章！";
+            echo json_encode(['message' => '本分类下暂无试译文章！']);
             return;
         }
                         

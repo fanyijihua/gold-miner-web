@@ -26,12 +26,6 @@ class Controller extends BaseController
     protected $client_secret;
 
     /**
-     * 状态响应内容
-     * @var array
-     */
-    protected $ret = array();
-
-    /**
      * 获取数据起始位置
      * @var integer
      */
@@ -47,8 +41,6 @@ class Controller extends BaseController
     {
     	$this->client_id = config('app.github_client_id');
     	$this->client_secret = config('app.github_client_secret');
-    	$this->ret['status'] = 200;
-    	$this->ret['message'] = 'OK';
 
         if ( $request->has('per_page') ) {
             $this->offset = $request->input('per_page');
@@ -130,7 +122,7 @@ class Controller extends BaseController
         foreach ($params as $v) {
             if (empty($v)) {
                 header("HTTP/1.1 400 Bad Request");
-                die("参数不能为空！");
+                die(json_encode(['message' => '参数不能为空！']));
             }
         }
     }
@@ -143,6 +135,7 @@ class Controller extends BaseController
      */
     public function isUnique($table, $fields = array())
     {
+        $table = env('DB_PREFIX').$table;
         $where = '';
         foreach ($fields as $k => $v) {
             $where .= $k."='".$v."' OR ";
@@ -154,7 +147,33 @@ class Controller extends BaseController
             foreach ($fields as $k => $v) {
                 if ($v == $record[0]->$k) {
                     header("HTTP/1.1 409 Conflict");
-                    die($k.' 参数重复！');
+                    die(json_encode(['message' => $k.' 参数重复！']));
+                }
+            }
+        }
+    }
+    /**
+     * 检查更新参数是否冲突
+     * @param  string  $table  目标数据表
+     * @param  int     $id     更新记录的 ID
+     * @param  array   $fields 目标参数
+     * @return viod 
+     */
+    public function isUpdateConflict($table, $id, $fields = array())
+    {
+        $table = env('DB_PREFIX').$table;
+        $where = '';
+        foreach ($fields as $k => $v) {
+            $where .= $k."='".$v."' OR ";
+        }
+
+        $record = DB::select("SELECT * FROM ".$table." WHERE id!=".$id." AND (".rtrim($where, 'OR ').")");
+
+        if ($record) {
+            foreach ($fields as $k => $v) {
+                if ($v == $record[0]->$k) {
+                    header("HTTP/1.1 409 Conflict");
+                    die(json_encode(['message' => $k.' 参数重复！']));
                 }
             }
         }
@@ -169,7 +188,7 @@ class Controller extends BaseController
     {
         if ( false == preg_match('/(.*?)@(.*?)\.(.*?)/', $email) ) {
             header("HTTP/1.1 400 Bad Request");
-            die('邮箱格式错误！');
+            die(json_encode(['message' => '邮箱格式错误！']));
         }
     }
 }

@@ -81,7 +81,7 @@ class CategoryController extends Controller
 
         if ( $category == false ) {
             header("HTTP/1.1 400 Bad Request");
-            echo '参数错误！';
+            echo json_encode(['message' => '参数错误！']);
             return;
         }
 
@@ -113,7 +113,7 @@ class CategoryController extends Controller
                 $request->input('category'),
                 $request->input('description')
             ));
-        $this->isUnique('category', array(
+        $this->isUpdateConflict('category', $id, array(
                 'category'      => $request->input('category'),
                 'description'   => $request->input('description')
             ));
