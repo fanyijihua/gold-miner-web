@@ -28,14 +28,28 @@ export default {
     ...mapMutations(['login']),
   },
   created() {
+    let user = null
+    let isNewUser = false
+
     // eslint-disable-next-line
-    if (!window.__USER__) return
+    if (window.__USER__) {
+      try {
+        // eslint-disable-next-line
+        user = JSON.parse(decodeURIComponent(window.__USER__))
+        isNewUser = true
+      } catch (err) {
+        // eslint-disable-next-line
+        console.error(err)
+      }
+    } else {
+      user = store.get('user')
+    }
 
-    try {
-      // eslint-disable-next-line
-      let user = JSON.parse(decodeURIComponent(window.__USER__))
+    if (!user) return
 
-      this.login(user)
+    this.login(user)
+
+    if (isNewUser) {
       store.set('user', user)
 
       if (user.istranslator) {
@@ -43,9 +57,6 @@ export default {
       } else {
         this.$router.replace('/applications/apply')
       }
-    } catch (err) {
-      // eslint-disable-next-line
-      console.error(err)
     }
   },
 }

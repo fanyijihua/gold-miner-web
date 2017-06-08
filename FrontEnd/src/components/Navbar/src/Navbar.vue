@@ -30,8 +30,8 @@
               </el-submenu>
             </template>
             <template v-else>
-              <el-menu-item index="Apply" :route="{ path: '/applications/apply' }">加入我们</el-menu-item>
-              <el-menu-item><a href="/auth/login">使用 GitHub 登录</a></el-menu-item>
+              <el-menu-item index="apply" :route="{ path: '/applications/apply' }">加入我们</el-menu-item>
+              <el-menu-item index=""><a href="/auth/login">使用 GitHub 登录</a></el-menu-item>
             </template>
           </li>
         </el-menu>
