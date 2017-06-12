@@ -15,7 +15,7 @@
       <el-col class="grid__col-gutter" :span="6">
         <div class="card">
           <h3 class="card__title">加入我们</h3>
-          <div><img class="img-rounded" src="https://cdn.dribbble.com/users/505523/screenshots/2827970/_______.jpg" alt=""></div>
+          <div><img class="img-rounded" src="/images/join.jpg" alt=""></div>
         </div>
       </el-col>
     </el-row>
@@ -61,7 +61,7 @@ export default {
     ...mapActions(['fetchArticles']),
   },
   created() {
-    this.fetchArticles({ type: this.activeTab })
+    // this.fetchArticles({ type: this.activeTab })
   },
 }
 </script>
