@@ -79,11 +79,10 @@ const mutations = {
    * @param  {Object} payload 审核意见
    */
   submitOpinion(state, payload) {
-    if (!state.applicants.data[payload.id].opinions) {
-      state.applicants.data[payload.id].opinions = []
-    }
+    const { id } = payload
 
-    state.applicants.data[payload.id].opinions.push(payload)
+    _.pull(state.applicants.id, id)
+    _.unset(state.applicants.data[id])
   },
 }
 
@@ -128,7 +127,7 @@ const actions = {
    */
   submitOpinion(context, payload) {
     return applications.submitOpinion(payload).then((response) => {
-      context.commit('submitOpinion', response.data)
+      context.commit('submitOpinion', payload)
       return Promise.resolve(response.data)
     }).catch(err => Promise.reject(err.response.data))
   },
