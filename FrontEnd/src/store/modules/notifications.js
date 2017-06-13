@@ -3,6 +3,7 @@ import * as user from '@/services/users'
 const state = {
   applicants: [],
   recommends: [],
+  system: [],
   total: 0,
 }
 
