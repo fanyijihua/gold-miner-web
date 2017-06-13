@@ -7,8 +7,29 @@ import Recommend from '@/containers/Recommend'
 import Applications from '@/containers/Applications'
 import Auth from '@/containers/Auth'
 import Articles from '@/containers/Articles'
+import store from '@/store'
+
+const localStorage = require('store')
 
 Vue.use(Router)
+
+const rules = {
+  loginRequired() {
+    const logIn = store.getters.logIn || localStorage.get('user').token
+
+    return logIn ? true : '登录以后再来尝试吧'
+  },
+
+  adminRequired() {
+    const user = store.getters.currentUser || localStorage.get('user')
+
+    if (user.isadmin) {
+      return true
+    }
+
+    return '小子，你的权限不足呐'
+  },
+}
 
 const router = new Router({
   mode: 'history',
@@ -50,6 +71,10 @@ const router = new Router({
           component: Applications.Applicants,
           meta: {
             title: '译者申请列表',
+            rules: [
+              'loginRequired',
+              'adminRequired',
+            ],
           },
         },
         {
@@ -58,6 +83,10 @@ const router = new Router({
           component: Applications.Applicant,
           meta: {
             title: '译者申请',
+            rules: [
+              'loginRequired',
+              'adminRequired',
+            ],
           },
         },
         {
@@ -66,6 +95,10 @@ const router = new Router({
           component: Applications.Texts,
           meta: {
             title: '试译文本列表',
+            rules: [
+              'loginRequired',
+              'adminRequired',
+            ],
           },
         },
       ],
@@ -112,6 +145,24 @@ const router = new Router({
       ],
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  if (!to.meta.rules) return next()
+
+  const middlewares = to.meta.rules.map(item => rules[item])
+
+  for (let i = 0; i < middlewares.length; i += 1) {
+    const result = middlewares[i](to)
+
+    if (result !== true) {
+      alert(result || '出现错误啦')
+
+      return next('/')
+    }
+  }
+
+  return next()
 })
 
 router.afterEach((to) => {
