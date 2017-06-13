@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import nprogress from 'nprogress'
+import { Message } from 'element-ui'
 
 import Index from '@/containers/Index'
 import Recommend from '@/containers/Recommend'
@@ -156,7 +157,7 @@ router.beforeEach((to, from, next) => {
     const result = middlewares[i](to)
 
     if (result !== true) {
-      alert(result || '出现错误啦')
+      Message({ type: 'error', message: result || '出现错误啦' })
 
       return next('/')
     }
