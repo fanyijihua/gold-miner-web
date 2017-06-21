@@ -4,7 +4,7 @@ import nprogress from 'nprogress'
 import { Message } from 'element-ui'
 
 import Index from '@/containers/Index'
-import Recommend from '@/containers/Recommend'
+import Recommends from '@/containers/Recommends'
 import Applications from '@/containers/Applications'
 import Auth from '@/containers/Auth'
 import Articles from '@/containers/Articles'
@@ -16,9 +16,17 @@ Vue.use(Router)
 
 const rules = {
   loginRequired() {
-    const logIn = store.getters.logIn || localStorage.get('user').token
+    if (store.getters.logIn) {
+      return true
+    }
 
-    return logIn ? true : '登录以后再来尝试吧'
+    const user = localStorage.get('user') || {}
+
+    if (user.token) {
+      return true
+    }
+
+    return '登录以后再来尝试吧'
   },
 
   adminRequired() {
@@ -44,11 +52,22 @@ const router = new Router({
       },
     },
     {
-      path: '/recommend',
-      name: 'Recommend',
-      component: Recommend,
+      path: '/recommends',
+      name: 'Recommends',
+      component: Recommends.New,
       meta: {
         title: '推荐文章',
+      },
+    },
+    {
+      path: '/recommends/:id',
+      name: 'RecommendsDetail',
+      component: Recommends.Detail,
+      meta: {
+        title: '推荐文章详情',
+        rules: [
+          'loginRequired',
+        ],
       },
     },
     {
@@ -137,11 +156,6 @@ const router = new Router({
           path: ':id/details',
           name: 'ArticleDetail',
           component: Articles.Detail,
-        },
-        {
-          path: ':id/referrals',
-          name: 'ArticleReferrals',
-          component: Articles.Referrals,
         },
       ],
     },
