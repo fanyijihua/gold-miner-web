@@ -6,7 +6,7 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 // API 接口
-Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
+Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => 'token'], function () {
 	Route::put('articles/status/{id}', 'ArticleController@updateStatus');
 	Route::get('articles/random/{category}', 'ArticleController@getRandomArticle');
 	Route::resource('users', 'UserController');	
