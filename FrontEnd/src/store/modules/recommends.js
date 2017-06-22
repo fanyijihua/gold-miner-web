@@ -5,6 +5,12 @@ const state = {
   data: {},
 }
 
+const getters = {
+  recommends(state) {
+    return state.id.map(item => state.data[item])
+  },
+}
+
 const mutations = {
   /**
    * 添加推荐的文章
@@ -19,7 +25,7 @@ const mutations = {
    * 更新推荐文章列表
    * @param {Object} payload 最新推荐文章列表数据
    */
-  updateRecommend(state, payload) {
+  initRecommend(state, payload) {
     state.id = payload.map(item => item.id)
 
     const data = {}
@@ -29,6 +35,18 @@ const mutations = {
     })
 
     state.data = data
+  },
+
+  /**
+   * 删除推荐的文章
+   * @param  {Number} id    要删除的数据的 id
+   */
+  removeRecommend(state, id) {
+    const index = state.id.indexOf(id)
+
+    if (index === -1) return
+
+    state.id.splice(index, 1)
   },
 }
 
@@ -51,7 +69,7 @@ const actions = {
    */
   fetchRecommends(context) {
     return recommends.fetchRecommends().then((response) => {
-      context.commit('updateRecommend', response.data)
+      context.commit('initRecommend', response.data)
 
       return Promise.resolve(response.data)
     }).catch(err => Promise.reject(err.response.data))
@@ -63,14 +81,17 @@ const actions = {
    * @return {Promise}
    */
   submitOpinionOfRecommends(context, payload) {
-    return recommends.submitOpinion(payload)
-      .then(response => Promise.resolve(response.data))
-      .catch(err => Promise.reject(err.response.data))
+    return recommends.submitOpinion(payload).then((response) => {
+      context.commit('removeRecommend', payload.id)
+
+      return Promise.resolve(response.data)
+    }).catch(err => Promise.reject(err.response.data))
   },
 }
 
 export default {
   state,
+  getters,
   mutations,
   actions,
 }
