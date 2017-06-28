@@ -30,7 +30,7 @@ const rules = {
   },
 
   adminRequired() {
-    const user = store.getters.currentUser || localStorage.get('user')
+    const user = Object.keys(store.getters.currentUser).length ? store.getters.currentUser : localStorage.get('user')
 
     if (user.isadmin) {
       return true
