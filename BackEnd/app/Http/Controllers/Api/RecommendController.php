@@ -10,15 +10,22 @@ class RecommendController extends Controller
 {
     /**
      * 获取所有推荐文章记录（分页）
+     * @param int $status 推荐文章记录类别，0 为未处理，1 为成功，2 为失败
      * @return json_encode(Object) 全部推荐文章（分页）
      */
     public function index()
     {
         //
+        if (intval($request->input('status')) > 2) {
+            header("HTTP/1.1 400 Bad request!");
+            echo json_encode(['message' => '参数错误！']);
+            return;
+        }
+        
         $recommends = DB::table('recommend')
                         ->join('user', 'recommend.recommender', '=', 'user.id')
                         ->select('recommend.*', 'user.name as recommenderName')
-                        ->orderBy('status', 'asc')
+                        ->where('status', isset($request->input('status')) ? intval($request->input('status')) : 0)
                         ->skip($this->start)
                         ->take($this->offset)
                         ->get();

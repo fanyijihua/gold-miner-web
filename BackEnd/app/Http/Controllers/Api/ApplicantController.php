@@ -10,15 +10,22 @@ class ApplicantController extends Controller
 {
     /**
      * 获取全部申请者信息
+     * @param int $status 试译记录类别，0 为未处理，1 为成功，2 为失败
      * @return json_encode(Object)  全部申请者（分页）
      */
-    public function index()
+    public function index(Request $request)
     {
         //
+        if (intval($request->input('status')) > 2) {
+            header("HTTP/1.1 400 Bad request!");
+            echo json_encode(['message' => '参数错误！']);
+            return;
+        }
+        
         $applicants = DB::table('applicant')
                         ->leftjoin('category', 'applicant.major', '=', 'category.id')
                         ->select('applicant.*', 'category.category as major')
-                        ->orderBy('status', 'asc')
+                        ->where('status', isset($request->input('status')) ? intval($request->input('status')) : 0)
                         ->skip($this->start)
                         ->take($this->offset)
                         ->get();
