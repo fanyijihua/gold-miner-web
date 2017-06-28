@@ -1,14 +1,44 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import nprogress from 'nprogress'
+import { Message } from 'element-ui'
 
 import Index from '@/containers/Index'
-import Recommend from '@/containers/Recommend'
+import Recommends from '@/containers/Recommends'
 import Applications from '@/containers/Applications'
 import Auth from '@/containers/Auth'
 import Articles from '@/containers/Articles'
+import store from '@/store'
+
+const localStorage = require('store')
 
 Vue.use(Router)
+
+const rules = {
+  loginRequired() {
+    if (store.getters.logIn) {
+      return true
+    }
+
+    const user = localStorage.get('user') || {}
+
+    if (user.token) {
+      return true
+    }
+
+    return '登录以后再来尝试吧'
+  },
+
+  adminRequired() {
+    const user = Object.keys(store.getters.currentUser).length ? store.getters.currentUser : localStorage.get('user')
+
+    if (user.isadmin) {
+      return true
+    }
+
+    return '小子，你的权限不足呐'
+  },
+}
 
 const router = new Router({
   mode: 'history',
@@ -22,11 +52,22 @@ const router = new Router({
       },
     },
     {
-      path: '/recommend',
-      name: 'Recommend',
-      component: Recommend,
+      path: '/recommends',
+      name: 'Recommends',
+      component: Recommends.New,
       meta: {
         title: '推荐文章',
+      },
+    },
+    {
+      path: '/recommends/:id',
+      name: 'RecommendsDetail',
+      component: Recommends.Detail,
+      meta: {
+        title: '推荐文章详情',
+        rules: [
+          'loginRequired',
+        ],
       },
     },
     {
@@ -50,6 +91,10 @@ const router = new Router({
           component: Applications.Applicants,
           meta: {
             title: '译者申请列表',
+            rules: [
+              'loginRequired',
+              'adminRequired',
+            ],
           },
         },
         {
@@ -58,6 +103,10 @@ const router = new Router({
           component: Applications.Applicant,
           meta: {
             title: '译者申请',
+            rules: [
+              'loginRequired',
+              'adminRequired',
+            ],
           },
         },
         {
@@ -66,6 +115,10 @@ const router = new Router({
           component: Applications.Texts,
           meta: {
             title: '试译文本列表',
+            rules: [
+              'loginRequired',
+              'adminRequired',
+            ],
           },
         },
       ],
@@ -104,14 +157,27 @@ const router = new Router({
           name: 'ArticleDetail',
           component: Articles.Detail,
         },
-        {
-          path: ':id/referrals',
-          name: 'ArticleReferrals',
-          component: Articles.Referrals,
-        },
       ],
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  if (!to.meta.rules) return next()
+
+  const middlewares = to.meta.rules.map(item => rules[item])
+
+  for (let i = 0; i < middlewares.length; i += 1) {
+    const result = middlewares[i](to)
+
+    if (result !== true) {
+      Message({ type: 'error', message: result || '出现错误啦' })
+
+      return next('/')
+    }
+  }
+
+  return next()
 })
 
 router.afterEach((to) => {

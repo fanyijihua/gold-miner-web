@@ -3,6 +3,7 @@ import * as user from '@/services/users'
 const state = {
   applicants: [],
   recommends: [],
+  system: [],
   total: 0,
 }
 
@@ -32,7 +33,7 @@ const actions = {
       }))
 
       response.data.recommends.map((item) => {
-        item.link = `/articles/${item.id}`
+        item.link = `/recommends/${item.id}`
 
         return item
       })

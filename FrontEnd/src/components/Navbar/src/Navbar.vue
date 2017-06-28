@@ -12,13 +12,13 @@
           <el-menu-item index="ranks">排行榜</el-menu-item> -->
           <li class="pull-right">
             <template v-if="logIn">
-              <el-menu-item v-if="user.istranslator" index="recomment" :route="{ path: '/recommend' }">推荐文章</el-menu-item>
+              <el-menu-item v-if="user.istranslator" index="recomment" :route="{ path: '/recommends' }">推荐文章</el-menu-item>
               <el-menu-item v-else index="Apply" :route="{ path: '/applications/apply' }">加入我们</el-menu-item>
               <el-menu-item class="navbar__messages" index="">
                 <el-badge class="item" :value="notifications.total" v-popover:popover>
                   <i class="el-icon-message"></i>
                   <el-popover ref="popover" placement="top">
-                    <popover :notifications="notifications"></popover>
+                    <popover :notifications="notifications" :user="user"></popover>
                   </el-popover>
                 </el-badge>
               </el-menu-item>
@@ -61,7 +61,9 @@ export default {
     ...mapActions(['fetchNotifications']),
   },
   created() {
-    this.fetchNotifications()
+    if (this.user.istranslator) {
+      this.fetchNotifications()
+    }
   },
 }
 </script>
