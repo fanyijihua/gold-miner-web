@@ -15,10 +15,10 @@
               <el-menu-item v-if="user.istranslator" index="recomment" :route="{ path: '/recommends' }">推荐文章</el-menu-item>
               <el-menu-item v-else index="Apply" :route="{ path: '/applications/apply' }">加入我们</el-menu-item>
               <el-menu-item class="navbar__messages" index="">
-                <el-badge class="item" :value="notifications.total" v-popover:popover>
+                <el-badge class="item" :value="totalOfNotifications" v-popover:popover>
                   <i class="el-icon-message"></i>
                   <el-popover ref="popover" placement="top">
-                    <popover :notifications="notifications" :user="user"></popover>
+                    <popover :user="user"></popover>
                   </el-popover>
                 </el-badge>
               </el-menu-item>
@@ -56,13 +56,25 @@ export default {
     logIn() {
       return this.$store.getters.logIn
     },
+    totalOfNotifications() {
+      return this.$store.getters.total
+    },
   },
   methods: {
-    ...mapActions(['fetchNotifications']),
+    ...mapActions([
+      'fetchNotifications',
+      'fetchRecommends',
+      'fetchApplicants',
+    ]),
   },
   created() {
     if (this.user.istranslator) {
       this.fetchNotifications()
+    }
+
+    if (this.user.isadmin) {
+      this.fetchRecommends()
+      this.fetchApplicants()
     }
   },
 }

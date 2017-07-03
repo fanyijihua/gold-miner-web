@@ -5,23 +5,29 @@
         <message :messages="notifications.system"></message>
       </el-tab-pane>
       <el-tab-pane v-if="user.isadmin" label="译者申请" name="applicants">
-        <message :messages="notifications.applicants"></message>
+        <message :data="applicants" type="applicants"></message>
       </el-tab-pane>
       <el-tab-pane v-if="user.isadmin" label="推荐的文章" name="articles">
-        <message :messages="notifications.recommends"></message>
+        <message :data="recommends" type="recommends"></message>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
+
 import Message from './Message'
 
 export default {
   name: 'Popover',
-  props: ['notifications', 'user'],
+  props: ['user'],
   components: {
     message: Message,
+  },
+  computed: {
+    ...mapState(['notifications']),
+    ...mapGetters(['applicants', 'recommends']),
   },
   data() {
     return {

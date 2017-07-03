@@ -6,13 +6,13 @@
       </div>
     </li>
     <li class="message__item" v-else v-for="message in messages">
-      <img class="message__avatar img-circle pull-left" src="/static/avatar.png" alt="">
+      <img class="message__avatar img-circle pull-left" src="/static/images/avatar.png" alt="">
       <div class="message__content">
-        <div class="message__title">{{ `${message.name} ${message.title}` }}</div>
-        <div class="message__body">{{ message.body }}</div>
+        <div class="message__title">{{ message.title }}</div>
+        <div class="message__body"></div>
         <div class="message__footer">
           <span class="message__date">{{ message.cdate }}</span>
-          <router-link class="message__link pull-right" :to="message.link">去处理</router-link>
+          <router-link class="message__link pull-right" :to="`${message.url}`">去处理</router-link>
         </div>
       </div>
     </li>
@@ -22,10 +22,27 @@
 <script>
 export default {
   name: 'PopoverMessage',
-  props: ['messages'],
-  data() {
-    return {
-    }
+  props: ['data', 'type'],
+  computed: {
+    messages() {
+      if (!this.data || !this.data.length) return []
+
+      const title = {
+        applicants: '申请成为译者',
+        recommends: '推荐了优秀文章',
+      }
+
+      const url = {
+        applicants: '/applications/applicants',
+        recommends: '/recommends',
+      }
+
+      return this.data.map(item => ({
+        title: title[this.type],
+        cdate: item.cdate,
+        url: `${url[this.type]}/${item.id}`,
+      }))
+    },
   },
 }
 </script>

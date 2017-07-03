@@ -60,7 +60,7 @@ export default {
   computed: {
     ...mapState(['applications']),
     applicantId() {
-      return this.$route.params.id
+      return Number(this.$route.params.id)
     },
     applicantInfo() {
       return this.applications.applicants.data[this.applicantId] || {}
@@ -70,7 +70,7 @@ export default {
     submitOpinion(result) {
       if (!result && !this.opinion) return this.$message({ message: '留一下意见了啦~', type: 'warning' })
 
-      return this.$store.dispatch('submitOpinion', {
+      return this.$store.dispatch('submitOpinionOfApplications', {
         id: this.applicantId,
         result,
         opinion: this.opinion,

@@ -29,7 +29,7 @@ router.all('*', (req, res, next) => {
 })
 
 router.get('/auth/login', (req, res) => {
-  res.redirect('/#/applications')
+  res.redirect('/applications')
 })
 
 router.post('/auth/validate-invitation-code', (req, res) => {
@@ -47,26 +47,11 @@ router.get('/auth/logout', (req, res) => {
 })
 
 router.get('/notifications', (req, res) => {
-  return res.json(mock({
-    "applicants|1-3": [
-      {
-        "id|+1": 1,
-        "name": "@cname",
-        "avatar": "",
-        "cdate": "2017-06-03"
-      }
-    ],
-    "recommends|1-3": [
-      {
-        "id|+1": 1,
-        "name": "@cname",
-        "avatar": "avatar url",
-        "title": "@ctitle",
-        "cdate": "2017-06-03"
-      }
-    ],
-    total: 10,
-  }))
+  const data = mock({
+    system: [],
+  })
+
+  return res.json(data.system)
 })
 
 router
@@ -138,20 +123,12 @@ router
 router
   .get('/applicants', (req, res) => {
     const data = mock({
-      'applicants|10': [{
+      'applicants|1-4': [{
         'id|+1': 1,
         category: 'frontend',
         description: '过了 4 级',
         content: 1,
         translation: '@cparagraph',
-        "opinions|2-5": [
-          {
-            username: '@cname',
-            opinion: '瞎胡点的',
-            result: true,
-            date: '@date',
-          },
-        ],
         cdate: '@date',
       }]
     })
@@ -163,7 +140,7 @@ router
       email: req.body.email,
     })
   })
-  .post('/applicants/:id', (req, res) => {
+  .patch('/applicants/:id', (req, res) => {
     return res.json({
       id: 1,
       username: '@cname',
@@ -197,7 +174,7 @@ router.get('/articles', (req, res) => {
 router
   .get('/recommends', (req, res) => {
     const results = mock({
-      'data|1-10': [{
+      'data|1-5': [{
         "id|+1": 1,
         "category": 3,
         "title": "后端架构",

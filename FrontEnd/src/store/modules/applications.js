@@ -1,5 +1,4 @@
 import * as applications from '@/services/applications'
-import * as _ from 'lodash'
 
 const state = {
   texts: {
@@ -13,8 +12,12 @@ const state = {
 }
 
 const getters = {
-  applicants: state => state.applicants.id.map(item => state.applicants.data[item]),
-  texts: state => state.texts.id.map(item => state.texts.data[item]),
+  applicants(state) {
+    return state.applicants.id.map(item => state.applicants.data[item])
+  },
+  texts(state) {
+    return state.texts.id.map(item => state.texts.data[item])
+  },
 }
 
 const mutations = {
@@ -22,7 +25,7 @@ const mutations = {
    * 将试译的英文稿进行存储
    * @param {Array} payload 试译的英文稿数据
    */
-  updateTexts(state, payload) {
+  initTexts(state, payload) {
     state.texts.id = payload.map(item => item.id)
     const data = {}
 
@@ -54,16 +57,19 @@ const mutations = {
    * 删除一个试译文稿
    * @param  {Number} id    要删除的文本 ID
    */
-  deleteText(state, id) {
-    _.pull(state.texts.id, id)
-    state.texts.data = _.omit(state.texts.data, [id])
+  removeText(state, id) {
+    const index = state.texts.id.indexOf(id)
+
+    if (index === -1) return
+
+    state.texts.id.splice(index, 1)
   },
 
   /**
    * 将所有的译者申请信息进行存储
    * @param  {Array} payload 译者申请信息
    */
-  updateApplicants(state, payload) {
+  initApplicants(state, payload) {
     state.applicants.id = payload.map(item => item.id)
     const data = {}
 
@@ -75,14 +81,15 @@ const mutations = {
   },
 
   /**
-   * 将审核意见更新至对应的译者申请数据中
-   * @param  {Object} payload 审核意见
+   * 移除对应的译者申请数据中
+   * @param  {Number} payload 译者申请 id
    */
-  submitOpinion(state, payload) {
-    const { id } = payload
+  removeApplicant(state, id) {
+    const index = state.applicants.id.indexOf(id)
 
-    _.pull(state.applicants.id, id)
-    _.unset(state.applicants.data[id])
+    if (index === -1) return
+
+    state.applicants.id.splice(index, 1)
   },
 }
 
@@ -93,7 +100,7 @@ const actions = {
    */
   fetchApplicants(context) {
     return applications.fetchApplicants().then((response) => {
-      context.commit('updateApplicants', response.data)
+      context.commit('initApplicants', response.data)
       return Promise.resolve(response.data)
     }).catch(err => Promise.reject(err.response.data))
   },
@@ -125,9 +132,9 @@ const actions = {
    * @param  {Object} payload 审核意见
    * @return {Promise}
    */
-  submitOpinion(context, payload) {
+  submitOpinionOfApplications(context, payload) {
     return applications.submitOpinion(payload).then((response) => {
-      context.commit('submitOpinion', payload)
+      context.commit('removeApplicant', response.data.id)
       return Promise.resolve(response.data)
     }).catch(err => Promise.reject(err.response.data))
   },
@@ -150,7 +157,7 @@ const actions = {
    */
   fetchTexts(context, payload) {
     return applications.fetchTexts(payload).then((response) => {
-      context.commit('updateTexts', response.data)
+      context.commit('initTexts', response.data)
       return Promise.resolve(response.data)
     }).catch(err => Promise.reject(err.response.data))
   },
@@ -185,7 +192,7 @@ const actions = {
    */
   deleteText(context, id) {
     return applications.deleteText(id).then((response) => {
-      context.commit('deleteText', id)
+      context.commit('removeText', id)
       return Promise.resolve(response.data)
     }).catch(err => Promise.reject(err.response.data))
   },
