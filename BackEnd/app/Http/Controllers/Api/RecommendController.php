@@ -25,7 +25,7 @@ class RecommendController extends Controller
         $recommends = DB::table('recommend')
                         ->join('user', 'recommend.recommender', '=', 'user.id')
                         ->select('recommend.*', 'user.name as recommenderName')
-                        ->where('status', isset($request->input('status')) ? intval($request->input('status')) : 0)
+                        ->where('status', $request->has('status') ? intval($request->input('status')) : 0)
                         ->skip($this->start)
                         ->take($this->offset)
                         ->get();

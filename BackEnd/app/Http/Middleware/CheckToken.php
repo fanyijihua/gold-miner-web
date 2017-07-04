@@ -31,7 +31,7 @@ class CheckToken
                 die;
             }
 
-            if (strtotime($res['expiry']) < time()) {
+            if (strtotime($res->expiry) < time()) {
                 header("HTTP/1.1 403 Forbiden");
                 echo json_encode(['message' => 'Token 已过期！']);
                 die;
