@@ -134,7 +134,7 @@ const actions = {
    */
   submitOpinionOfApplications(context, payload) {
     return applications.submitOpinion(payload).then((response) => {
-      context.commit('removeApplicant', response.data.id)
+      context.commit('removeApplicant', payload.id)
       return Promise.resolve(response.data)
     }).catch(err => Promise.reject(err.response.data))
   },

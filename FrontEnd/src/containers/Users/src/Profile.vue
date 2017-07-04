@@ -98,9 +98,8 @@ export default {
     showSettingsDialog() {
       this.settings.visible = true
     },
-    closeSettingsDialog(status) {
+    closeSettingsDialog() {
       this.settings.visible = false
-      console.log(status)
     },
   },
 }
