@@ -13,7 +13,7 @@ class RecommendController extends Controller
      * @param int $status 推荐文章记录类别，0 为未处理，1 为成功，2 为失败
      * @return json_encode(Object) 全部推荐文章（分页）
      */
-    public function index()
+    public function index(Request $request)
     {
         //
         if (intval($request->input('status')) > 2) {
