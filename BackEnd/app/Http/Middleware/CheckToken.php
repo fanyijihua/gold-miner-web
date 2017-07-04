@@ -20,28 +20,44 @@ class CheckToken
             return $next($request);
         }
 
-        if ($token = $request->header('authorization')) {
-            $res = DB::table('userToken')
-                    ->where('token', $token)
+        if ($userToken = $request->header('authorization')) {
+            $token = DB::table('userToken')
+                    ->where('token', $userToken)
                     ->first();
 
-            if ($res == null) {
-                header("HTTP/1.1 403 Forbiden");
+            if ($token == null) {
+                header("HTTP/1.1 401 Unauthorized");
                 echo json_encode(['message' => 'Token 错误！']);
                 die;
             }
 
-            if (strtotime($res->expiry) < time()) {
-                header("HTTP/1.1 403 Forbiden");
+            if (strtotime($token->expiry) < time()) {
+                header("HTTP/1.1 401 Unauthorized");
                 echo json_encode(['message' => 'Token 已过期！']);
                 die;
             }
         } else {
-            header("HTTP/1.1 403 Forbiden");
+            header("HTTP/1.1 401 Unauthorized");
             echo json_encode(['message' => 'Token 丢失！']);
             die;
         }
 
+        if (strtotime($token->expiry) - time() < 86400) {
+            $this->updateToken($userToken);
+        }
+
         return $next($request);
+    }
+
+    public function updateToken($token)
+    {
+        $data = array(
+                'expiry'    => date('Y-m-d H:i:s', strtotime('+1 week')),
+                'udate'     => date('Y-m-d H:i:s')
+            );
+
+        $res = DB::table('userToken')
+                ->where('token', $token)
+                ->update($data);
     }
 }
