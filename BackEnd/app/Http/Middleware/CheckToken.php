@@ -16,6 +16,10 @@ class CheckToken
      */
     public function handle($request, Closure $next)
     {
+        if ($request->is("api/users")) {
+            return $next($request);
+        }
+
         if ($token = $request->header('authorization')) {
             $res = DB::table('userToken')
                     ->where('token', $token)
