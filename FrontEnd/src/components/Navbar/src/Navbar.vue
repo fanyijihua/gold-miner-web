@@ -62,19 +62,14 @@ export default {
   },
   methods: {
     ...mapActions([
-      'fetchNotifications',
       'fetchRecommends',
       'fetchApplicants',
     ]),
   },
   created() {
-    if (this.user.istranslator) {
-      this.fetchNotifications()
-    }
-
     if (this.user.isadmin) {
-      this.fetchRecommends()
-      this.fetchApplicants()
+      this.fetchRecommends().catch(err => this.$message.error(err.message))
+      this.fetchApplicants().catch(err => this.$message.error(err.message))
     }
   },
 }

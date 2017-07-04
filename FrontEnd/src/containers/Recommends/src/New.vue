@@ -63,7 +63,7 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('fetchCategories')
+    this.$store.dispatch('fetchCategories').catch(err => this.$message.error(err.message))
   },
 }
 </script>
