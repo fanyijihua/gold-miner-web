@@ -23,6 +23,11 @@ instance.interceptors.response.use((response) => {
   return response
 }, (error) => {
   nprogress.done()
+
+  if (error.response.status === 401) {
+    store.remove('user')
+  }
+
   return Promise.reject(error)
 })
 

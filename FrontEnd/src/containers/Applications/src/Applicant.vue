@@ -78,10 +78,6 @@ export default {
     },
   },
   created() {
-    if (!this.applications.applicants.id.length) {
-      this.$store.dispatch('fetchApplicants')
-    }
-
     if (!this.applications.texts.id.length) {
       this.$store.dispatch('fetchTexts')
     }

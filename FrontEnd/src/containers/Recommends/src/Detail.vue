@@ -57,9 +57,6 @@ export default {
       })
     },
   },
-  created() {
-    this.$store.dispatch('fetchRecommends')
-  },
 }
 </script>
 
