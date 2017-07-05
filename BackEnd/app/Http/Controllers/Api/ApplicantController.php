@@ -24,7 +24,8 @@ class ApplicantController extends Controller
         
         $applicants = DB::table('applicant')
                         ->leftjoin('category', 'applicant.major', '=', 'category.id')
-                        ->select('applicant.*', 'category.category as major')
+                        ->leftjoin('user', 'applicant.uid', '=', 'user.id')
+                        ->select('applicant.id', 'applicant.name', 'applicant.email', 'applicant.status', 'applicant.description', 'applicant.articleid as articleId', 'applicant.translation', 'applicant.udate', 'applicant.cdate', 'category.category as major', 'user.avatar as userAvatar', 'user.id as userId')
                         ->where('applicant.status', $request->has('status') ? intval($request->input('status')) : 0)
                         ->skip($this->start)
                         ->take($this->offset)
