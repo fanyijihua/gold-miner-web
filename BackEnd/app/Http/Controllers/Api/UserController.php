@@ -87,7 +87,7 @@ class UserController extends Controller
         if($insertId == false){
             header("HTTP/1.1 500 Service unavailable");
             echo json_encode(['message' => '注册失败！']);
-            return;
+            die;
         }
 
         $userInfo = array(
@@ -97,14 +97,22 @@ class UserController extends Controller
                 'cdate'     => date('Y-m-d H:i:s')
             );
 
-        $result = DB::table('userDetail')->insert($userInfo);
-        
-        if($result == false){
+        $detail = DB::table('userDetail')->insert($userInfo);
+
+        if($detail == false){
             header("HTTP/1.1 500 Service unavailable");
             echo json_encode(['message' => '添加用户详情失败！']);
-            return;
+            die;
         }
 
+        $setting = $this->defaultUserSetting($insertId);
+
+        if($setting == false){
+            header("HTTP/1.1 500 Service unavailable");
+            echo json_encode(['message' => '添加用户设置失败！']);
+            die;
+        }
+        
         return $insertId;
     }
 
@@ -144,10 +152,10 @@ class UserController extends Controller
     /**
      * 更新用户信息
      *
-     * @param  int  $userid     用户 id
+     * @param  int  $userId     用户 id
      * @return mixed
      */
-    public function update($userid)
+    public function update($userId)
     {
         //
         $user = array(
@@ -157,13 +165,17 @@ class UserController extends Controller
             );
 
         $result = DB::table('user')
-                    ->where('id', $userid)
+                    ->where('id', $userId)
                     ->update($user);
 
         if($result === false){
             header("HTTP/1.1 500 Service unavailable");
             echo json_encode(['message' => '更新用户信息失败！']);
             return;
+        }
+
+        if ($this->getUserSetting($userId) == false) {
+            $this->defaultUserSetting($userId);
         }
     }
 
@@ -176,6 +188,42 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * 添加默认用户设置
+     * @param  int $userId 用户 ID
+     * @return boolean
+     */
+    public function defaultUserSetting($userId)
+    {
+        $data = array(
+                'uid'               => $userId,
+                'newtranslation'    => 1,
+                'newreview'         => 1,
+                'newarticle'        => 1,
+                'newresult'         => 1,
+                'udate'             => date("Y-m-d H:i:s"),
+                'cdate'             => date("Y-m-d H:i:s")
+            );
+
+        $res = DB::table('userSetting')->insert($data);
+
+        return $res;
+    }
+
+    /**
+     * 获取用户设置内容
+     * @param  int $userId  用户 ID
+     * @return mixed        用户设置内容
+     */
+    public function getUserSetting($userId)
+    {
+        $result = DB::table('userSetting')
+                    ->where('uid', $userId)
+                    ->first();
+
+        return $result;
     }
     
     /**
