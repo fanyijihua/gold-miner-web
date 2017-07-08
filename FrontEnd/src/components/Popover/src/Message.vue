@@ -38,8 +38,8 @@ export default {
       }
 
       return this.data.map(item => ({
+        ...item,
         title: title[this.type],
-        cdate: item.cdate,
         url: `${url[this.type]}/${item.id}`,
       }))
     },
