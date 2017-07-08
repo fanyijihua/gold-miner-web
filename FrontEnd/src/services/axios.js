@@ -20,15 +20,18 @@ instance.interceptors.request.use((config) => {
 
 instance.interceptors.response.use((response) => {
   nprogress.done()
-  return response
-}, (error) => {
+  return Promise.resolve(response.data)
+}, (err) => {
   nprogress.done()
 
-  if (error.response.status === 401) {
+  // 身份认证失败
+  if (err.response.status === 401) {
     store.remove('user')
   }
 
-  return Promise.reject(error)
+  err.response.data.status = err.response.status
+
+  return Promise.reject(err.response.data)
 })
 
 export default instance

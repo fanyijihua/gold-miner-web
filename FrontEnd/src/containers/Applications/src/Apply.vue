@@ -16,7 +16,7 @@
               <el-option v-for="item in categories.id" :key="item" :label="categories.data[item].category" :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="英语能力简述">
+          <el-form-item label="英语能力/翻译经验">
             <el-input type="textarea" v-model="userInfo.description"></el-input>
           </el-form-item>
           <el-form-item>
@@ -115,6 +115,10 @@ export default {
           message: `你的请求已成功提交，我们稍后会将结果发送至您的邮箱 ${email}，请注意查收。`,
         }
       }).catch((err) => {
+        if (err.status === 409) {
+          err.message = '该邮箱已经申请过啦，请耐心等待结果就好啦。'
+        }
+
         this.active = 2
         this.status = 'error'
         this.result = {

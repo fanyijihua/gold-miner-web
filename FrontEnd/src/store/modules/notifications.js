@@ -30,10 +30,10 @@ const actions = {
    */
   fetchNotifications(context) {
     return user.fetchNotifications().then((response) => {
-      context.commit('updateNotifications', response.data)
+      context.commit('updateNotifications', response)
 
-      return Promise.resolve(response.data)
-    }).catch(err => Promise.reject(err.response.data))
+      return Promise.resolve(response)
+    })
   },
 }
 

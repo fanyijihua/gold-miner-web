@@ -6,7 +6,7 @@
       </div>
     </li>
     <li class="message__item" v-else v-for="message in messages">
-      <img class="message__avatar img-circle pull-left" src="/static/images/avatar.png" alt="">
+      <img class="message__avatar img-circle pull-left" :src="message.userAvatar || '/static/images/default-avatar.png'" alt="">
       <div class="message__content">
         <div class="message__title">{{ message.title }}</div>
         <div class="message__body"></div>

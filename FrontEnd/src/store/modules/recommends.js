@@ -57,10 +57,10 @@ const actions = {
    */
   addRecommend(context, payload) {
     return recommends.addRecommend(payload).then((response) => {
-      context.commit('addRecommend', response.data)
+      context.commit('addRecommend', response)
 
-      return Promise.resolve(response.data)
-    }).catch(err => Promise.reject(err.response.data))
+      return Promise.resolve(response)
+    })
   },
 
   /**
@@ -69,10 +69,10 @@ const actions = {
    */
   fetchRecommends(context) {
     return recommends.fetchRecommends().then((response) => {
-      context.commit('initRecommend', response.data)
+      context.commit('initRecommend', response)
 
-      return Promise.resolve(response.data)
-    }).catch(err => Promise.reject(err.response.data))
+      return Promise.resolve(response)
+    })
   },
 
   /**
@@ -84,8 +84,8 @@ const actions = {
     return recommends.submitOpinion(payload).then((response) => {
       context.commit('removeRecommend', payload.id)
 
-      return Promise.resolve(response.data)
-    }).catch(err => Promise.reject(err.response.data))
+      return Promise.resolve(response)
+    })
   },
 }
 

@@ -63,7 +63,9 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('fetchCategories').catch(err => this.$message.error(err.message))
+    if (!this.categories.id.length) {
+      this.$store.dispatch('fetchCategories').catch(err => this.$message.error(err.message))
+    }
   },
 }
 </script>

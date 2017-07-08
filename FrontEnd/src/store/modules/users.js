@@ -1,3 +1,5 @@
+import union from 'lodash/union'
+import assign from 'lodash/assign'
 import * as user from '@/services/users'
 
 const state = {
@@ -16,6 +18,10 @@ const getters = {
 }
 
 const mutations = {
+  /**
+   * 用户登录后，将其标记为登录状态
+   * @param  {Object} payload 登录的用户信息
+   */
   login(state, payload) {
     if (!state.data[payload.id]) {
       state.id.push(payload.id)
@@ -26,14 +32,38 @@ const mutations = {
     state.oAuth.token = payload.token
     state.oAuth.id = payload.id
 
-    Object.assign(state.data[payload.id], payload)
+    assign(state.data[payload.id], payload)
   },
+
+  /**
+   * 用户退出后，将其标记为未登录状态
+   * @param  {Object} payload 用户信息
+   */
   logout(state) {
-    Object.assign(state.oAuth, {
+    assign(state.oAuth, {
       logIn: false,
       token: '',
       id: '',
     })
+  },
+
+  /**
+   * 将用户信息更新至 store
+   * @param  {Array} payload 需要更新的用户信息
+   */
+  updateUsers(state, payload) {
+    if (!Array.isArray(payload)) throw new Error('payload is not an Array')
+    if (!payload.length) return
+
+    const idList = payload.map(item => item.id)
+    const data = {}
+
+    payload.forEach((item) => {
+      data[item.id] = item
+    })
+
+    state.id = union(state.id, idList)
+    state.data = assign({}, state.data, data)
   },
 }
 
@@ -49,10 +79,10 @@ const actions = {
 
     return user.validateInvitationCode(invitationCode).then((response) => {
       context.commit('hideLoading')
-      return Promise.resolve(response.data)
+      return Promise.resolve(response)
     }).catch((err) => {
       context.commit('hideLoading')
-      return Promise.reject(err.response.data)
+      return Promise.reject(err)
     })
   },
 
