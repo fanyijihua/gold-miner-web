@@ -6,16 +6,18 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 // API 接口
-Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => 'token'], function () {
-	Route::put('articles/status/{id}', 'ArticleController@updateStatus');
-	Route::put('recommends/result/{id}/{result}', 'RecommendController@result');
+Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 	Route::get('articles/random/{category}', 'ArticleController@getRandomArticle');
-	Route::resource('users', 'UserController');	
-	Route::resource('articles', 'ArticleController');
-	Route::resource('categories', 'CategoryController');
-	Route::resource('applicants', 'ApplicantController');
-	Route::resource('recommends', 'RecommendController');
-	Route::resource('notifications', 'NotificationController');
+	Route::group(['middleware' => 'token'], function () {
+		Route::put('articles/status/{id}', 'ArticleController@updateStatus');
+		Route::put('recommends/result/{id}/{result}', 'RecommendController@result');
+		Route::resource('users', 'UserController');
+		Route::resource('articles', 'ArticleController');
+		Route::resource('categories', 'CategoryController');
+		Route::resource('applicants', 'ApplicantController');
+		Route::resource('recommends', 'RecommendController');
+		Route::resource('notifications', 'NotificationController');
+	});
 });
 
 // 匹配其他路由

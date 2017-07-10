@@ -16,7 +16,7 @@ class CheckToken
      */
     public function handle($request, Closure $next)
     {
-        if ($request->is("api/users")) {
+        if ($request->isMethod("get")) {
             return $next($request);
         }
 
