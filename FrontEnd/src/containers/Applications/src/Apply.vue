@@ -7,7 +7,7 @@
     </el-steps>
     <el-row class="apply__info" v-if="active === 0">
       <el-col :span="11" :offset="6">
-        <el-form ref="form" :model="userInfo" label-width="100px">
+        <el-form ref="form" :model="userInfo" label-width="140px">
           <el-form-item label="邮箱" required>
             <el-input v-model="userInfo.email" placeholder="用于接收试译结果"></el-input>
           </el-form-item>
@@ -16,7 +16,7 @@
               <el-option v-for="item in categories.id" :key="item" :label="categories.data[item].category" :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="英语能力简述">
+          <el-form-item label="英语能力/翻译经验">
             <el-input type="textarea" v-model="userInfo.description"></el-input>
           </el-form-item>
           <el-form-item>
@@ -74,7 +74,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['users', 'loading', 'categories']),
+    ...mapState(['loading', 'categories']),
     ...mapGetters(['currentUser']),
   },
   methods: {
@@ -97,7 +97,7 @@ export default {
       if (!this.translation) return
 
       const { email, major, description } = this.userInfo
-      const { name } = this.currentUser
+      const { id, name } = this.currentUser
 
       // 提交申请信息和翻译数据
       this.$store.dispatch('submitApplication', {
@@ -107,6 +107,7 @@ export default {
         description,
         articleId: this.article.id,
         translation: this.translation,
+        uid: id,
       }).then(() => {
         this.active = 2
         this.status = 'success'
@@ -115,6 +116,10 @@ export default {
           message: `你的请求已成功提交，我们稍后会将结果发送至您的邮箱 ${email}，请注意查收。`,
         }
       }).catch((err) => {
+        if (err.status === 409) {
+          err.message = '该邮箱已经申请过啦，请耐心等待结果就好啦。'
+        }
+
         this.active = 2
         this.status = 'error'
         this.result = {
@@ -162,7 +167,9 @@ export default {
       this.userInfo.email = email
     }
 
-    this.$store.dispatch('fetchCategories')
+    this.$store.dispatch('fetchCategories').catch((err) => {
+      this.$message.error(err.message)
+    })
   },
 }
 </script>

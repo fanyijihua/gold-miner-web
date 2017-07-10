@@ -25,7 +25,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog :title="dialog.title" :visible.sync="dialog.isVisible" @close="closeDialog">
+    <el-dialog :title="dialog.title" :visible.sync="dialog.isVisible" @close="closeDialog()">
       <el-form :model="form" label-position="top" label-width="80px">
         <el-form-item label="标题">
           <el-input v-model="form.title" auto-complete="off"></el-input>
@@ -40,8 +40,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button type="primary" @click="saveChange" :loading="loading">确 定</el-button>
+        <el-button @click="closeDialog()">取 消</el-button>
+        <el-button type="primary" @click="saveChange()" :loading="loading">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -131,7 +131,10 @@ export default {
   },
   created() {
     this.$store.dispatch('fetchTexts')
-    this.$store.dispatch('fetchCategories')
+
+    if (!this.categories.id.length) {
+      this.$store.dispatch('fetchCategories')
+    }
   },
 }
 </script>

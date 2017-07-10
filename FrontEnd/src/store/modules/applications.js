@@ -100,9 +100,10 @@ const actions = {
    */
   fetchApplicants(context) {
     return applications.fetchApplicants().then((response) => {
-      context.commit('initApplicants', response.data)
-      return Promise.resolve(response.data)
-    }).catch(err => Promise.reject(err.response.data))
+      context.commit('initApplicants', response)
+
+      return Promise.resolve(response)
+    })
   },
 
   /**
@@ -115,15 +116,11 @@ const actions = {
 
     return applications.submitApplication(payload).then((response) => {
       context.commit('hideLoading')
-      return Promise.resolve(response.data)
+      return Promise.resolve(response)
     }).catch((err) => {
       context.commit('hideLoading')
 
-      if (err.response.status === 409) {
-        err.response.data.message = '该邮箱已经申请过啦，请耐心等待结果就好啦。'
-      }
-
-      return Promise.reject(err.response.data)
+      return Promise.reject(err)
     })
   },
 
@@ -135,8 +132,8 @@ const actions = {
   submitOpinionOfApplications(context, payload) {
     return applications.submitOpinion(payload).then((response) => {
       context.commit('removeApplicant', payload.id)
-      return Promise.resolve(response.data)
-    }).catch(err => Promise.reject(err.response.data))
+      return Promise.resolve(response)
+    })
   },
 
   /**
@@ -146,8 +143,6 @@ const actions = {
    */
   fetchRandomText(context, payload) {
     return applications.fetchRandomText(payload)
-      .then(response => Promise.resolve(response.data))
-      .catch(err => Promise.reject(err.response.data))
   },
 
   /**
@@ -157,9 +152,9 @@ const actions = {
    */
   fetchTexts(context, payload) {
     return applications.fetchTexts(payload).then((response) => {
-      context.commit('initTexts', response.data)
-      return Promise.resolve(response.data)
-    }).catch(err => Promise.reject(err.response.data))
+      context.commit('initTexts', response)
+      return Promise.resolve(response)
+    })
   },
 
   /**
@@ -169,9 +164,9 @@ const actions = {
    */
   addText(context, payload) {
     return applications.addText(payload).then((response) => {
-      context.commit('addText', response.data)
-      return Promise.resolve(response.data)
-    }).catch(err => Promise.reject(err.response.data))
+      context.commit('addText', response)
+      return Promise.resolve(response)
+    })
   },
 
   /**
@@ -181,9 +176,9 @@ const actions = {
    */
   updateText(context, payload) {
     return applications.updateText(payload).then((response) => {
-      context.commit('updateText', response.data)
-      return Promise.resolve(response.data)
-    }).catch(err => Promise.reject(err.response.data))
+      context.commit('updateText', response)
+      return Promise.resolve(response)
+    })
   },
 
   /**
@@ -193,8 +188,8 @@ const actions = {
   deleteText(context, id) {
     return applications.deleteText(id).then((response) => {
       context.commit('removeText', id)
-      return Promise.resolve(response.data)
-    }).catch(err => Promise.reject(err.response.data))
+      return Promise.resolve(response)
+    })
   },
 }
 

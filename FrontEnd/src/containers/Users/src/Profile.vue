@@ -55,7 +55,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog title="我的设置" :visible.sync="settings.visible">
+    <el-dialog title="我的设置" :visible.sync="settings.visible" @close="closeSettingsDialog()">
       <el-row>
         <el-col :span="12" :offset="6">
           <el-form :model="settings.values" label-width="200px" label-position="left">
@@ -72,8 +72,8 @@
         </el-col>
       </el-row>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeSettingsDialog(false)">取 消</el-button>
-        <el-button type="primary" @click="closeSettingsDialog(true)">确 定</el-button>
+        <el-button @click="closeSettingsDialog()">取 消</el-button>
+        <el-button type="primary" @click="closeSettingsDialog()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -82,6 +82,20 @@
 <script>
 export default {
   name: 'Profile',
+  beforeRouteEnter(to, from, next) {
+    if (to.hash === '#settings') {
+      next(vm => vm.showSettingsDialog())
+    } else {
+      next()
+    }
+  },
+  beforeRouteUpdate(to, from, next) {
+    if (to.hash === '#settings') {
+      this.showSettingsDialog()
+    }
+
+    next()
+  },
   data() {
     return {
       settings: {
@@ -100,6 +114,7 @@ export default {
     },
     closeSettingsDialog() {
       this.settings.visible = false
+      window.location.hash = ''
     },
   },
 }

@@ -30,10 +30,10 @@ const actions = {
    */
   fetchCategories(context) {
     return categories.fetchCategories().then((response) => {
-      context.commit('updateCategories', response.data)
+      context.commit('updateCategories', response)
 
-      return Promise.resolve(response.data)
-    }).catch(err => Promise.reject(err.response.data))
+      return Promise.resolve(response)
+    })
   },
 }
 

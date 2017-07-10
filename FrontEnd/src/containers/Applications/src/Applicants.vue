@@ -14,7 +14,7 @@
     <el-table :data="applicants" border>
       <el-table-column prop="cdate" label="申请日期"></el-table-column>
       <el-table-column prop="major" label="擅长领域"></el-table-column>
-      <el-table-column prop="description" label="英语能力"></el-table-column>
+      <el-table-column prop="description" label="英语能力/翻译经验"></el-table-column>
       <el-table-column label="详情">
         <template scope="scope">
           <el-button type="text" size="small"><router-link :to="`/applications/applicants/${scope.row.id}`">查看</router-link></el-button>
@@ -34,8 +34,6 @@ export default {
   },
   computed: {
     ...mapGetters(['applicants']),
-  },
-  methods: {
   },
   created() {
     this.$store.dispatch('fetchApplicants')
