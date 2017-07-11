@@ -150,7 +150,7 @@ router
     })
   })
 
-router.get('/articles', (req, res) => {
+router.get('/translations', (req, res) => {
   const data = mock({
     'articles|10': [{
       'id|+1': 1,
@@ -160,8 +160,15 @@ router.get('/articles', (req, res) => {
       author: {
         'id|+1': 1,
         username: '@cname',
-        avatar: '/static/avatar.png',
+        avatar: '/static/images/default-avatar.png',
       },
+      'status|1': [
+        0, // 等待翻译
+        1, // 翻译中
+        2, // 等待校对
+        4, // 校对中
+        5  // 已完成
+      ],
       meta: {
         createdAt: '28 分钟前',
       },

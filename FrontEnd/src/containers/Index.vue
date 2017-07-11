@@ -61,7 +61,7 @@ export default {
     ...mapActions(['fetchArticles']),
   },
   created() {
-    // this.fetchArticles({ type: this.activeTab })
+    this.fetchArticles({ type: this.activeTab })
   },
 }
 </script>
@@ -103,9 +103,6 @@ export default {
 }
 
 .card {
-  &__title {
-  }
-
   img {
     width: 100%;
     height: 200px;

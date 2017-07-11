@@ -6,16 +6,19 @@
     </div>
     <div class="article__cont">
       <h3 class="article__title">{{ article.title }}</h3>
+      <slot name="meta"></slot>
       <p class="article__description">{{ article.description }}</p>
       <div class="article__footer clearfix">
-        <div class="article__tags pull-left">
-          <span class="article__tag">{{ article.category }}</span>
-          <span class="article__tag">{{ article.meta.createdAt }}</span>
-        </div>
-        <div class="article__links pull-right">
-          <a class="article__link" href="https://juejin.im/articles/1">收藏该文章</a>
-          <router-link class="article__link" :to="`/articles/${article.id}`">阅读全文</router-link>
-        </div>
+        <slot name="footer">
+          <div class="article__tags pull-left">
+            <span class="article__tag">{{ article.category }}</span>
+            <span class="article__tag">{{ article.meta.createdAt }}</span>
+          </div>
+          <div class="article__links pull-right">
+            <a class="article__link" href="https://juejin.im/articles/1">收藏该文章</a>
+            <router-link class="article__link" :to="`/articles/${article.id}`">阅读全文</router-link>
+          </div>
+        </slot>
       </div>
     </div>
   </div>

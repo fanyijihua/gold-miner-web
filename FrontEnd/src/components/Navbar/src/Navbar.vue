@@ -7,8 +7,8 @@
       <div class="navbar__body">
         <el-menu :default-active="activeIndex" mode="horizontal" router>
           <el-menu-item index="index" :route="{ path:'/' }">首页</el-menu-item>
+          <el-menu-item index="articles" :route="{ path:'/articles' }">文章集</el-menu-item>
           <!-- <el-menu-item index="topics">优秀专题</el-menu-item>
-          <el-menu-item index="articles">文章集</el-menu-item>
           <el-menu-item index="ranks">排行榜</el-menu-item> -->
           <li class="pull-right">
             <template v-if="logIn">

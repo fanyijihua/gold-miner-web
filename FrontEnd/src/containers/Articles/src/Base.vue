@@ -11,4 +11,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.articles {
+  margin-top: 40px;
+}
 </style>

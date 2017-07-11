@@ -1,9 +1,9 @@
 import axios from './axios'
 
 export const fetchArticles = function fetchArticles(options) {
-  return axios.get('/api/articles', {
+  return axios.get('/api/translations', {
     params: options,
-  }).then(response => response.data)
+  })
 }
 
 export const test = function test() {
