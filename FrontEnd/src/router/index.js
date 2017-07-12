@@ -9,6 +9,7 @@ import Applications from '@/containers/Applications'
 import Auth from '@/containers/Auth'
 import Articles from '@/containers/Articles'
 import Users from '@/containers/Users'
+import Ranks from '@/containers/Ranks'
 import store from '@/store'
 
 const localStorage = require('store')
@@ -181,6 +182,11 @@ const router = new Router({
           },
         },
       ],
+    },
+    {
+      path: '/ranks',
+      name: 'Ranks',
+      component: Ranks.List,
     },
   ],
 })

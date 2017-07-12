@@ -3,7 +3,7 @@ import Navbar from './Navbar'
 import Footer from './Footer'
 import Popover from './Popover'
 import Card from './Card'
-import RankingList from './RankingList'
+import { RankingList, RankingColumn } from './Ranking'
 import Timeline from './Timeline'
 
 const components = [
@@ -13,6 +13,7 @@ const components = [
   Popover,
   Card,
   RankingList,
+  RankingColumn,
   Timeline,
 ]
 
