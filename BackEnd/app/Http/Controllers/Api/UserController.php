@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\UserSettingController as USetting;
 
 class UserController extends Controller
 {
@@ -105,7 +106,7 @@ class UserController extends Controller
             die;
         }
 
-        $setting = $this->defaultUserSetting($insertId);
+        $setting = USetting::setDefaultSettings($insertId);
 
         if($setting == false){
             header("HTTP/1.1 500 Service unavailable");
@@ -174,8 +175,8 @@ class UserController extends Controller
             return;
         }
 
-        if ($this->getUserSetting($userId) == false) {
-            $this->defaultUserSetting($userId);
+        if (USetting::getUserSettings($userId) == false) {
+            USetting::setDefaultSettings($userId);
         }
     }
 
@@ -190,42 +191,6 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * 添加默认用户设置
-     * @param  int $userId 用户 ID
-     * @return boolean
-     */
-    public function defaultUserSetting($userId)
-    {
-        $data = array(
-                'uid'               => $userId,
-                'newtranslation'    => 1,
-                'newreview'         => 1,
-                'newarticle'        => 1,
-                'newresult'         => 1,
-                'udate'             => date("Y-m-d H:i:s"),
-                'cdate'             => date("Y-m-d H:i:s")
-            );
-
-        $res = DB::table('userSetting')->insert($data);
-
-        return $res;
-    }
-
-    /**
-     * 获取用户设置内容
-     * @param  int $userId  用户 ID
-     * @return mixed        用户设置内容
-     */
-    public function getUserSetting($userId)
-    {
-        $result = DB::table('userSetting')
-                    ->where('uid', $userId)
-                    ->first();
-
-        return $result;
-    }
-    
     /**
      * 通过用户 ID 获取用户信息
      * @param  int  $userId     用户 ID
@@ -294,18 +259,56 @@ class UserController extends Controller
     /**
      * 递增用户推荐文章数量
      * @param  int  $uid    用户 ID
+     * @param  int  $num    文章数量
      * @return void
      */
-    public static function incrementRecommend($uid)
+    public static function incrementRecommend($uid, $num=1)
     {
-        $result = DB::table('userDetail')
-                    ->where('uid', $uid)
-                    ->increment('recommend');
-
-        if ($result == false) {
-            header("HTTP/1.1 503 Service unavailable");
-            return;
-        }
+        DB::table('userDetail')->where('uid', $uid)->increment('recommend', $num);
     }
 
+    /**
+     * 递增用户翻译文章数量
+     * @param  int  $uid    用户 ID
+     * @param  int  $num    文章数量
+     * @return void
+     */
+    public static function incrementTranslate($uid, $num=1)
+    {
+        DB::table('userDetail')->where('uid', $uid)->increment('translate', $num);
+    }
+
+    /**
+     * 递增用户校对文章数量
+     * @param  int  $uid    用户 ID
+     * @param  int  $num    校对数量
+     * @return void
+     */
+    public static function incrementReview($uid, $num=1)
+    {
+        DB::table('userDetail')->where('uid', $uid)->increment('review', $num);
+    }
+
+    /**
+     * 用户添加积分
+     * @param  int  $uid    用户 ID
+     * @param  int  $num    积分数量
+     * @return void
+     */
+    public static function incrementScore($uid, $num=1)
+    {
+        DB::table('userDetail')->where('uid', $uid)->increment('totalScore', $num);
+        DB::table('userDetail')->where('uid', $uid)->increment('currentScore', $num);
+    }
+
+    /**
+     * 用户减去积分
+     * @param  int  $uid    用户 ID
+     * @param  int  $num    积分数量
+     * @return void
+     */
+    public static function decrementScore($uid, $num=1)
+    {
+        DB::table('userDetail')->where('uid', $uid)->decrement('currentScore', $num);
+    }
 }
