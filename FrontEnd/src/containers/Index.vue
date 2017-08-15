@@ -2,11 +2,14 @@
   <div class="container">
     <el-row class="main grid__row-gutter">
       <el-col class="grid__col-gutter" :span="18">
-        <el-tabs v-model="activeTab" v-loading="loading.status">
+        <el-tabs v-model="activeTab" v-loading="loading" @tab-click="toggleTab">
           <el-tab-pane v-for="tab in articlesTab" :label="tab.label" :name="tab.name" :key="tab.name">
-            <article-item v-for="item in articles[tab.name].data" :article="item" :key="item"></article-item>
-            <div class="text-center load-more">
-              <a href="javascript:;">查看更多</a>
+            <article-item v-for="item in articles[tab.name]" :article="articles.data[item]" :key="item"></article-item>
+            <div class="text-center no-content" v-if="noContent">
+              <router-link to="/recommends">没有找到喜欢的文章？不如给我们推荐几篇吧~</router-link>
+            </div>
+            <div class="text-center load-more" v-if="showMoreBtn">
+              <a href="javascript:;" @click="nextPage()">查看更多</a>
               <div class="line"></div>
             </div>
           </el-tab-pane>
@@ -27,15 +30,15 @@ import { mapState, mapActions } from 'vuex'
 
 const articlesTab = [
   {
-    name: 'lastest',
+    name: 'posted',
     label: '最新译文',
   },
   {
-    name: 'waiting',
+    name: 'awaiting',
     label: '等待认领',
   },
   {
-    name: 'doing',
+    name: 'progressing',
     label: '正在进行',
   },
 ]
@@ -45,23 +48,63 @@ export default {
   data() {
     return {
       articlesTab,
+      loading: false,
+      activeTab: this.$store.getters.currentUser.translator ? 'awaiting' : 'posted',
+      page: 1,
+      noContent: false,
+      showMoreBtn: false,
     }
   },
   computed: {
-    ...mapState(['loading', 'articles']),
-    activeTab() {
-      return this.$store.getters.currentUser.istranslator ? 'waiting' : 'lastest'
-    },
+    ...mapState(['articles']),
   },
   beforeRouteLeave(to, from, next) {
-    this.$store.commit('hideLoading')
     next()
   },
   methods: {
     ...mapActions(['fetchArticles']),
+
+    toggleTab() {
+      this.page = 1
+
+      this.renderArticles()
+    },
+
+    nextPage() {
+      this.page += 1
+
+      this.renderArticles()
+    },
+
+    renderArticles() {
+      return this.fetchArticles({
+        type: this.activeTab,
+        page: this.page,
+      }).then((data) => {
+        if (data.length) {
+          this.showMoreBtn = true
+        } else {
+          this.showMoreBtn = false
+
+          this.noContent = (this.page === 1)
+        }
+
+        return Promise.resolve(data)
+      }).catch((err) => {
+        this.$message.error(err.message)
+
+        return Promise.reject(err)
+      })
+    },
   },
   created() {
-    this.fetchArticles({ type: this.activeTab })
+    this.loading = true
+
+    this.renderArticles().then(() => {
+      this.loading = false
+    }).catch(() => {
+      this.loading = false
+    })
   },
 }
 </script>
@@ -99,6 +142,15 @@ export default {
     font-size: 14px;
     background-color: #fff;
     color: $silver-extra-light;
+  }
+}
+
+.no-content {
+  a {
+    display: block;
+    margin: 100px 0;
+    font-size: 16px;
+    color: $blue;
   }
 }
 

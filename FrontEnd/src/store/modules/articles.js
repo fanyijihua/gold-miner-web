@@ -1,18 +1,12 @@
+import union from 'lodash/union'
+import assign from 'lodash/assign'
 import * as articles from '@/services/articles'
 
 const state = {
-  lastest: {
-    page: 0,
-    data: [],
-  },
-  waiting: {
-    page: 0,
-    data: [],
-  },
-  doing: {
-    page: 0,
-    data: [],
-  },
+  data: {},
+  posted: [],
+  awaiting: [],
+  progressing: [],
 }
 
 const getters = {
@@ -21,31 +15,37 @@ const getters = {
 
 const mutations = {
   setArticles(state, payload) {
-    state[payload.type].data = payload.data
-  },
-  updatePageNumber(state, payload) {
-    state[payload.type].page += 1
+    const data = {}
+    const list = []
+
+    payload.data.forEach((item) => {
+      data[item.id] = item
+      list.push(item.id)
+    })
+
+    state.data = assign({}, state.data, data)
+
+    if (payload.page === 1) {
+      state[payload.type] = list
+    } else {
+      state[payload.type] = union(state[payload.type], list)
+    }
   },
 }
 
 const actions = {
   fetchArticles(context, payload) {
-    context.commit('updatePageNumber', { type: payload.type })
-    context.commit('showLoading')
-
-    return articles.fetchArticles({
-      status: payload.type,
-      page: context.state[payload.type].page,
+    return articles.fetchArticles(payload.type, {
+      page: payload.page,
       perpage: payload.perpage || 10,
     }).then((data) => {
-      context.commit('hideLoading')
       context.commit('setArticles', {
         type: payload.type,
+        page: payload.page,
         data,
       })
-    }).catch((err) => {
-      context.commit('hideLoading')
-      return Promise.reject(err.response.data)
+
+      return Promise.resolve(data)
     })
   },
 }
