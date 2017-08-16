@@ -10,7 +10,7 @@ class UserSettingController extends Controller
 {
     public function show($id)
     {
-        $userSetting = DB::table('usersetting')
+        $userSetting = DB::table('userSetting')
                         ->where('uid', $id)
                         ->first();
 
@@ -24,7 +24,7 @@ class UserSettingController extends Controller
      */
     public static function getUserSettings($id)
     {
-        $result = DB::table('usersetting')
+        $result = DB::table('userSetting')
                     ->where('uid', $id)
                     ->first();
 
@@ -53,7 +53,7 @@ class UserSettingController extends Controller
                 'udate'             => date("Y-m-d H:i:s")
     		);
 
-    	$res = DB::table('usersetting')
+    	$res = DB::table('userSetting')
     			->where('uid', $id)
     			->update($data);
 
@@ -82,7 +82,7 @@ class UserSettingController extends Controller
                 'cdate'             => date("Y-m-d H:i:s")
             );
 
-        $res = DB::table('usersetting')->insert($data);
+        $res = DB::table('userSetting')->insert($data);
 
         return $res;
     }
