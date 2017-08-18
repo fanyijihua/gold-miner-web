@@ -22,4 +22,14 @@ class LogController extends Controller
     			->where('timeline.tid', $id)
     			->get();
     }
+
+    public static function checkTimeline($userId, $operation, $status)
+    {
+        return DB::table('timeline')
+                ->join('translation', 'translation.id', '=', 'timeline.tid')
+                ->where('timeline.uid', $userId)
+                ->where('timeline.operation', $operation)
+                ->where('translation.status', $status)
+                ->first();
+    }
 }
