@@ -176,3 +176,6 @@ ENV/
 BackEnd/public/static
 
 BackEnd/resources/views/index.blade.php
+
+# idea
+.idea/

@@ -95,7 +95,8 @@ class TranslationController extends Controller
         $payload = $request->input('payload');
         // 处理 GitHub Repo 管理员发起的 PR
         // PR被 merge 时更新文章为待认领状态
-        if ($payload->pull_request->user->login == env('GITHUB_ADMIN_USERNAME')) {
+        $admin = array_filter(explode(",", env('GITHUB_ADMIN_USERNAME')));
+        if (in_array($payload->pull_request->user->login, $admin)) {
             if ($payload->action == 'closed' || $payload->pull_request->merged != false) {
                 $result = $this->requestTranslate($request);
 
@@ -378,6 +379,12 @@ class TranslationController extends Controller
             'udate'      => date('Y-m-d H:i:s')
         );
 
+        if (LogController::checkTimeline($request->input('uid'), '认领翻译', 1)) {
+            header('HTTP/1.1 403 Forbidden!');
+            echo json_encode(['message' => '您还有未完成的翻译任务！']);
+            return;
+        }
+
         $result = DB::table('translation')
             ->where('id', $request->input('id'))
             ->update($data);
@@ -437,6 +444,12 @@ class TranslationController extends Controller
                 'status'    => $reviewer1 ? 3 : 2,
                 'udate'     => date('Y-m-d H:i:s')
             );
+
+        if (LogController::checkTimeline($request->input('uid'), '认领校对', 3)) {
+            header('HTTP/1.1 403 Forbidden!');
+            echo json_encode(['message' => '您还有未完成的校对任务！']);
+            return;
+        }
 
         $result = DB::table('translation')
                 ->where('id', $request->input('id'))
