@@ -35,7 +35,7 @@ class StatisticController extends Controller
     {
         $result = array();
 
-        $result['week'] = $this->week('推荐成功');
+        $result['total'] = $this->total('推荐成功');
         $result['month'] = $this->month('推荐成功');
         $result['year'] = $this->year('推荐成功');
 
@@ -50,7 +50,7 @@ class StatisticController extends Controller
     {
         $result = array();
 
-        $result['week'] = $this->week('认领翻译');
+        $result['total'] = $this->total('认领翻译');
         $result['month'] = $this->month('认领翻译');
         $result['year'] = $this->year('认领翻译');
 
@@ -65,7 +65,7 @@ class StatisticController extends Controller
     {
         $result = array();
 
-        $result['week'] = $this->week('认领校对');
+        $result['total'] = $this->total('认领校对');
         $result['month'] = $this->month('认领校对');
         $result['year'] = $this->year('认领校对');
 
@@ -73,16 +73,15 @@ class StatisticController extends Controller
     }
 
     /**
-     * 获取指定类别的上周排行
+     * 获取指定类别的总排行
      * @param $field
      * @return mixed
      */
-    public function week($field)
+    public function total($field)
     {
     	return DB::table('timeline')
                 ->join('user', 'timeline.uid', '=', 'user.id')
                 ->select(DB::raw("user.id, user.name, user.avatar, COUNT(timeline.uid) AS num"))
-                ->where("timeline.cdate", ">", strtotime("-1 week"))
                 ->where("timeline.operation", $field)
                 ->groupBy("user.id", "user.name", "user.avatar")
                 ->orderBy("num", "DESC")
