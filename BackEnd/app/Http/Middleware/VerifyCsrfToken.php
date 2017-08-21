@@ -22,7 +22,7 @@ class VerifyCsrfToken extends BaseVerifier
     	if ($request->getClientIP() == "127.0.0.1") {
             return $next($request);
     	}
-
+      
     	return parent::handle($request, $next);
     }
 }
