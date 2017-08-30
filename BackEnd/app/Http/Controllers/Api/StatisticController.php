@@ -168,4 +168,78 @@ class StatisticController extends Controller
         return DB::table('translation')
                 ->count('id');
     }
+
+    /**
+     * 获取用户指标排名
+     *
+     * @param Request $request
+     * @param int $id
+     * @return void
+     * @date 2017-08-31 00:18:27
+     * @author Romeo
+     */
+    public function userRank(Request $request, $id)
+    {
+        $rank = array();
+
+        $rank['translate'] = DB::table('userDetail')
+                                ->where('translate', '>', $request->input('translate'))
+                                ->count() + 1;
+
+        $rank['recommend'] = DB::table('userDetail')
+                                ->where('recommend', '>', $request->input('recommend'))
+                                ->count() + 1;
+
+        $rank['score'] = DB::table('userDetail')
+                                ->where('currentscore', '>', $request->input('score'))
+                                ->count() + 1;
+
+        echo json_encode($rank);
+    }
+
+    /**
+     * 获取用户最近参与的任务
+     *
+     * @param Request $request
+     * @param int $id
+     * @return void
+     * @date 2017-08-31 00:38:20
+     * @author Romeo
+     */
+    public function userTask($id)
+    {
+        $article = array();
+
+        $article['translate'] = DB::table('translation')
+                                    ->select('translation.title', 'translation.link')
+                                    ->join('timeline', 'timeline.tid', '=', 'translation.id')
+                                    ->where('timeline.uid', $id)
+                                    ->where('timeline.operation', '认领翻译')
+                                    ->where('translation.status', 4)
+                                    ->orderBy('translation.udate', 'DESC')
+                                    ->limit(5)
+                                    ->get();
+
+        $article['review'] = DB::table('translation')
+                                    ->select('translation.title', 'translation.link')
+                                    ->join('timeline', 'timeline.tid', '=', 'translation.id')
+                                    ->where('timeline.uid', $id)
+                                    ->where('timeline.operation', '认领校对')
+                                    ->where('translation.status', 4)
+                                    ->orderBy('translation.udate', 'DESC')
+                                    ->limit(5)
+                                    ->get();
+
+        $article['recommend'] = DB::table('translation')
+                                    ->select('translation.title', 'translation.link')
+                                    ->join('timeline', 'timeline.tid', '=', 'translation.id')
+                                    ->where('timeline.uid', $id)
+                                    ->where('timeline.operation', '推荐成功')
+                                    ->where('translation.status', 4)
+                                    ->orderBy('translation.udate', 'DESC')
+                                    ->limit(5)
+                                    ->get();
+        
+        echo json_encode($article);
+    }
 }
