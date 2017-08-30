@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\MailController as Mail;
 
 class ApplicantController extends Controller
 {
@@ -15,7 +16,6 @@ class ApplicantController extends Controller
      */
     public function index(Request $request)
     {
-        //
         if (intval($request->input('status')) > 2) {
             header("HTTP/1.1 400 Bad request!");
             echo json_encode(['message' => '参数错误！']);
@@ -36,16 +36,6 @@ class ApplicantController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * 添加申请者
      * @param  int      $uid            用户 ID（对应 user 表，如果有的话）
      * @param  string   $name           昵称
@@ -58,7 +48,6 @@ class ApplicantController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $this->isNotNull(array(
                 'email'         => $request->input("email"),
                 'major'         => $request->input("major"),
@@ -100,7 +89,6 @@ class ApplicantController extends Controller
      */
     public function show($id)
     {
-        //
         $applicant = DB::table('applicant')
                         ->leftjoin('category', 'applicant.major', '=', 'category.id')
                         ->leftjoin('article', 'applicant.articleid', '=', 'article.id')
@@ -118,53 +106,41 @@ class ApplicantController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * 更新申请结果
      * @param  bool     $result     申请结果，true 为成功，false 为失败
      * @param  int      $id         申请记录的 ID
      * @return json_encode(Array)           
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, Mail $mail)
     {
-        //
-        $data = array( 'udate' => date('Y-m-d H:i:s') );
+        if (!is_numeric($id)) {
+            header("HTTP/1.1 400 Bad request");
+            echo json_encode(['message' => '参数错误！']);
+            return;
+        }
+
+        $data = array(
+                'comment'   => $request->input('opinion'),
+                'status'    => 1,
+                'udate'     => date('Y-m-d H:i:s')
+            );
+
         if ( $request->input('result') == true ) {
             $data['invitation'] = $this->generateToken($id);
-            $data['status'] = 1;
         } else {
             $data['status'] = 2;
         }
 
         $result = DB::table('applicant')
                     ->where('id', $id)
-                    ->select('id', '')
                     ->update($data);
 
         if($result === false){
             header("HTTP/1.1 503 Service Unavailable");
             return;
         }
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $mail->activate($id);
     }
 
     public function checkInvitation(Request $request)

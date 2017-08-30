@@ -23,7 +23,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => 'token'],
 	Route::resource('applicants', 'ApplicantController');
 	Route::post('applicants/check', 'ApplicantController@checkInvitation');
 	// 推荐文章相关
-	Route::put('recommends/result/{id}/{result}', 'RecommendController@result');
+	Route::put('recommends/result/{id}', 'RecommendController@result');
 	Route::resource('recommends', 'RecommendController');
 	// 翻译文章相关
 	Route::post('translations', 'TranslationController@store');
