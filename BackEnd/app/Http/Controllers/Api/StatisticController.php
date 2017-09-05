@@ -172,26 +172,29 @@ class StatisticController extends Controller
     /**
      * 获取用户指标排名
      *
-     * @param Request $request
      * @param int $id
      * @return void
      * @date 2017-08-31 00:18:27
      * @author Romeo
      */
-    public function userRank(Request $request, $id)
+    public function userRank($id)
     {
         $rank = array();
+        $userDetail = DB::table('userDetail')
+                        ->select('translate', 'recommend', 'currentscore')
+                        ->where('uid', $id)
+                        ->first();
 
         $rank['translate'] = DB::table('userDetail')
-                                ->where('translate', '>', $request->input('translate'))
+                                ->where('translate', '>', $userDetail->translate)
                                 ->count() + 1;
 
         $rank['recommend'] = DB::table('userDetail')
-                                ->where('recommend', '>', $request->input('recommend'))
+                                ->where('recommend', '>', $userDetail->recommend)
                                 ->count() + 1;
 
         $rank['score'] = DB::table('userDetail')
-                                ->where('currentscore', '>', $request->input('score'))
+                                ->where('currentscore', '>', $userDetail->currentscore)
                                 ->count() + 1;
 
         echo json_encode($rank);
