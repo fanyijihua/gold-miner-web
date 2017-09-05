@@ -4,12 +4,12 @@
       <el-col :span="8">
         <card title="翻译的文章" size="small">
           <ul class="article__list">
-            <li class="article__item" v-for="item in translations">
+            <li class="article__item" v-for="item in articles.translate">
               <span class="article__dot"></span>
               <div class="article__body">
                 <h4 class="article__title">{{ item.title }}</h4>
               </div>
-              <a class="article__url" href="#">查看详情</a>
+              <a class="article__url" :href="item.link">查看详情</a>
             </li>
           </ul>
         </card>
@@ -17,12 +17,12 @@
       <el-col :span="8">
         <card title="校对的文章" size="small">
           <ul class="article__list">
-            <li class="article__item" v-for="item in translations">
+            <li class="article__item" v-for="item in articles.review">
               <span class="article__dot"></span>
               <div class="article__body">
                 <h4 class="article__title">{{ item.title }}</h4>
               </div>
-              <a class="article__url" href="#">查看详情</a>
+              <a class="article__url" :href="item.link">查看详情</a>
             </li>
           </ul>
         </card>
@@ -30,12 +30,12 @@
       <el-col :span="8">
         <card title="推荐的文章" size="small">
           <ul class="article__list">
-            <li class="article__item" v-for="item in translations">
+            <li class="article__item" v-for="item in articles.recommend">
               <span class="article__dot"></span>
               <div class="article__body">
                 <h4 class="article__title">{{ item.title }}</h4>
               </div>
-              <a class="article__url" href="#">查看详情</a>
+              <a class="article__url" :href="item.link">查看详情</a>
             </li>
           </ul>
         </card>
@@ -45,35 +45,29 @@
 </template>
 
 <script>
-const data = [
-  {
-    id: 1,
-    title: '如何为超级复杂如此复杂真的很复杂的真的很复杂的',
-  },
-  {
-    id: 2,
-    title: '我是译者本人，这是我翻译的文章',
-  },
-  {
-    id: 3,
-    title: '如何为复杂应用设计表单',
-  },
-  {
-    id: 4,
-    title: '杂如此复杂真的很',
-  },
-  {
-    id: 5,
-    title: '如何为超级复杂如此复的真的很复杂的',
-  },
-]
+import * as userService from '@/services/users'
+import assign from 'lodash/assign'
 
 export default {
   name: 'UserArticles',
   data() {
     return {
-      translations: data,
+      loading: false,
+      articles: {
+        translate: [],
+        review: [],
+        recommend: [],
+      },
     }
+  },
+  created() {
+    const { id } = this.$route.params
+
+    userService.fetchTasksOfUser(id).then((data) => {
+      assign(this.articles, data)
+    }).catch((err) => {
+      this.$message.error(err.message)
+    })
   },
 }
 </script>

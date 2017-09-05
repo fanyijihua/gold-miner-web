@@ -55,9 +55,9 @@
           </div>
           <div class="detail__body">
             <ul class="ranking clearfix">
-              <li class="ranking__item"><strong class="ranking__value">100</strong><p class="ranking__label">推荐排名</p></li>
-              <li class="ranking__item"><strong class="ranking__value">100</strong><p class="ranking__label">翻译排名</p></li>
-              <li class="ranking__item"><strong class="ranking__value">100</strong><p class="ranking__label">积分排名</p></li>
+              <li class="ranking__item"><strong class="ranking__value">{{ this.rank.recommend }}</strong><p class="ranking__label">推荐排名</p></li>
+              <li class="ranking__item"><strong class="ranking__value">{{ this.rank.translate }}</strong><p class="ranking__label">翻译排名</p></li>
+              <li class="ranking__item"><strong class="ranking__value">{{ this.rank.score }}</strong><p class="ranking__label">积分排名</p></li>
             </ul>
           </div>
         </div>
@@ -94,6 +94,7 @@
 import { mapState, mapGetters } from 'vuex'
 import assign from 'lodash/assign'
 import * as userService from '@/services/users'
+import * as statisticService from '@/services/statistics'
 
 export default {
   name: 'Profile',
@@ -122,6 +123,11 @@ export default {
           newarticle: 1,
           newresult: 1,
         },
+      },
+      rank: {
+        translate: 0,
+        recommend: 0,
+        score: 0,
       },
     }
   },
@@ -178,6 +184,15 @@ export default {
         this.settings.loading = false
       })
     },
+  },
+  created() {
+    const { id } = this.$route.params
+
+    statisticService.fetchRankOfUser(id).then((data) => {
+      assign(this.rank, data)
+    }).catch((err) => {
+      this.$message.error(err.message)
+    })
   },
 }
 </script>

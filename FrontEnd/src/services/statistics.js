@@ -7,3 +7,7 @@ export const fetchOverview = function fetchOverview() {
 export const fetchRanks = function fetchRanks() {
   return axios.get('/api/statistics')
 }
+
+export const fetchRankOfUser = function fetchRankOfUser(id) {
+  return axios.get(`/api/statistics/user/rank/${id}`)
+}

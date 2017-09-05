@@ -23,3 +23,7 @@ export const fetchSettings = function fetchSettings(id) {
 export const updateSettings = function fetchSettings(id, payload) {
   return axios.post(`/api/UserSettings/${id}`, payload)
 }
+
+export const fetchTasksOfUser = function fetchTasksOfUser(id) {
+  return axios.get(`/api/statistics/user/task/${id}`)
+}

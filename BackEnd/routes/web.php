@@ -39,6 +39,8 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => 'token'],
 	// 排行榜相关
 	Route::get('statistics', 'StatisticController@index');
 	Route::get('statistics/overview', 'StatisticController@overview');
+	Route::get('statistics/user/rank/{id}', 'StatisticController@userRank');
+	Route::get('statistics/user/task/{id}', 'StatisticController@userTask');
 });
 
 // 其他路由
