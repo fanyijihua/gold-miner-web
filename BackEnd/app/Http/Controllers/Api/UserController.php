@@ -18,7 +18,6 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        //
         $aUrl = 'https://github.com/login/oauth/access_token';
         $aParams = array(
                 'state'         =>  $request->input('state'),
@@ -30,9 +29,8 @@ class UserController extends Controller
         parse_str($this->sendRequest($aUrl, 'POST', $aParams), $token);
 
         if (!isset($token['access_token'])) {
-            header("HTTP/1.1 500 Service unavailable");
-            echo json_encode(['message' => '获取 GitHub token 失败！']);
-            return;
+            header("HTTP/1.1 401 Service unavailable");
+            return view('index', ['loginError' => '获取 GitHub token 失败！']);
         }
         
         $uUrl = "https://api.github.com/user";
@@ -43,12 +41,10 @@ class UserController extends Controller
 
         if (!isset($userInfo->login)) {
             header("HTTP/1.1 401 Unauthorized");
-            echo json_encode(['message' => 'GitHub 授权失败！']);
-            return;
+            return view('index', ['loginError' => 'GitHub 授权失败！']);
         } elseif ($userInfo->email == null) {
             header("HTTP/1.1 404 Not found");
-            echo json_encode(['message' => 'GitHub 邮箱未公开！']);
-            return;
+            return view('index', ['loginError' => 'GitHub 邮箱未公开！']);
         }
 
         $this->userInfo = $userInfo;
@@ -90,8 +86,7 @@ class UserController extends Controller
         $insertId = DB::table('user')->insertGetId($user);
         if ($insertId == false) {
             header("HTTP/1.1 500 Service unavailable");
-            echo json_encode(['message' => '注册失败！']);
-            die;
+            return view('index', ['loginError' => '添加新用户失败！']);
         }
 
         $userDetail = array(
@@ -105,16 +100,14 @@ class UserController extends Controller
 
         if ($detail == false) {
             header("HTTP/1.1 500 Service unavailable");
-            echo json_encode(['message' => '添加用户详情失败！']);
-            die;
+            return view('index', ['loginError' => '添加用户详情失败！']);
         }
 
         $setting = USetting::setDefaultSettings($insertId);
 
         if ($setting == false) {
             header("HTTP/1.1 500 Service unavailable");
-            echo json_encode(['message' => '添加用户设置失败！']);
-            die;
+            return view('index', ['loginError' => '添加用户设置失败！']);
         }
         
         return $insertId;
@@ -170,8 +163,7 @@ class UserController extends Controller
 
         if ($result === false) {
             header("HTTP/1.1 500 Service unavailable");
-            echo json_encode(['message' => '更新用户信息失败！']);
-            return;
+            return view('index', ['loginError' => '更新用户详情失败！']);
         }
 
         if (USetting::getUserSettings($userId) == false) {
@@ -201,8 +193,7 @@ class UserController extends Controller
 
         if ($userInfo == false) {
             header("HTTP/1.1 500 Service unavailable");
-            echo json_encode(['message' => '获取用户信息失败！']);
-            return;
+            return view('index', ['loginError' => '获取用户信息失败！']);
         }
 
         return $userInfo;
@@ -236,11 +227,6 @@ class UserController extends Controller
             $user['cdate'] = date('Y-m-d H:i:s');
             $result = DB::table('userToken')
                         ->insert($user);
-        }
-
-        if ($result === false) {
-            header("HTTP/1.1 500 Service unavailable");
-            echo json_encode(['message' => '更新用户 token 失败！']);
         }
     }
 
