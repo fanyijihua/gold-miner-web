@@ -14,7 +14,7 @@ class UserController extends Controller
     /**
      * 从 GitHub 获取用户信息并创建或更新用户
      * @param  Request  $request   应包含 state 和 code
-     * @return 重定向
+     * @return void
      */
     public function index(Request $request)
     {
@@ -29,7 +29,7 @@ class UserController extends Controller
 
         parse_str($this->sendRequest($aUrl, 'POST', $aParams), $token);
 
-        if(!isset($token['access_token'])){
+        if (!isset($token['access_token'])) {
             header("HTTP/1.1 500 Service unavailable");
             echo json_encode(['message' => '获取 GitHub token 失败！']);
             return;
@@ -41,23 +41,25 @@ class UserController extends Controller
             );
         $userInfo = json_decode($this->sendRequest($uUrl, 'GET', $uParams));
 
-        if(!isset($userInfo->login)){
-            header("HTTP/1.1 500 Service unavailable");
-            echo json_encode(['message' => '获取用户信息失败！']);
+        if (!isset($userInfo->login)) {
+            header("HTTP/1.1 401 Unauthorized");
+            echo json_encode(['message' => 'GitHub 授权失败！']);
+            return;
+        } elseif ($userInfo->email == null) {
+            header("HTTP/1.1 404 Not found");
+            echo json_encode(['message' => 'GitHub 邮箱未公开！']);
             return;
         }
 
         $this->userInfo = $userInfo;
         $userId = DB::table('user')
-                    ->where('email', $this->userInfo->email)
+                    ->where('gid', $userInfo->id)
                     ->value('id');
 
-        if($userId == false){
+        if ($userId == false) {
             $userId = $this->create();
-            $newUser = true;
-        }else{
+        } else {
             $this->update($userId);
-            $newUser = false;
         }
 
         $this->updateToken($userId);
@@ -73,6 +75,7 @@ class UserController extends Controller
     {
         //
         $user = array(
+                'gid'           => $this->userInfo->id,
                 'name'          => $this->userInfo->login,
                 'email'         => $this->userInfo->email,
                 'avatar'        => $this->userInfo->avatar_url,
@@ -85,22 +88,22 @@ class UserController extends Controller
             );
 
         $insertId = DB::table('user')->insertGetId($user);
-        if($insertId == false){
+        if ($insertId == false) {
             header("HTTP/1.1 500 Service unavailable");
             echo json_encode(['message' => '注册失败！']);
             die;
         }
 
-        $userInfo = array(
+        $userDetail = array(
                 'uid'       => $insertId,
                 'bio'       => $this->userInfo->bio,
                 'udate'     => date('Y-m-d H:i:s'),
                 'cdate'     => date('Y-m-d H:i:s')
             );
 
-        $detail = DB::table('userDetail')->insert($userInfo);
+        $detail = DB::table('userDetail')->insert($userDetail);
 
-        if($detail == false){
+        if ($detail == false) {
             header("HTTP/1.1 500 Service unavailable");
             echo json_encode(['message' => '添加用户详情失败！']);
             die;
@@ -108,7 +111,7 @@ class UserController extends Controller
 
         $setting = USetting::setDefaultSettings($insertId);
 
-        if($setting == false){
+        if ($setting == false) {
             header("HTTP/1.1 500 Service unavailable");
             echo json_encode(['message' => '添加用户设置失败！']);
             die;
@@ -119,8 +122,8 @@ class UserController extends Controller
 
     /**
      * 获取单个用户信息
-     * @param  int      $id         用户 ID
-     * @return json_encode(object)  用户信息
+     * @param  int $id 用户 ID
+     * @return void    用户信息
      */
     public function show($id)
     {
@@ -137,7 +140,7 @@ class UserController extends Controller
                     ->select('user.*', 'userDetail.translate as translateNumber', 'userDetail.review as reviewNumber', 'userDetail.recommend as recommendNumber', 'userDetail.totalScore', 'userDetail.currentScore', 'userDetail.appraisal', 'userDetail.major', 'userDetail.bio')
                     ->first();
 
-        if($user == false){
+        if ($user == false) {
             header("HTTP/1.1 503 Service unavailable");
             echo json_encode(['message' => '获取用户信息失败！']);
             return;
@@ -149,8 +152,8 @@ class UserController extends Controller
     /**
      * 更新用户信息
      *
-     * @param  int  $userId     用户 id
-     * @return mixed
+     * @param  int $userId 用户 id
+     * @return void
      */
     public function update($userId)
     {
@@ -165,7 +168,7 @@ class UserController extends Controller
                     ->where('id', $userId)
                     ->update($user);
 
-        if($result === false){
+        if ($result === false) {
             header("HTTP/1.1 500 Service unavailable");
             echo json_encode(['message' => '更新用户信息失败！']);
             return;
@@ -196,7 +199,7 @@ class UserController extends Controller
                     ->select('user.*', 'userDetail.major', 'userDetail.bio', 'userToken.token')
                     ->first();
 
-        if($userInfo == false){
+        if ($userInfo == false) {
             header("HTTP/1.1 500 Service unavailable");
             echo json_encode(['message' => '获取用户信息失败！']);
             return;
@@ -225,17 +228,17 @@ class UserController extends Controller
                     ->where('uid', $userId)
                     ->value('id');
 
-        if($record){
+        if ($record) {
             $result = DB::table('userToken')
                         ->where('id', $record)
                         ->update($user);
-        }else{
+        } else {
             $user['cdate'] = date('Y-m-d H:i:s');
             $result = DB::table('userToken')
                         ->insert($user);
         }
 
-        if($result === false){
+        if ($result === false) {
             header("HTTP/1.1 500 Service unavailable");
             echo json_encode(['message' => '更新用户 token 失败！']);
         }

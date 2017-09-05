@@ -12,7 +12,7 @@ class RecommendController extends Controller
     /**
      * 获取所有推荐文章记录（分页）
      * @param int $status 推荐文章记录类别，0 为未处理，1 为成功，2 为失败
-     * @return json_encode(Object) 全部推荐文章（分页）
+     * @return void
      */
     public function index(Request $request)
     {
@@ -42,7 +42,7 @@ class RecommendController extends Controller
      * @param  string   $url            文章来源地址
      * @param  int      $recommender    推荐者（对应 user 表）
      * @param  string   $description    推荐理由
-     * @return json_encode(Array)
+     * @return void
      */
     public function store(Request $request)
     {
@@ -79,10 +79,11 @@ class RecommendController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 获取指定文章信息
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return void
+     * @author Romeo
      */
     public function show($id)
     {
@@ -109,7 +110,7 @@ class RecommendController extends Controller
      * @param  int      $recommender    推荐者（对应 user 表）
      * @param  string   $description    推荐理由
      * @param  int      $id             文章 ID
-     * @return json_encode(Array)
+     * @return void
      */
     public function update(Request $request, $id)
     {
@@ -159,7 +160,7 @@ class RecommendController extends Controller
      * 更新文章处理结果
      * @param  int      $id     文章 ID
      * @param  boolean  $result 推荐结果，true 为通过，false 为未通过
-     * @return json_encode(Array)
+     * @return void
      */
     public function result(Request $request, $id, Mail $mail)
     {
