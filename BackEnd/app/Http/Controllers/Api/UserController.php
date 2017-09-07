@@ -9,7 +9,28 @@ use App\Http\Controllers\Api\UserSettingController as USetting;
 
 class UserController extends Controller
 {
+    /**
+     * 前端返回内容
+     *
+     * @var array
+     * @author Romeo
+     */
+    protected $store;
+
+    /**
+     * 用户信息
+     *
+     * @var object
+     * @author Romeo
+     */
     protected $userInfo;
+
+    public function __construct () {
+        $this->store = array(
+            "user"  => '',
+            "error" => ''
+        );
+    }
 
     /**
      * 从 GitHub 获取用户信息并创建或更新用户
@@ -30,21 +51,22 @@ class UserController extends Controller
 
         if (!isset($token['access_token'])) {
             header("HTTP/1.1 401 Service unavailable");
-            return view('index', ['loginError' => '获取 GitHub token 失败！']);
+            $this->store["error"] = "获取 GitHub token 失败！";
+            return view('index', $this->decodeStore());
         }
         
         $uUrl = "https://api.github.com/user";
-        $uParams = array(
-                'access_token'     =>   $token['access_token'],
-            );
+        $uParams = ['access_token' => $token['access_token']];
         $userInfo = json_decode($this->sendRequest($uUrl, 'GET', $uParams));
 
-        if (!isset($userInfo->login)) {
+        if (!isset($userInfo->id)) {
             header("HTTP/1.1 401 Unauthorized");
-            return view('index', ['loginError' => 'GitHub 授权失败！']);
+            $this->store["error"] = "GitHub 授权失败！";
+            return view('index', $this->decodeStore());
         } elseif ($userInfo->email == null) {
             header("HTTP/1.1 404 Not found");
-            return view('index', ['loginError' => 'GitHub 邮箱未公开！']);
+            $this->store["error"] = "GitHub 邮箱未公开！";
+            return view('index', $this->decodeStore());
         }
 
         $this->userInfo = $userInfo;
@@ -60,7 +82,8 @@ class UserController extends Controller
 
         $this->updateToken($userId);
 
-        return view('index', ['user' => urlencode(json_encode($this->loadUserById($userId)))]);
+        $this->store['user'] = $this->loadUserById($userId);
+        return view('index', $this->decodeStore());
     }
 
     /**
@@ -86,7 +109,8 @@ class UserController extends Controller
         $insertId = DB::table('user')->insertGetId($user);
         if ($insertId == false) {
             header("HTTP/1.1 500 Service unavailable");
-            return view('index', ['loginError' => '添加新用户失败！']);
+            $this->store['error'] = "添加新用户失败！";
+            return view('index', $this->decodeStore());
         }
 
         $userDetail = array(
@@ -100,14 +124,16 @@ class UserController extends Controller
 
         if ($detail == false) {
             header("HTTP/1.1 500 Service unavailable");
-            return view('index', ['loginError' => '添加用户详情失败！']);
+            $this->store['error'] = "添加用户详情失败！";
+            return view('index', $this->decodeStore());
         }
 
         $setting = USetting::setDefaultSettings($insertId);
 
         if ($setting == false) {
             header("HTTP/1.1 500 Service unavailable");
-            return view('index', ['loginError' => '添加用户设置失败！']);
+            $this->store['error'] = "添加用户设置失败！";
+            return view('index', $this->decodeStore());
         }
         
         return $insertId;
@@ -161,11 +187,6 @@ class UserController extends Controller
                     ->where('id', $userId)
                     ->update($user);
 
-        if ($result === false) {
-            header("HTTP/1.1 500 Service unavailable");
-            return view('index', ['loginError' => '更新用户详情失败！']);
-        }
-
         if (USetting::getUserSettings($userId) == false) {
             USetting::setDefaultSettings($userId);
         }
@@ -193,7 +214,8 @@ class UserController extends Controller
 
         if ($userInfo == false) {
             header("HTTP/1.1 500 Service unavailable");
-            return view('index', ['loginError' => '获取用户信息失败！']);
+            $this->store['error'] = "获取用户信息失败！";
+            return view('index', $this->decodeStore());
         }
 
         return $userInfo;
@@ -284,5 +306,9 @@ class UserController extends Controller
     public static function decrementScore($uid, $num=1)
     {
         DB::table('userDetail')->where('uid', $uid)->decrement('currentScore', $num);
+    }
+
+    public function decodeStore () {
+        return base64_encode(json_encode($this->store));
     }
 }
