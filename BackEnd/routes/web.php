@@ -46,5 +46,5 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => 'token'],
 // 其他路由
 Route::any('{uri}', function($uri)
 {
-	return view('index', ['user'=>'']);
+	return view('index', ['store'=>'']);
 })->where('uri', '.*?');
