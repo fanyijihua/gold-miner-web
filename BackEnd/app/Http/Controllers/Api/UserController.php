@@ -99,9 +99,9 @@ class UserController extends Controller
                 'email'         => $this->userInfo->email,
                 'avatar'        => $this->userInfo->avatar_url,
                 'status'        => 1,
-                'isadvanced'    => 0,
-                'isadmin'       => 0,
-                'istranslator'  => 0,
+                'advance'       => 0,
+                'admin'         => 0,
+                'translator'    => 0,
                 'udate'         => date('Y-m-d H:i:s'),
                 'cdate'         => date('Y-m-d H:i:s')
             );
@@ -309,6 +309,6 @@ class UserController extends Controller
     }
 
     public function decodeStore () {
-        return base64_encode(json_encode($this->store));
+        return ['store' => base64_encode(json_encode($this->store))];
     }
 }
