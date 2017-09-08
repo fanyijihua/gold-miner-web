@@ -8,20 +8,51 @@ use App\Http\Controllers\Controller;
 
 class MailController extends Controller
 {
+    /**
+     * SendCloud 用户名
+     *
+     * @var string
+     * @author Romeo
+     */
     protected $apiUser;
 
+    /**
+     * SendCloud 用户 key
+     *
+     * @var string
+     * @author Romeo
+     */
     protected $apiKey;
 
+    /**
+     * SendCloud 发信接口地址
+     *
+     * @var string
+     * @author Romeo
+     */
     protected $apiUrl;
 
+    /**
+     * 发信人名称
+     *
+     * @var string
+     * @author Romeo
+     */
     protected $from;
 
-    protected $fromName;
-
+    /**
+     * 新翻译任务
+     */
     const NEW_TRANSLATE_TASK = 1;
 
+    /**
+     * 新校对任务
+     */
     const NEW_REVIEW_TASK = 2;
-
+    
+    /**
+     * 新文章
+     */
     const NEW_ARTICLE = 3;
 
     public function __construct()
@@ -30,9 +61,17 @@ class MailController extends Controller
         $this->apiKey   = env('MAIL_KEY');
         $this->apiUrl   = env('MAIL_HOST');
         $this->from     = env('MAIL_FROM');
-        $this->fromName = env('MAIL_FROMNAME');
     }
 
+    /**
+     * 发送邮件
+     *
+     * @param string $to
+     * @param string $subject
+     * @param string $html
+     * @return void
+     * @author Romeo
+     */
     public function sendMail($to, $subject, $html)
     {
         $params = array(
@@ -46,6 +85,13 @@ class MailController extends Controller
         return $this->sendRequest($this->apiUrl, 'POST', $params);
     }
 
+    /**
+     * 发送译者申请结果通知邮件
+     *
+     * @param  int $id
+     * @return void
+     * @author Romeo
+     */
     public function activate($id)
     {
         $applicant = DB::table('applicant')
@@ -57,15 +103,24 @@ class MailController extends Controller
         echo $this->sendMail($applicant->email, $subject, view("mails/active", ['invitationCode' => $applicant->invitation])->render());
     }
 
+    /**
+     * 发送新任务通知邮件 WIP
+     *
+     * @return void
+     * @author Romeo
+     */
     public function notify()
     {
-        $articles = DB::table('translation')
-                    ->select('id', 'poster', 'description', 'title')
-                    ->where('status', '0')
-                    ->get();
-        return view("mails/notifications", ["articles" => $articles]);
+       
     }
 
+    /**
+     * 发送推荐文章结果通知邮件
+     *
+     * @param [type] $id
+     * @return void
+     * @author Romeo
+     */
     public function result($id)
     {
         $article = DB::table('recommend')

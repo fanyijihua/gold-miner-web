@@ -11,11 +11,10 @@ class TranslationController extends Controller
     /**
      * 获取所有翻译文章记录（分页）
      * @param   string $status 文章类别，awaiting 为待翻译或待校对，progressing 为正在翻译或正在校对，posted 为已发布
-     * @return  json_encode(Object) 翻译文章（分页）
+     * @return  void
      */
     public function index($status)
     {
-        //
         switch ($status) {
             case 'awaiting':
                 $translations = DB::table('translation')
@@ -198,7 +197,7 @@ class TranslationController extends Controller
     /**
      * 获取指定翻译记录详情
      * @param  int $id 记录 ID
-     * @return object  翻译记录详情
+     * @return void
      */
     public function show($id)
     {
@@ -425,7 +424,7 @@ class TranslationController extends Controller
      * @param  int   id         文章 ID
      * @param  int   uid        用户 ID
      * @param  int   username   用户名
-     * @return 
+     * @return void
      */
     public function claimReview(Request $request)
     {

@@ -27,16 +27,32 @@ export default {
   methods: {
     ...mapMutations(['login']),
     ...mapActions(['fetchUserInfo']),
+    showErrorMessageBox(errorMessage) {
+      this.$alert(errorMessage, '啊，出错啦！', {
+        confirmButtonText: '去 GitHub 设置',
+        type: 'error',
+        callback() {
+          window.location.href = 'https://github.com/settings'
+        },
+      })
+    },
   },
   created() {
     let user = null
     let isNewUser = false
 
     // eslint-disable-next-line
-    if (window.__USER__) {
+    if (window.__STORE__) {
       try {
         // eslint-disable-next-line
-        user = JSON.parse(decodeURIComponent(window.__USER__))
+        const store = JSON.parse(window.atob(window.__STORE__))
+
+        if (store.error) {
+          this.showErrorMessageBox(store.error)
+          return
+        }
+
+        user = store.user
         isNewUser = true
       } catch (err) {
         // eslint-disable-next-line

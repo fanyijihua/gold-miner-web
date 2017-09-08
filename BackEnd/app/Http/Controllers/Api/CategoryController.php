@@ -10,11 +10,10 @@ class CategoryController extends Controller
 {
     /**
      * 获取所有文章类别
-     * @return json_encode(Array)
+     * @return void
      */
     public function index()
     {
-        //
         $category = DB::table('category')
                     ->select('id', 'category', 'description')
                     ->get();
@@ -23,24 +22,13 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * 添加文章类别
      * @param  string   $category       分类名称
      * @param  string   $description    分类描述
-     * @return json_encode(Array)
+     * @return void
      */
     public function store(Request $request)
     {
-        //
         $this->isNotNull(array(
                 'category' => $request->input('category')
             ));
@@ -66,14 +54,13 @@ class CategoryController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 获取指定文章
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return void
      */
     public function show($id)
     {
-        //
         $category = DB::table('category')
                     ->where('id', $id)
                     ->select('id', 'category', 'description')
@@ -89,26 +76,14 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * 更新文章类别
      * @param  string   $category       分类名称
      * @param  string   $description    分类描述
      * @param  int      $id             分类 ID
-     * @return json_encode(Array)
+     * @return void
      */
     public function update(Request $request, $id)
     {
-        //
         $this->isNotNull(array(
                 'category'      => $request->input('category'),
                 'description'   => $request->input('description')
@@ -138,11 +113,10 @@ class CategoryController extends Controller
     /**
      * 删除文章类别（不可恢复）
      * @param  int      $id             分类 ID
-     * @return json_encode(Array)
+     * @return void
      */
     public function destroy($id)
     {
-        //
         $result = DB::table('category')
                     ->where('id', $id)
                     ->delete();

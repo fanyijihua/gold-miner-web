@@ -12,7 +12,7 @@ class ApplicantController extends Controller
     /**
      * 获取全部申请者信息
      * @param int $status 试译记录类别，0 为未处理，1 为成功，2 为失败
-     * @return json_encode(Object)  全部申请者（分页）
+     * @return void
      */
     public function index(Request $request)
     {
@@ -44,7 +44,7 @@ class ApplicantController extends Controller
      * @param  string   $description    自我描述
      * @param  string   $translation    试译内容
      * @param  int      $articleId      试译文章 ID
-     * @return json_encode(Array)        
+     * @return void      
      */
     public function store(Request $request)
     {
@@ -85,7 +85,7 @@ class ApplicantController extends Controller
     /**
      * 获取单个试译者详细信息
      * @param  int  $id     试译者 ID
-     * @return json_encode(Object)     
+     * @return void
      */
     public function show($id)
     {
@@ -109,7 +109,7 @@ class ApplicantController extends Controller
      * 更新申请结果
      * @param  bool     $result     申请结果，true 为成功，false 为失败
      * @param  int      $id         申请记录的 ID
-     * @return json_encode(Array)           
+     * @return void    
      */
     public function update(Request $request, $id, Mail $mail)
     {
@@ -143,6 +143,13 @@ class ApplicantController extends Controller
         $mail->activate($id);
     }
 
+    /**
+     * 校验用户邀请码
+     *
+     * @param Request $request
+     * @return void
+     * @author Romeo
+     */
     public function checkInvitation(Request $request)
     {
         $this->isNotNull(array(

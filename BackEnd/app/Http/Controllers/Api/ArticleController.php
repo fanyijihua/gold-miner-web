@@ -10,11 +10,10 @@ class ArticleController extends Controller
 {
     /**
      * 获取全部试译文章
-     * @return json_encode(Object) 全部试译文章（分页）
+     * @return void
      */
     public function index()
     {
-        //
         $articles = DB::table('article')
                         ->join('user', 'article.operator', '=', 'user.id')
                         ->where('article.isdel', 0)
@@ -28,27 +27,16 @@ class ArticleController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * 添加试译文章
      * @param  string   $title      文章标题
      * @param  int      $category   文章分类（对应 category 表）
      * @param  string   $url        文章来源地址
      * @param  int      $operator   操作者（对应 user 表）
      * @param  string   $content    文章内容
-     * @return json_encode(Array)
+     * @return void
      */
     public function store(Request $request)
     {
-        //
         $this->isNotNull(array(
                 'title'     => $request->input('title'),
                 'category'  => $request->input('category'),
@@ -86,11 +74,10 @@ class ArticleController extends Controller
     /**
      * 获取单个文章详细信息
      * @param  int  $id     文章 ID
-     * @return json_encode(Object)
+     * @return void
      */
     public function show($id)
     {
-        //
         $article = DB::table('article')
                         ->join('user', 'article.operator', '=', 'user.id')
                         ->select('article.*', 'user.name as operator')
@@ -107,27 +94,15 @@ class ArticleController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * 更新文章信息
      * @param  int      $request    文章分类（对应 category 表）
      * @param  int      $request    操作者（对应 user 表）
      * @param  string   $request    文章内容
      * @param  int      $id         文章 ID
-     * @return json_encode(Array)
+     * @return void
      */
     public function update(Request $request, $id)
     {
-        //
         $this->isNotNull(array(
                 'category'      => $request->input('category'),
                 'title'         => $request->input('title'),
@@ -161,11 +136,10 @@ class ArticleController extends Controller
     /**
      * 删除文章（状态标记）
      * @param  int  $id     文章 ID
-     * @return json_encode(Array)
+     * @return void
      */
     public function destroy($id)
     {
-        //
         $result = DB::table('article')
                     ->where('id', $id)
                     ->update(['isdel' => 1]);
@@ -179,7 +153,7 @@ class ArticleController extends Controller
     /**
      * 更新文章状态信息（启用/禁用）
      * @param  int  $id     文章 ID
-     * @return json_encode(Array)
+     * @return void
      */
     public function toggleStatus($id)
     {
@@ -207,7 +181,7 @@ class ArticleController extends Controller
      * 更新文章试译结果（通过/失败）
      * @param  int      $id         文章 ID
      * @param  boolean  $result     试译结果，true 为通过，false 为失败
-     * @return json_encode(Array)
+     * @return void
      */
     public function updateResult($id, $result = true)
     {
@@ -230,7 +204,7 @@ class ArticleController extends Controller
     /**
      * 随机获取指定分类的某篇文章
      * @param  int      $id   文章分类 ID（对应 category 表）
-     * @return json_encode(Object)
+     * @return void
      */
     public function getRandomArticle($id)
     {

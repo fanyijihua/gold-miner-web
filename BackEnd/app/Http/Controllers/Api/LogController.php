@@ -32,6 +32,15 @@ class LogController extends Controller
     			->get();
     }
 
+    /**
+     * 查找指定用户的操作记录
+     *
+     * @param   int       $userId
+     * @param   string    $operation
+     * @param   int       $status
+     * @return  void
+     * @author  Romeo
+     */
     public static function checkTimeline($userId, $operation, $status)
     {
         return DB::table('timeline')
