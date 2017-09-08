@@ -5,6 +5,7 @@ deploy:
 	@git config user.username 'travis'
 	@git config user.email 'travis@fanyi.juejin.im'
 	@git remote add fanyi git@fanyi.juejin.im:gold-miner-web
+	@git pull fanyi develop
 	@git push fanyi develop
 
 build:
