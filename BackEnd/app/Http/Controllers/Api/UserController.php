@@ -25,7 +25,8 @@ class UserController extends Controller
      */
     protected $userInfo;
 
-    public function __construct () {
+    public function __construct (Request $request) {
+        parent::__construct($request);
         $this->store = array(
             "user"  => '',
             "error" => ''
@@ -46,9 +47,9 @@ class UserController extends Controller
                 'client_id'     =>  $this->client_id,
                 'client_secret' =>  $this->client_secret,
             );
-
+            
         parse_str($this->sendRequest($aUrl, 'POST', $aParams), $token);
-
+        
         if (!isset($token['access_token'])) {
             header("HTTP/1.1 401 Service unavailable");
             $this->store["error"] = "获取 GitHub token 失败！";
