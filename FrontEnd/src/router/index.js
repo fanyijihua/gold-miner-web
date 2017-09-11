@@ -69,6 +69,7 @@ const router = new Router({
         title: '推荐文章详情',
         rules: [
           'loginRequired',
+          'adminRequired',
         ],
       },
     },
