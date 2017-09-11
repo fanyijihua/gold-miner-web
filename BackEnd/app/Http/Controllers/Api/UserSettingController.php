@@ -8,6 +8,13 @@ use App\Http\Controllers\Controller;
 
 class UserSettingController extends Controller
 {
+    /**
+     * 获取用户设置
+     *
+     * @param int $id
+     * @return void
+     * @author Romeo
+     */
     public function show($id)
     {
         $userSetting = DB::table('userSetting')
@@ -37,6 +44,10 @@ class UserSettingController extends Controller
      */
     public function setUserSettings(Request $request, $id)
     {
+        $id = DB::table('userToken')
+                ->where('userToken.token', $userToken)
+                ->value('uid');
+
     	$this->isNotNull(array(
           'newtranslation'  => $request->input('newtranslation'),
           'newarticle'      => $request->input('newarticle'),

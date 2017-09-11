@@ -183,7 +183,7 @@ class ArticleController extends Controller
      * @param  boolean  $result     试译结果，true 为通过，false 为失败
      * @return void
      */
-    public function updateResult($id, $result = true)
+    public static function recordResult($id, $result = true)
     {
         if ( $result == true ) {
             $field = 'passed';

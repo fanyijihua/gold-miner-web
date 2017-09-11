@@ -10,6 +10,18 @@ use App\Http\Controllers\Api\UserSettingController as USetting;
 class UserController extends Controller
 {
     /**
+     * GitHub 注册应用 client_id
+     * @var string
+     */
+    protected $client_id;
+
+    /**
+     * GitHub 注册应用 client_secret
+     * @var string
+     */
+    protected $client_secret;
+
+    /**
      * 前端返回内容
      *
      * @var array
@@ -26,7 +38,8 @@ class UserController extends Controller
     protected $userInfo;
 
     public function __construct (Request $request) {
-        parent::__construct($request);
+    	$this->client_id = config('app.github_client_id');
+    	$this->client_secret = config('app.github_client_secret');
         $this->store = array(
             "user"  => '',
             "error" => ''
@@ -93,7 +106,6 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
         $user = array(
                 'gid'           => $this->userInfo->id,
                 'name'          => $this->userInfo->login,
@@ -147,7 +159,6 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
         if (!is_numeric($id)) {
             header("HTTP/1.1 400 Bad request");
             echo json_encode(['message' => '参数错误！']);
@@ -177,7 +188,6 @@ class UserController extends Controller
      */
     public function update($userId)
     {
-        //
         $user = array(
                 'name'      => $this->userInfo->login,
                 'avatar'    => $this->userInfo->avatar_url,
