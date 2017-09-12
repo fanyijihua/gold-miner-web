@@ -105,7 +105,7 @@ class Controller extends BaseController
     public function isNotNull($params = array())
     {
         foreach ($params as $k => $v) {
-            if (empty($v)) {
+            if ($v === '' || $v === null) {
                 header("HTTP/1.1 400 Bad Request");
                 die(json_encode(['message' => $k.' 不能为空！']));
             }
