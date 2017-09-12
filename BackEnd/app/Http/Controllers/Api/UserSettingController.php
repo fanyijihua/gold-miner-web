@@ -15,7 +15,7 @@ class UserSettingController extends Controller
      * @return void
      * @author Romeo
      */
-    public function show()
+    public function show(Request $request)
     {
         $id = DB::table('userToken')
                 ->where('userToken.token', $request->header('authorization'))
