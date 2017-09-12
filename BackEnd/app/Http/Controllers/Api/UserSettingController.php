@@ -18,7 +18,7 @@ class UserSettingController extends Controller
     public function show()
     {
         $id = DB::table('userToken')
-                ->where('userToken.token', $userToken)
+                ->where('userToken.token', $request->header('authorization'))
                 ->value('uid');
 
         $userSetting = DB::table('userSetting')
@@ -49,7 +49,7 @@ class UserSettingController extends Controller
     public function setUserSettings(Request $request)
     {
         $id = DB::table('userToken')
-                ->where('userToken.token', $userToken)
+                ->where('userToken.token', $request->header('authorization'))
                 ->value('uid');
 
     	$this->isNotNull(array(
