@@ -41,6 +41,8 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => 'token'],
 		Route::put('recommends/result/{id}', 'RecommendController@result');
 		// 修正译文信息（字数、任务时长、积分等）
 		Route::put('translations/{id}', 'TranslationController@update');
+		// 添加新译文
+		Route::post('translations', 'TranslationController@store');
 	});
 	// 执行用户登录
 	Route::get('users', 'UserController@index');
@@ -66,8 +68,6 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => 'token'],
 	Route::get('recommends/{id}', 'RecommendController@show');
 	// 更新指定推荐文章
 	Route::put('recommends/{id}', 'RecommendController@update');
-	// 添加新译文
-	Route::post('translations', 'TranslationController@store');
 	// 译者更新文章在掘金的分享信息
 	Route::patch('translations/{id}', 'TranslationController@post');
 	// 处理 GitHub WebHooks 请求信息

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\DB;
 
 class AdminAuthorization
 {
@@ -27,7 +28,8 @@ class AdminAuthorization
 
         if ($admin == false) {
             header("HTTP/1.1 401 Unauthorized!");
-            return json_encode(['message' => '您没有权限！']);
+            echo json_encode(['message' => '您没有权限！']);
+            die;
         }
 
         return $next($request);
