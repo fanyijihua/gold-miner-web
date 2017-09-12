@@ -47,9 +47,9 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => 'token'],
 	// 获取指定用户详细信息
 	Route::get('users/{id}', 'UserController@show');
 	// 获取指定用户设置信息
-	Route::get('usersettings/{id}', 'UserSettingController@show');
+	Route::get('usersettings', 'UserSettingController@show');
 	// 更新当前用户设置
-	Route::post('usersettings/{id}', 'UserSettingController@setUserSettings');
+	Route::post('usersettings', 'UserSettingController@setUserSettings');
 	// 随机获取指定类别的试译文章
 	Route::get('articles/random/{id}', 'ArticleController@getRandomArticle');
 	// 获取文章分类

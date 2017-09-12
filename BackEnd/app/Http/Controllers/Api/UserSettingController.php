@@ -29,8 +29,12 @@ class UserSettingController extends Controller
      * @param  int      $id  用户 ID
      * @return mixed         用户设置内容
      */
-    public static function getUserSettings($id)
+    public static function getUserSettings()
     {
+        $id = DB::table('userToken')
+                ->where('userToken.token', $userToken)
+                ->value('uid');
+
         $result = DB::table('userSetting')
                     ->where('uid', $id)
                     ->first();
@@ -42,7 +46,7 @@ class UserSettingController extends Controller
      * 设置用户设置内容
      * @param int $id 用户 ID
      */
-    public function setUserSettings(Request $request, $id)
+    public function setUserSettings(Request $request)
     {
         $id = DB::table('userToken')
                 ->where('userToken.token', $userToken)

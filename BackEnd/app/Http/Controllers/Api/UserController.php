@@ -168,7 +168,7 @@ class UserController extends Controller
         $user = DB::table('user')
                     ->leftjoin('userDetail', 'user.id', '=', 'userDetail.uid')
                     ->where('user.id', $id)
-                    ->select('user.*', 'userDetail.translate as translateNumber', 'userDetail.review as reviewNumber', 'userDetail.recommend as recommendNumber', 'userDetail.totalScore', 'userDetail.currentScore', 'userDetail.appraisal', 'userDetail.major', 'userDetail.bio')
+                    ->select('user.id', 'user.name', 'user.email', 'user.avatar', 'user.cdate', 'userDetail.translate as translateNumber', 'userDetail.review as reviewNumber', 'userDetail.recommend as recommendNumber', 'userDetail.totalScore', 'userDetail.currentScore', 'userDetail.appraisal', 'userDetail.major', 'userDetail.bio')
                     ->first();
 
         if ($user == false) {
