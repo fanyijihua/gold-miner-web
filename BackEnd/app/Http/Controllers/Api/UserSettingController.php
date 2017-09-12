@@ -72,7 +72,7 @@ class UserSettingController extends Controller
     			->where('uid', $id)
     			->update($data);
 
-        if($setting == false){
+        if($res == false){
             header("HTTP/1.1 500 Service unavailable");
             return json_encode(['message' => '修改用户设置失败！']);
         }
