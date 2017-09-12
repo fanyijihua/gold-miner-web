@@ -15,8 +15,12 @@ class UserSettingController extends Controller
      * @return void
      * @author Romeo
      */
-    public function show($id)
+    public function show()
     {
+        $id = DB::table('userToken')
+                ->where('userToken.token', $userToken)
+                ->value('uid');
+
         $userSetting = DB::table('userSetting')
                         ->where('uid', $id)
                         ->first();
@@ -29,12 +33,8 @@ class UserSettingController extends Controller
      * @param  int      $id  用户 ID
      * @return mixed         用户设置内容
      */
-    public static function getUserSettings()
+    public static function getUserSettings($id)
     {
-        $id = DB::table('userToken')
-                ->where('userToken.token', $userToken)
-                ->value('uid');
-
         $result = DB::table('userSetting')
                     ->where('uid', $id)
                     ->first();
