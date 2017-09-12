@@ -18,7 +18,7 @@ class CategoryController extends Controller
                     ->select('id', 'category', 'description')
                     ->get();
 
-        echo json_encode($category);
+        return json_encode($category);
     }
 
     /**
@@ -68,11 +68,10 @@ class CategoryController extends Controller
 
         if ( $category == false ) {
             header("HTTP/1.1 400 Bad Request");
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
 
-        echo json_encode($category);
+        return json_encode($category);
     }
 
     /**

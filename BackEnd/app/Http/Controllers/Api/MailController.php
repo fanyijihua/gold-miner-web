@@ -100,7 +100,7 @@ class MailController extends Controller
                         ->first();
 
         $subject = $applicant->invitation ? "欢迎加入掘金翻译计划！" : "很遗憾，您没有通过我们的审核！";
-        echo $this->sendMail($applicant->email, $subject, view("mails/active", ['invitationCode' => $applicant->invitation])->render());
+        return $this->sendMail($applicant->email, $subject, view("mails/active", ['invitationCode' => $applicant->invitation])->render());
     }
 
     /**
@@ -129,6 +129,6 @@ class MailController extends Controller
                     ->where('recommend.id', $id)
                     ->first();
         $subject = ($article->result == 1) ? "您推荐文章已经通过啦！" : "很遗憾，您推荐的文章未通过审核。";
-        echo $this->sendMail($article->email, $subject, view("mails/result", ['article' => $article])->render());
+        return $this->sendMail($article->email, $subject, view("mails/result", ['article' => $article])->render());
     }
 }

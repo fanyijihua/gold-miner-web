@@ -161,8 +161,7 @@ class UserController extends Controller
     {
         if (!is_numeric($id)) {
             header("HTTP/1.1 400 Bad request");
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
 
         $user = DB::table('user')
@@ -173,11 +172,10 @@ class UserController extends Controller
 
         if ($user == false) {
             header("HTTP/1.1 503 Service unavailable");
-            echo json_encode(['message' => '获取用户信息失败！']);
-            return;
+            return json_encode(['message' => '获取用户信息失败！']);
         }
 
-        echo json_encode($user);
+        return json_encode($user);
     }
 
     /**
@@ -212,8 +210,7 @@ class UserController extends Controller
     {
         if (!is_numeric($userId)) {
             header("HTTP/1.1 400 Bad request");
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
 
         $userInfo = DB::table('user')

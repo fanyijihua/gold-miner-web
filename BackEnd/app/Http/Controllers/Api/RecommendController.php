@@ -19,8 +19,7 @@ class RecommendController extends Controller
     {
         if (intval($request->input('status')) > 2) {
             header("HTTP/1.1 400 Bad request!");
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
         
         $recommends = DB::table('recommend')
@@ -33,7 +32,7 @@ class RecommendController extends Controller
                         ->take($this->offset)
                         ->get();
 
-        echo json_encode($recommends);
+        return json_encode($recommends);
     }
 
     /**
@@ -96,11 +95,10 @@ class RecommendController extends Controller
 
         if ( $recommend == false ) {
             header("HTTP/1.1 400 Bad Request");
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
                         
-        echo json_encode($recommend);
+        return json_encode($recommend);
     }
 
     /**
@@ -125,12 +123,10 @@ class RecommendController extends Controller
 
         if ($record->status != 0) {
             header("HTTP/1.1 403 forbidden");
-            echo json_encode(['message' => '您推荐的文章已被管理员处理，无法操作！']);
-            return;
+            return json_encode(['message' => '您推荐的文章已被管理员处理，无法操作！']);
         } elseif ($record->recommender != $user) {
             header("HTTP/1.1 403 forbidden");
-            echo json_encode(['message' => '您没有权限修改他人推荐的文章！']);
-            return;
+            return json_encode(['message' => '您没有权限修改他人推荐的文章！']);
         }
 
         $this->isNotNull(array(
@@ -175,8 +171,7 @@ class RecommendController extends Controller
     {
         if (!is_numeric($id)) {
             header("HTTP/1.1 400 Bad request");
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
 
         $data = array(
@@ -195,8 +190,7 @@ class RecommendController extends Controller
 
         if ( $res == false ) {
             header("HTTP/1.1 503 Service Unavailable");
-            echo json_encode(['message' => '更新推荐结果失败！']);
-            return;
+            return json_encode(['message' => '更新推荐结果失败！']);
         }
 
         $mail->result($id);

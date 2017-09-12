@@ -23,7 +23,7 @@ class ArticleController extends Controller
                         ->take($this->offset)
                         ->get();
                         
-        echo json_encode($articles);
+        return json_encode($articles);
     }
 
     /**
@@ -86,11 +86,10 @@ class ArticleController extends Controller
 
         if ( $article == false ) {
             header("HTTP/1.1 400 Bad Request");
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
                         
-        echo json_encode($article);
+        return json_encode($article);
     }
 
     /**
@@ -163,8 +162,7 @@ class ArticleController extends Controller
 
         if ( $currentStatus === null ) {
             header("HTTP/1.1 400 Bad Request");
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
 
         $result = DB::table('article')
@@ -194,11 +192,6 @@ class ArticleController extends Controller
         $result = DB::table('article')
                     ->where('id', $id)
                     ->increment($field);
-
-        if ( $result == false ) {
-            header("HTTP/1.1 503 Service Unavailable");
-            return;
-        }
     }
 
     /**
@@ -222,10 +215,9 @@ class ArticleController extends Controller
 
         if ( $article == false ) {
             header("HTTP/1.1 400 Bad Request");
-            echo json_encode(['message' => '本分类下暂无试译文章！']);
-            return;
+            return json_encode(['message' => '本分类下暂无试译文章！']);
         }
                         
-        echo json_encode($article);
+        return json_encode($article);
     }
 }

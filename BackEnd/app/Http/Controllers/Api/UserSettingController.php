@@ -25,7 +25,7 @@ class UserSettingController extends Controller
                         ->where('uid', $id)
                         ->first();
 
-        echo json_encode($userSetting);
+        return json_encode($userSetting);
     }
 
     /**
@@ -74,8 +74,7 @@ class UserSettingController extends Controller
 
         if($setting == false){
             header("HTTP/1.1 500 Service unavailable");
-            echo json_encode(['message' => '修改用户设置失败！']);
-            die;
+            return json_encode(['message' => '修改用户设置失败！']);
         }
 
     }

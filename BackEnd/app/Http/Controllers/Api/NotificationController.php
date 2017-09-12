@@ -36,6 +36,6 @@ class NotificationController extends Controller
         $this->notifications['recommends'] = $recommends;
         $this->notifications['total'] = count($applicants) + count($recommends);
 
-        echo json_encode($this->notifications);
+        return json_encode($this->notifications);
     }
 }

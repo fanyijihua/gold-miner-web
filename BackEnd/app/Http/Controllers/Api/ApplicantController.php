@@ -18,8 +18,7 @@ class ApplicantController extends Controller
     {
         if (intval($request->input('status')) > 2) {
             header("HTTP/1.1 400 Bad request!");
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
         
         $applicants = DB::table('applicant')
@@ -32,7 +31,7 @@ class ApplicantController extends Controller
                         ->take($this->offset)
                         ->get();
 
-        echo json_encode($applicants);
+        return json_encode($applicants);
     }
 
     /**
@@ -98,11 +97,10 @@ class ApplicantController extends Controller
 
         if ( $applicant === null ) {
             header("HTTP/1.1 400 Bad Request");
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
 
-        echo json_encode($applicant);
+        return json_encode($applicant);
     }
 
     /**
@@ -115,8 +113,7 @@ class ApplicantController extends Controller
     {
         if (!is_numeric($id)) {
             header("HTTP/1.1 400 Bad request");
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
 
         $data = array(
@@ -164,8 +161,7 @@ class ApplicantController extends Controller
 
         if ($applicant == null || strpos($request->input("code"), ":expired")) {
             header("HTTP/1.1 400 Bad request");
-            echo json_encode(["message" => "邀请码不合法！"]);
-            return;
+            return json_encode(["message" => "邀请码不合法！"]);
         }
 
         DB::transaction(function () {
