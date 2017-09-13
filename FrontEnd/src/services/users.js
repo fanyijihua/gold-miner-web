@@ -16,12 +16,12 @@ export const fetchNotifications = function fetchNotifications() {
   return axios.get('/api/notifications')
 }
 
-export const fetchSettings = function fetchSettings(id) {
-  return axios.get(`/api/UserSettings/${id}`)
+export const fetchSettings = function fetchSettings() {
+  return axios.get('/api/usersettings')
 }
 
-export const updateSettings = function fetchSettings(id, payload) {
-  return axios.post(`/api/UserSettings/${id}`, payload)
+export const updateSettings = function fetchSettings(payload) {
+  return axios.post('/api/usersettings', payload)
 }
 
 export const fetchTasksOfUser = function fetchTasksOfUser(id) {

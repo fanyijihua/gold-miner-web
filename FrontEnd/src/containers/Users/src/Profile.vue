@@ -155,7 +155,7 @@ export default {
       this.settings.visible = true
       this.settings.loading = true
 
-      userService.fetchSettings(this.currentUser.id).then((data) => {
+      userService.fetchSettings().then((data) => {
         assign(this.settings.values, data)
         this.settings.loading = false
       }).catch((err) => {
@@ -171,7 +171,7 @@ export default {
     saveSettings() {
       this.settings.loading = true
 
-      userService.updateSettings(this.currentUser.id, {
+      userService.updateSettings({
         newtranslation: this.settings.values.newtranslation,
         newreview: this.settings.values.newreview,
         newarticle: this.settings.values.newarticle,

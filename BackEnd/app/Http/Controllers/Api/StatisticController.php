@@ -24,7 +24,7 @@ class StatisticController extends Controller
         $result['translate'] = $this->translate();
         $result['review'] = $this->review();
 
-        echo json_encode($result);
+        return json_encode($result);
     }
 
     /**
@@ -135,7 +135,7 @@ class StatisticController extends Controller
         $result['words'] = $this->word();
         $result['articles'] = $this->article();
 
-        echo json_encode($result);
+        return json_encode($result);
     }
 
     /**
@@ -197,7 +197,7 @@ class StatisticController extends Controller
                                 ->where('currentscore', '>', $userDetail->currentscore)
                                 ->count() + 1;
 
-        echo json_encode($rank);
+        return json_encode($rank);
     }
 
     /**
@@ -243,6 +243,6 @@ class StatisticController extends Controller
                                     ->limit(5)
                                     ->get();
         
-        echo json_encode($article);
+        return json_encode($article);
     }
 }

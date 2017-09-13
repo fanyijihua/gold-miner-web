@@ -8,6 +8,23 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
+    /**
+     * GitHub 注册应用 client_id
+     * @var string
+     */
+    protected $client_id;
+
+    /**
+     * GitHub 注册应用 client_secret
+     * @var string
+     */
+    protected $client_secret;
+
+    public function __construct()
+    {
+    	$this->client_id = config('app.github_client_id');
+    	$this->client_secret = config('app.github_client_secret');
+    }
     public function oAuth()
     {
         $url = "https://github.com/login/oauth/authorize";

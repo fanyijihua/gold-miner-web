@@ -50,8 +50,7 @@ class TranslationController extends Controller
             
             default:
                 header("HTTP/1.1 400 Bad request!");
-                echo json_encode(['message' => '参数错误！']);
-                return;
+                return json_encode(['message' => '参数错误！']);
         }
 
         $involedUsers = array();
@@ -81,7 +80,7 @@ class TranslationController extends Controller
             $translations[$k]->recommender = $user[$t->recommender];
         }
 
-        echo json_encode($translations);
+        return json_encode($translations);
     }
 
     /**
@@ -101,8 +100,7 @@ class TranslationController extends Controller
 
                 if ($result == false) {
                     header('HTTP/1.1 503 Service unavailable!');
-                    echo json_encode(['message' => '修改文章状态失败！']);
-                    return;
+                    return json_encode(['message' => '修改文章状态失败！']);
                 }
             }
         // 处理其他人发起的 PR
@@ -113,8 +111,7 @@ class TranslationController extends Controller
 
                 if ($result == false) {
                     header('HTTP/1.1 503 Service unavailable!');
-                    echo json_encode(['message' => '修改文章状态失败！']);
-                    return;
+                    return json_encode(['message' => '修改文章状态失败！']);
                 }
             // PR 被创建时更新文章为待校对状态
             } elseif ($payload->action = 'opened') {
@@ -122,8 +119,7 @@ class TranslationController extends Controller
 
                 if ($result == false) {
                     header('HTTP/1.1 503 Service unavailable!');
-                    echo json_encode(['message' => '修改文章状态失败！']);
-                    return;
+                    return json_encode(['message' => '修改文章状态失败！']);
                 }
             }
         }
@@ -178,8 +174,7 @@ class TranslationController extends Controller
 
         if ($translationId == false) {
             header('HTTP/1.1 503 Service not available!');
-            echo json_encode(['message' => '添加文章失败！']);
-            return;
+            return json_encode(['message' => '添加文章失败！']);
         }
 
         $recommender = DB::table('recommend')
@@ -203,8 +198,7 @@ class TranslationController extends Controller
     {
         if (!is_numeric($id)) {
             header("HTTP/1.1 400 Bad request");
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
 
         $translation = DB::table('translation')
@@ -239,7 +233,7 @@ class TranslationController extends Controller
         $translation->recommender = $user[$translation->recommender];
         $translation->timeline    = LogController::readTimeline($id);
 
-        echo json_encode($translation);
+        return json_encode($translation);
     }
 
     /**
@@ -252,8 +246,7 @@ class TranslationController extends Controller
     {
         if (!is_numeric($id)) {
             header('HTTP/1.1 400 Bad request');
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
 
         $this->isNotNull(array(
@@ -280,8 +273,7 @@ class TranslationController extends Controller
 
         if ($result == false) {
             header('HTTP/1.1 503 Service not available!');
-            echo json_encode(['message' => '更新失败！']);
-            return;
+            return json_encode(['message' => '更新失败！']);
         }
     }
 
@@ -295,8 +287,7 @@ class TranslationController extends Controller
     {
         if (!is_numeric($id)) {
             header('HTTP/1.1 400 Bad request');
-            echo json_encode(['message' => '参数错误！']);
-            return;
+            return json_encode(['message' => '参数错误！']);
         }
         
         $this->isNotNull(array(
@@ -318,8 +309,7 @@ class TranslationController extends Controller
 
         if ($result == false) {
             header('HTTP/1.1 503 Service not available!');
-            echo json_encode(['message' => '更新失败！']);
-            return;
+            return json_encode(['message' => '更新失败！']);
         }
 
         $tInfo = DB::table('translation')
@@ -380,8 +370,7 @@ class TranslationController extends Controller
 
         if (LogController::checkTimeline($request->input('uid'), '认领翻译', 1)) {
             header('HTTP/1.1 403 Forbidden!');
-            echo json_encode(['message' => '您还有未完成的翻译任务！']);
-            return;
+            return json_encode(['message' => '您还有未完成的翻译任务！']);
         }
 
         $result = DB::table('translation')
@@ -390,8 +379,7 @@ class TranslationController extends Controller
 
         if ($result == false) {
             header('HTTP/1.1 503 Service not available!');
-            echo json_encode(['message' => '认领失败！']);
-            return;
+            return json_encode(['message' => '认领失败！']);
         }
 
         LogController::writeTimeline(array(
@@ -446,8 +434,7 @@ class TranslationController extends Controller
 
         if (LogController::checkTimeline($request->input('uid'), '认领校对', 3)) {
             header('HTTP/1.1 403 Forbidden!');
-            echo json_encode(['message' => '您还有未完成的校对任务！']);
-            return;
+            return json_encode(['message' => '您还有未完成的校对任务！']);
         }
 
         $result = DB::table('translation')
@@ -456,8 +443,7 @@ class TranslationController extends Controller
 
         if ($result == false) {
             header('HTTP/1.1 503 Service not available!');
-            echo json_encode(['message' => '认领失败！']);
-            return;
+            return json_encode(['message' => '认领失败！']);
         }
 
         LogController::writeTimeline(array(

@@ -14,18 +14,6 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     /**
-     * GitHub 注册应用 client_id
-     * @var string
-     */
-    protected $client_id;
-
-    /**
-     * GitHub 注册应用 client_secret
-     * @var string
-     */
-    protected $client_secret;
-
-    /**
      * 获取数据起始位置
      * @var integer
      */
@@ -39,9 +27,6 @@ class Controller extends BaseController
 
     public function __construct(Request $request)
     {
-    	$this->client_id = config('app.github_client_id');
-    	$this->client_secret = config('app.github_client_secret');
-
         if ( $request->has('per_page') ) {
             $this->offset = $request->input('per_page');
         }
@@ -120,7 +105,7 @@ class Controller extends BaseController
     public function isNotNull($params = array())
     {
         foreach ($params as $k => $v) {
-            if (empty($v)) {
+            if ($v === '' || $v === null) {
                 header("HTTP/1.1 400 Bad Request");
                 die(json_encode(['message' => $k.' 不能为空！']));
             }

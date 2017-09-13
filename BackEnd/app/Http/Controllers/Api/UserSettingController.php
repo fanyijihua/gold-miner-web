@@ -8,13 +8,24 @@ use App\Http\Controllers\Controller;
 
 class UserSettingController extends Controller
 {
-    public function show($id)
+    /**
+     * 获取用户设置
+     *
+     * @param int $id
+     * @return void
+     * @author Romeo
+     */
+    public function show(Request $request)
     {
+        $id = DB::table('userToken')
+                ->where('userToken.token', $request->header('authorization'))
+                ->value('uid');
+
         $userSetting = DB::table('userSetting')
                         ->where('uid', $id)
                         ->first();
 
-        echo json_encode($userSetting);
+        return json_encode($userSetting);
     }
 
     /**
@@ -35,8 +46,12 @@ class UserSettingController extends Controller
      * 设置用户设置内容
      * @param int $id 用户 ID
      */
-    public function setUserSettings(Request $request, $id)
+    public function setUserSettings(Request $request)
     {
+        $id = DB::table('userToken')
+                ->where('userToken.token', $request->header('authorization'))
+                ->value('uid');
+
     	$this->isNotNull(array(
           'newtranslation'  => $request->input('newtranslation'),
           'newarticle'      => $request->input('newarticle'),
@@ -57,10 +72,9 @@ class UserSettingController extends Controller
     			->where('uid', $id)
     			->update($data);
 
-        if($setting == false){
+        if($res == false){
             header("HTTP/1.1 500 Service unavailable");
-            echo json_encode(['message' => '修改用户设置失败！']);
-            die;
+            return json_encode(['message' => '修改用户设置失败！']);
         }
 
     }

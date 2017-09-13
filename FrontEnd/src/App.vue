@@ -8,6 +8,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex'
+import assign from 'lodash/assign'
 
 const store = require('store')
 
@@ -76,7 +77,9 @@ export default {
       }
     } else {
       this.fetchUserInfo(user.id).then((data) => {
-        store.set('user', data)
+        store.set('user', assign(data, {
+          token: user.token,
+        }))
       }).catch(err => this.$message.error(err.message))
     }
   },
