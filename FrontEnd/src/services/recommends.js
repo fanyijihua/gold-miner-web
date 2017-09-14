@@ -9,5 +9,5 @@ export const addRecommend = function addRecommend(payload) {
 }
 
 export const submitOpinion = function submitOpinion(payload) {
-  return axios.put(`/api/recommends/result/${payload.id}/${payload.result}`, payload)
+  return axios.put(`/api/recommends/result/${payload.id}`, payload)
 }
