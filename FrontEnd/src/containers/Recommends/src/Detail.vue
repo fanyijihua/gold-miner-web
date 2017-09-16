@@ -52,6 +52,7 @@ export default {
         opinion: this.opinion,
       }).then(() => {
         this.$message({ message: '提交成功', type: 'success' })
+        this.$router.replace('/')
       }).catch((err) => {
         this.$message({ message: err.message, type: 'error' })
       })
