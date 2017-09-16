@@ -202,6 +202,30 @@ class UserController extends Controller
     }
 
     /**
+     * 拉取当前用户信息
+     *
+     * @param Request $request
+     * @return void
+     * @author Romeo
+     */
+    public function pull(Request $request)
+    {
+        $userInfo = DB::table('userToken')
+                    ->leftjoin('userDetail', 'userToken.uid', '=', 'userDetail.uid')
+                    ->leftjoin('user', 'user.id', '=', 'userToken.uid')
+                    ->where('userToken.token', $request->header('authorization'))
+                    ->select('user.*', 'userDetail.major', 'userDetail.bio', 'userToken.token')
+                    ->first();
+
+        if ($userInfo == false) {
+            header("HTTP/1.1 500 Service unavailable");
+            return json_encode(['message' => '拉取用户信息失败！']);
+        }
+
+        return json_encode($userInfo);
+    }
+
+    /**
      * 通过用户 ID 获取用户信息
      * @param  int  $userId     用户 ID
      * @return Object           用户信息

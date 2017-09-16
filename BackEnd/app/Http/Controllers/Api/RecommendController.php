@@ -220,7 +220,7 @@ class RecommendController extends Controller
                     ->where('recommend.id', $rid)
                     ->first();
 
-        $url = '127.0.0.1:'.env('GITHUB_MICRO_SERVER_PORT');
+        $url = '127.0.0.1:' . env('GITHUB_MICRO_SERVER_PORT') . '/articles';
         $this->sendRequest($url, 'POST', (array) $params);
     }
 
