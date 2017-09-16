@@ -76,7 +76,7 @@ export default {
         this.$router.replace('/applications/apply')
       }
     } else {
-      this.fetchUserInfo(user.id).then((data) => {
+      this.fetchUserInfo().then((data) => {
         store.set('user', assign(data, {
           token: user.token,
         }))

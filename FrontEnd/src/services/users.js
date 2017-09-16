@@ -4,6 +4,10 @@ export const logout = function logout() {
   return axios.get('/auth/logout')
 }
 
+export const fetchCurrentUserInfo = function fetchCurrentUserInfo() {
+  return axios.get('/api/users/pull')
+}
+
 export const fetchUserInfo = function fetchUserInfo(id) {
   return axios.get(`/api/users/${id}`)
 }

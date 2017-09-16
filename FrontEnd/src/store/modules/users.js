@@ -95,7 +95,9 @@ const actions = {
    * @return Promise
    */
   fetchUserInfo(context, id) {
-    return user.fetchUserInfo(id).then((data) => {
+    const request = id ? user.fetchUserInfo(id) : user.fetchCurrentUserInfo()
+
+    return request.then((data) => {
       context.commit('updateUserInfo', data)
       return data
     })
