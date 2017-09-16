@@ -96,9 +96,7 @@ class UserSettingController extends Controller
                 'cdate'             => date("Y-m-d H:i:s")
             );
 
-        $res = DB::table('userSetting')->insert($data);
-
-        return $res;
+        return DB::table('userSetting')->insert($data);
     }
 
 }

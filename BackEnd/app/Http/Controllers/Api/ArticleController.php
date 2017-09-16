@@ -68,7 +68,7 @@ class ArticleController extends Controller
             return;
         }
 
-        $this->show($lastId);
+        return $this->show($lastId);
     }
 
     /**
@@ -129,7 +129,7 @@ class ArticleController extends Controller
             return;
         }
 
-        $this->show($id);
+        return $this->show($id);
     }
 
     /**
