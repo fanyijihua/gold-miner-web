@@ -48,6 +48,8 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => 'token'],
 	Route::get('users', 'UserController@index');
 	// 获取指定用户详细信息
 	Route::get('users/{id}', 'UserController@show');
+	// 获取当前用户信息
+	Route::get('users/pull', 'UserController@pull');
 	// 获取指定用户设置信息
 	Route::get('usersettings', 'UserSettingController@show');
 	// 更新当前用户设置
