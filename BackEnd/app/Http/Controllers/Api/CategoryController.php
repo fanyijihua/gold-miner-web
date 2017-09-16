@@ -50,7 +50,7 @@ class CategoryController extends Controller
             return;
         }
 
-        $this->show($lastId);
+        return $this->show($lastId);
     }
 
     /**
@@ -106,7 +106,7 @@ class CategoryController extends Controller
             return;
         }
 
-        $this->show($id);
+        return $this->show($id);
     }
 
     /**

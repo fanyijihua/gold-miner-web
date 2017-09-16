@@ -10,6 +10,9 @@ use App\Http\Controllers\Api\MailController as Mail;
 
 class RecommendController extends Controller
 {
+    const AWAITING = 0;
+    const SUCCESS = 1;
+    const FAILURE = 2;
     /**
      * 获取所有推荐文章记录（分页）
      * @param int $status 推荐文章记录类别，0 为未处理，1 为成功，2 为失败
@@ -62,7 +65,7 @@ class RecommendController extends Controller
                 'url'           => $request->input('url'),
                 'recommender'   => $request->input('recommender'),
                 'description'   => $request->input('description'),
-                'status'        => 0,
+                'status'        => AWAITING,
                 'udate'         => date('Y-m-d H:i:s'),
                 'cdate'         => date('Y-m-d H:i:s')
             );
@@ -75,7 +78,7 @@ class RecommendController extends Controller
             return;
         }
 
-        $this->show($lastId);
+        return $this->show($lastId);
     }
 
     /**
@@ -158,7 +161,7 @@ class RecommendController extends Controller
             return;
         }
 
-        $this->show($id);
+        return $this->show($id);
     }
 
     /**
@@ -176,12 +179,12 @@ class RecommendController extends Controller
 
         $data = array(
                 'comment'   => $request->input('opinion'),
-                'status'    => 1,
+                'status'    => SUCCESS,
                 'udate'     => date('Y-m-d H:i:s')
             );
 
         if ($request->input('result') == false) {
-            $data['status'] = 2;
+            $data['status'] = FAILURE;
         }
 
         $res = DB::table('recommend')
@@ -195,7 +198,7 @@ class RecommendController extends Controller
 
         $mail->result($id);
         
-        if ( $data['status'] == 2) {
+        if ( $data['status'] == FAILURE) {
             return;
         }
 

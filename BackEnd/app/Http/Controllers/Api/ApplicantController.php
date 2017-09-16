@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\MailController as Mail;
 
 class ApplicantController extends Controller
 {
+    const SUCCESS = 1;
+    const FAILURE = 2;
     /**
      * 获取全部申请者信息
      * @param int $status 试译记录类别，0 为未处理，1 为成功，2 为失败
@@ -72,10 +74,9 @@ class ApplicantController extends Controller
                 'cdate'         => date('Y-m-d H:i:s')
             );
 
-        $lastId = DB::table('applicant')
-                        ->insertGetId($data);
+        $result = DB::table('applicant')->insert($data);
 
-        if($lastId === false){
+        if($result === false){
             header("HTTP/1.1 503 Service Unavailable");
             return;
         }
@@ -118,14 +119,14 @@ class ApplicantController extends Controller
 
         $data = array(
                 'comment'   => $request->input('opinion'),
-                'status'    => 1,
+                'status'    => SUCCESS,
                 'udate'     => date('Y-m-d H:i:s')
             );
 
         if ( $request->input('result') == true ) {
             $data['invitation'] = $this->generateToken($id);
         } else {
-            $data['status'] = 2;
+            $data['status'] = FAILURE;
         }
 
         $result = DB::table('applicant')
