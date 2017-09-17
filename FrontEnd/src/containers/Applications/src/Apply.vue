@@ -50,7 +50,8 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapMutations } from 'vuex'
+import assign from 'lodash/assign'
 
 const store = require('store')
 
@@ -78,6 +79,7 @@ export default {
     ...mapGetters(['logIn', 'currentUser']),
   },
   methods: {
+    ...mapMutations(['updateUserInfo']),
     // 提交第一步中的基本信息
     submitInfo() {
       const { email, major } = this.userInfo
@@ -134,6 +136,9 @@ export default {
         code: invitationCode,
       }).then(() => {
         this.$message.success('恭喜你成为了我们的新译者。')
+        this.updateUserInfo(assign({}, this.currentUser, {
+          translator: 1,
+        }))
         this.$router.replace('/')
       }).catch((err) => {
         this.$message.error(err.message)
