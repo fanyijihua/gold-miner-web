@@ -40,10 +40,9 @@ class LoginController extends Controller
         $token = $request->header('authorization');
         $result = DB::table('userToken')->where('token', $token)->delete();
 
-        if ($result) {
-            header('HTTP/1.1 200 ok');
-        } else {
-            header('HTTP/1.1 501 Not Implemented');
+        if ($result === false) {
+            return response("Service unavailable", 503)
+                    ->json(['message' => '退出失败！']);
         }
     }
 }

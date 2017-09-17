@@ -45,9 +45,8 @@ class CategoryController extends Controller
         $lastId = DB::table('category')
                     ->insertGetId($data);
 
-        if ( $lastId == false ) {
-            header("HTTP/1.1 503 Service Unavailable");
-            return;
+        if ( $lastId === false || $lastId === null ) {
+            return response("Service unavailable", 503);
         }
 
         return $this->show($lastId);
@@ -66,9 +65,9 @@ class CategoryController extends Controller
                     ->select('id', 'category', 'description')
                     ->first();
 
-        if ( $category == false ) {
-            header("HTTP/1.1 400 Bad Request");
-            return json_encode(['message' => '参数错误！']);
+        if ( $category === null ) {
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
 
         return json_encode($category);
@@ -101,9 +100,8 @@ class CategoryController extends Controller
                     ->where('id', $id)
                     ->update($data);
 
-        if ( $result == false ) {
-            header("HTTP/1.1 503 Service Unavailable");
-            return;
+        if ( $result === false ) {
+            return response("Service unavailable", 503);
         }
 
         return $this->show($id);
@@ -120,9 +118,8 @@ class CategoryController extends Controller
                     ->where('id', $id)
                     ->delete();
 
-        if ( $result == false ) {
-            header("HTTP/1.1 503 Service Unavailable");
-            return;
+        if ( $result === false ) {
+            return response("Service unavailable", 503);
         }
     }
 }
