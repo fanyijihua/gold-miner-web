@@ -17,8 +17,8 @@
       </el-col>
       <el-col class="grid__col-gutter" :span="6">
         <div class="card">
-          <h3 class="card__title">加入我们</h3>
-          <div><img class="img-rounded" src="/static/images/join.jpg" alt=""></div>
+          <h3 class="card__title">{{ currentUser.translator ?  '推荐文章' : '加入我们' }}</h3>
+          <div><router-link :to="currentUser.translator ?  '/recommends' : '/applications/apply'"><img class="img-rounded" src="/static/images/join.jpg" alt=""></router-link></div>
         </div>
       </el-col>
     </el-row>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 const articlesTab = [
   {
@@ -57,6 +57,7 @@ export default {
   },
   computed: {
     ...mapState(['articles']),
+    ...mapGetters(['currentUser']),
   },
   beforeRouteLeave(to, from, next) {
     next()
