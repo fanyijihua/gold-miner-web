@@ -19,8 +19,8 @@ class ApplicantController extends Controller
     public function index(Request $request)
     {
         if (intval($request->input('status')) > 2) {
-            header("HTTP/1.1 400 Bad request!");
-            return json_encode(['message' => '参数错误！']);
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
         
         $applicants = DB::table('applicant')
@@ -77,8 +77,7 @@ class ApplicantController extends Controller
         $result = DB::table('applicant')->insert($data);
 
         if($result === false){
-            header("HTTP/1.1 503 Service Unavailable");
-            return;
+            return response("Service unavailable", 503);
         }
     }
 
@@ -97,8 +96,8 @@ class ApplicantController extends Controller
                         ->first();
 
         if ( $applicant === null ) {
-            header("HTTP/1.1 400 Bad Request");
-            return json_encode(['message' => '参数错误！']);
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
 
         return json_encode($applicant);
@@ -113,20 +112,20 @@ class ApplicantController extends Controller
     public function update(Request $request, $id, Mail $mail)
     {
         if (!is_numeric($id)) {
-            header("HTTP/1.1 400 Bad request");
-            return json_encode(['message' => '参数错误！']);
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
 
         $data = array(
                 'comment'   => $request->input('opinion'),
-                'status'    => SUCCESS,
+                'status'    => self::SUCCESS,
                 'udate'     => date('Y-m-d H:i:s')
             );
 
         if ( $request->input('result') == true ) {
             $data['invitation'] = $this->generateToken($id);
         } else {
-            $data['status'] = FAILURE;
+            $data['status'] = self::FAILURE;
         }
 
         $result = DB::table('applicant')
@@ -134,8 +133,7 @@ class ApplicantController extends Controller
                     ->update($data);
 
         if($result === false){
-            header("HTTP/1.1 503 Service Unavailable");
-            return;
+            return response("Service unavailable", 503);
         }
 
         $mail->activate($id);
@@ -160,9 +158,9 @@ class ApplicantController extends Controller
                         ->where("invitation", $request->input("code"))
                         ->first();
 
-        if ($applicant == null || strpos($request->input("code"), ":expired")) {
-            header("HTTP/1.1 400 Bad request");
-            return json_encode(["message" => "邀请码不合法！"]);
+        if ($applicant === null || strpos($request->input("code"), ":expired")) {
+            return response("Bad request", 400)
+                    ->json(["message" => "邀请码不合法！"]);
         }
 
         DB::transaction(function () {

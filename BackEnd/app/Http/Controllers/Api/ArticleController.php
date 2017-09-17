@@ -63,9 +63,8 @@ class ArticleController extends Controller
         $lastId = DB::table('article')
                     ->insertGetId($data);
 
-        if ( $lastId == false ) {
-            header("HTTP/1.1 503 Service Unavailable");
-            return;
+        if ( $lastId === false ) {
+            return response("Service unavailable", 503);
         }
 
         return $this->show($lastId);
@@ -84,9 +83,9 @@ class ArticleController extends Controller
                         ->where('article.id', $id)
                         ->first();
 
-        if ( $article == false ) {
-            header("HTTP/1.1 400 Bad Request");
-            return json_encode(['message' => '参数错误！']);
+        if ( $article === null ) {
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
                         
         return json_encode($article);
@@ -124,9 +123,8 @@ class ArticleController extends Controller
                     ->where('id', $id)
                     ->update($data);
 
-        if ( $result == false ) {
-            header("HTTP/1.1 503 Service Unavailable");
-            return;
+        if ( $result === false ) {
+            return response("Service unavailable", 503);
         }
 
         return $this->show($id);
@@ -143,9 +141,8 @@ class ArticleController extends Controller
                     ->where('id', $id)
                     ->update(['isdel' => 1]);
 
-        if ( $result == false ) {
-            header("HTTP/1.1 503 Service Unavailable");
-            return;
+        if ( $result === false ) {
+            return response("Service unavailable", 503);
         }
     }
 
@@ -161,17 +158,16 @@ class ArticleController extends Controller
                     ->value('status');
 
         if ( $currentStatus === null ) {
-            header("HTTP/1.1 400 Bad Request");
-            return json_encode(['message' => '参数错误！']);
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
 
         $result = DB::table('article')
                     ->where('id', $id)
                     ->update(['status' => !$currentStatus]);
 
-        if ( $result == false ) {
-            header("HTTP/1.1 503 Service Unavailable");
-            return;
+        if ( $result === false ) {
+            return response("Service unavailable", 503);
         }
     }
 
@@ -213,9 +209,9 @@ class ArticleController extends Controller
                         ->inRandomOrder()
                         ->first();
 
-        if ( $article == false ) {
-            header("HTTP/1.1 400 Bad Request");
-            return json_encode(['message' => '本分类下暂无试译文章！']);
+        if ( $article === null ) {
+            return response("Bad request", 400)
+                    ->json(['message' => '本分类下暂无试译文章！']);
         }
                         
         return json_encode($article);

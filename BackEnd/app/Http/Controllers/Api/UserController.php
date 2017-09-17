@@ -64,7 +64,6 @@ class UserController extends Controller
         parse_str($this->sendRequest($aUrl, 'POST', $aParams), $token);
         
         if (!isset($token['access_token'])) {
-            header("HTTP/1.1 401 Service unavailable");
             $this->store["error"] = "获取 GitHub token 失败！";
             return view('index', $this->decodeStore());
         }
@@ -74,11 +73,9 @@ class UserController extends Controller
         $userInfo = json_decode($this->sendRequest($uUrl, 'GET', $uParams));
 
         if (!isset($userInfo->id)) {
-            header("HTTP/1.1 401 Unauthorized");
             $this->store["error"] = "GitHub 授权失败！";
             return view('index', $this->decodeStore());
         } elseif ($userInfo->email == null) {
-            header("HTTP/1.1 404 Not found");
             $this->store["error"] = "GitHub 邮箱未公开！";
             return view('index', $this->decodeStore());
         }
@@ -121,7 +118,6 @@ class UserController extends Controller
 
         $insertId = DB::table('user')->insertGetId($user);
         if ($insertId == false) {
-            header("HTTP/1.1 500 Service unavailable");
             $this->store['error'] = "添加新用户失败！";
             return view('index', $this->decodeStore());
         }
@@ -136,15 +132,13 @@ class UserController extends Controller
         $detail = DB::table('userDetail')->insert($userDetail);
 
         if ($detail == false) {
-            header("HTTP/1.1 500 Service unavailable");
             $this->store['error'] = "添加用户详情失败！";
             return view('index', $this->decodeStore());
         }
 
         $setting = USetting::setDefaultSettings($insertId);
 
-        if ($setting == false) {
-            header("HTTP/1.1 500 Service unavailable");
+        if ($setting === false) {
             $this->store['error'] = "添加用户设置失败！";
             return view('index', $this->decodeStore());
         }
@@ -160,8 +154,8 @@ class UserController extends Controller
     public function show($id)
     {
         if (!is_numeric($id)) {
-            header("HTTP/1.1 400 Bad request");
-            return json_encode(['message' => '参数错误！']);
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
 
         $user = DB::table('user')
@@ -170,9 +164,9 @@ class UserController extends Controller
                     ->select('user.id', 'user.name', 'user.email', 'user.avatar', 'user.cdate', 'userDetail.translate as translateNumber', 'userDetail.review as reviewNumber', 'userDetail.recommend as recommendNumber', 'userDetail.totalScore', 'userDetail.currentScore', 'userDetail.appraisal', 'userDetail.major', 'userDetail.bio')
                     ->first();
 
-        if ($user == false) {
-            header("HTTP/1.1 503 Service unavailable");
-            return json_encode(['message' => '获取用户信息失败！']);
+        if ($user === null) {
+            return response("Service unavailable", 503)
+                    ->json(['message' => ' 获取用户信息失败！']);
         }
 
         return json_encode($user);
@@ -196,7 +190,7 @@ class UserController extends Controller
                     ->where('id', $userId)
                     ->update($user);
 
-        if (USetting::getUserSettings($userId) == false) {
+        if (USetting::getUserSettings($userId) === false) {
             USetting::setDefaultSettings($userId);
         }
     }
@@ -218,8 +212,8 @@ class UserController extends Controller
                     ->first();
 
         if ($userInfo == false) {
-            header("HTTP/1.1 500 Service unavailable");
-            return json_encode(['message' => '拉取用户信息失败！']);
+            return response("Service unavailable", 503)
+                    ->json(['message' => '拉取用户信息失败！']);
         }
 
         return json_encode($userInfo);
@@ -233,8 +227,8 @@ class UserController extends Controller
     public function loadUserById($userId)
     {
         if (!is_numeric($userId)) {
-            header("HTTP/1.1 400 Bad request");
-            return json_encode(['message' => '参数错误！']);
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
 
         $userInfo = DB::table('user')
@@ -244,8 +238,7 @@ class UserController extends Controller
                     ->select('user.*', 'userDetail.major', 'userDetail.bio', 'userToken.token')
                     ->first();
 
-        if ($userInfo == false) {
-            header("HTTP/1.1 500 Service unavailable");
+        if ($userInfo === null) {
             $this->store['error'] = "获取用户信息失败！";
             return view('index', $this->decodeStore());
         }

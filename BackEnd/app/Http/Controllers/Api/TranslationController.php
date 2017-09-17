@@ -8,6 +8,13 @@ use App\Http\Controllers\Controller;
 
 class TranslationController extends Controller
 {
+    const RETRIVING = -1;
+    const READY = 0;
+    const TRANSLATING = 1;
+    const TRANSLATED = 2;
+    const REVIEWING = 3;
+    const POSTED = 4;
+
     /**
      * 获取所有翻译文章记录（分页）
      * @param   string $status 文章类别，awaiting 为待翻译或待校对，progressing 为正在翻译或正在校对，posted 为已发布
@@ -21,7 +28,7 @@ class TranslationController extends Controller
                                 ->join('recommend', 'translation.rid', '=', 'recommend.id')
                                 ->join('category', 'recommend.category', '=', 'category.id')
                                 ->select('translation.id', 'translation.file', 'translation.title', 'translation.description', 'translation.link', 'translation.poster', 'translation.tscore', 'translation.rscore', 'translation.tduration', 'translation.rduration', 'translation.word', 'translation.translator', 'translation.reviewer1', 'translation.reviewer2', 'translation.pr', 'translation.status', 'category.category', 'recommend.title as oTitle', 'recommend.url as oUrl', 'recommend.recommender', 'recommend.description as oDescription')
-                                ->where('translation.status', '0')
+                                ->where('translation.status', self::READY)
                                 ->orWhere('translation.status', '2')
                                 ->orderBy('translation.udate', 'ASC')
                                 ->get();
@@ -32,7 +39,7 @@ class TranslationController extends Controller
                                 ->join('recommend', 'translation.rid', '=', 'recommend.id')
                                 ->join('category', 'recommend.category', '=', 'category.id')
                                 ->select('translation.id', 'translation.file', 'translation.title', 'translation.description', 'translation.link', 'translation.poster', 'translation.tscore', 'translation.rscore', 'translation.tduration', 'translation.rduration', 'translation.word', 'translation.translator', 'translation.reviewer1', 'translation.reviewer2', 'translation.pr', 'translation.status', 'category.category', 'recommend.title as oTitle', 'recommend.url as oUrl', 'recommend.recommender', 'recommend.description as oDescription')
-                                ->where('translation.status', '1')
+                                ->where('translation.status', self::TRANSLATING)
                                 ->orWhere('translation.status', '3')
                                 ->orderBy('translation.udate', 'ASC')
                                 ->get();
@@ -43,14 +50,14 @@ class TranslationController extends Controller
                                 ->join('recommend', 'translation.rid', '=', 'recommend.id')
                                 ->join('category', 'recommend.category', '=', 'category.id')
                                 ->select('translation.id', 'translation.file', 'translation.title', 'translation.description', 'translation.link', 'translation.poster', 'translation.tscore', 'translation.rscore', 'translation.tduration', 'translation.rduration', 'translation.word', 'translation.translator', 'translation.reviewer1', 'translation.reviewer2', 'translation.pr', 'translation.status', 'category.category', 'recommend.title as oTitle', 'recommend.url as oUrl', 'recommend.recommender', 'recommend.description as oDescription')
-                                ->where('translation.status', '4')
+                                ->where('translation.status', self::POSTED)
                                 ->orderBy('translation.udate', 'ASC')
                                 ->get();
                 break;
             
             default:
-                header("HTTP/1.1 400 Bad request!");
-                return json_encode(['message' => '参数错误！']);
+                return response("Bad request", 400)
+                        ->json(['message' => '参数错误！']);
         }
 
         $involedUsers = array();
@@ -99,8 +106,7 @@ class TranslationController extends Controller
                 $result = $this->requestTranslate($request);
 
                 if ($result == false) {
-                    header('HTTP/1.1 503 Service unavailable!');
-                    return json_encode(['message' => '修改文章状态失败！']);
+                    return response("Service unavailable", 503);
                 }
             }
         // 处理其他人发起的 PR
@@ -110,16 +116,14 @@ class TranslationController extends Controller
                 $result = $this->requestPost($request);
 
                 if ($result == false) {
-                    header('HTTP/1.1 503 Service unavailable!');
-                    return json_encode(['message' => '修改文章状态失败！']);
+                    return response("Service unavailable", 503);
                 }
             // PR 被创建时更新文章为待校对状态
             } elseif ($payload->action = 'opened') {
                 $result = $this->requestReview($request);
 
                 if ($result == false) {
-                    header('HTTP/1.1 503 Service unavailable!');
-                    return json_encode(['message' => '修改文章状态失败！']);
+                    return response("Service unavailable", 503);
                 }
             }
         }
@@ -164,7 +168,7 @@ class TranslationController extends Controller
             'word'      => $request->input('word'),
             'tduration' => $request->input('tduration'),
             'rduration' => $request->input('rduration'),
-            'status'    => -1,
+            'status'    => self::RETRIVING,
             'udate'     => date("Y-m-d H:i:s"),
             'cdate'     => date("Y-m-d H:i:s"),
         );
@@ -172,9 +176,8 @@ class TranslationController extends Controller
         $translationId = DB::table('translation')
             ->insertGetId($data);
 
-        if ($translationId == false) {
-            header('HTTP/1.1 503 Service not available!');
-            return json_encode(['message' => '添加文章失败！']);
+        if ($translationId === false || $translationId === null) {
+            return response("Service unavailable", 503);
         }
 
         $recommender = DB::table('recommend')
@@ -197,8 +200,8 @@ class TranslationController extends Controller
     public function show($id)
     {
         if (!is_numeric($id)) {
-            header("HTTP/1.1 400 Bad request");
-            return json_encode(['message' => '参数错误！']);
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
 
         $translation = DB::table('translation')
@@ -222,7 +225,7 @@ class TranslationController extends Controller
                     ->whereIn('id', $involedUsers)
                     ->get();
 
-        $user = array(null);
+        $user = array();
         foreach ($userList as $u) {
             $user[$u->id] = $u;
         }
@@ -245,8 +248,8 @@ class TranslationController extends Controller
     public function update(Request $request, $id)
     {
         if (!is_numeric($id)) {
-            header('HTTP/1.1 400 Bad request');
-            return json_encode(['message' => '参数错误！']);
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
 
         $this->isNotNull(array(
@@ -271,9 +274,8 @@ class TranslationController extends Controller
                     ->where('id', $id)
                     ->update($data);
 
-        if ($result == false) {
-            header('HTTP/1.1 503 Service not available!');
-            return json_encode(['message' => '更新失败！']);
+        if ($result === false) {
+            return response("Service unavailable", 503);
         }
     }
 
@@ -286,8 +288,8 @@ class TranslationController extends Controller
     public function post(Request $request, $id)
     {
         if (!is_numeric($id)) {
-            header('HTTP/1.1 400 Bad request');
-            return json_encode(['message' => '参数错误！']);
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
         
         $this->isNotNull(array(
@@ -299,17 +301,16 @@ class TranslationController extends Controller
         $data = array(
                 'link'          => $request->input('link'),
                 'description'   => $request->input('description'),
-                'status'        => 4,
-                'udate'     => date("Y-m-d H:i:s")
+                'status'        => self::POSTED,
+                'udate'         => date("Y-m-d H:i:s")
             );
 
         $result = DB::table('translation')
                     ->where('id', $id)
                     ->update($data);
 
-        if ($result == false) {
-            header('HTTP/1.1 503 Service not available!');
-            return json_encode(['message' => '更新失败！']);
+        if ($result === false) {
+            return response("Service unavailable", 503);
         }
 
         $tInfo = DB::table('translation')
@@ -341,7 +342,7 @@ class TranslationController extends Controller
     {
         $file = $this->getPRFile($request->input('payload'));
         $data = array(
-            'status'    => 0,
+            'status'    => self::READY,
             'udate'     => date('Y-m-d H:i:s')
         );
 
@@ -364,22 +365,21 @@ class TranslationController extends Controller
 
         $data = array(
             'translator' => $request->input('uid'),
-            'status'     => 1,
+            'status'     => self::TRANSLATING,
             'udate'      => date('Y-m-d H:i:s')
         );
 
         if (LogController::checkTimeline($request->input('uid'), '认领翻译', 1)) {
-            header('HTTP/1.1 403 Forbidden!');
-            return json_encode(['message' => '您还有未完成的翻译任务！']);
+            return response("Forbidden", 403)
+                    ->json(['message' => '您还有未完成的翻译任务！']);
         }
 
         $result = DB::table('translation')
-            ->where('id', $request->input('id'))
-            ->update($data);
+                    ->where('id', $request->input('id'))
+                    ->update($data);
 
-        if ($result == false) {
-            header('HTTP/1.1 503 Service not available!');
-            return json_encode(['message' => '认领失败！']);
+        if ($result === false) {
+            return response("Service unavailable", 503);
         }
 
         LogController::writeTimeline(array(
@@ -400,7 +400,7 @@ class TranslationController extends Controller
         $file = $this->getPRFile($request->input('payload'));
         $data = array(
             'pr'        => $this->getPR($request->input('payload'))->id,
-            'status'    => 2,
+            'status'    => self::TRANSLATED,
             'udate'     => date('Y-m-d H:i:s')
         );
 
@@ -422,28 +422,27 @@ class TranslationController extends Controller
         ));
 
         $reviewer1 = DB::table('translation')
-                    ->where('id', $request->input('id'))
-                    ->value('reviewer1');
+                        ->where('id', $request->input('id'))
+                        ->value('reviewer1');
 
         $data =  array(
                 'reviewer1' => $reviewer1 ? $reviewer1 : $request->input('uid'),
                 'reviewer2' => $reviewer1 ? $request->input('uid') : 0,
-                'status'    => $reviewer1 ? 3 : 2,
+                'status'    => $reviewer1 ? self::REVIEWING : self::TRANSLATED,
                 'udate'     => date('Y-m-d H:i:s')
             );
 
         if (LogController::checkTimeline($request->input('uid'), '认领校对', 3)) {
-            header('HTTP/1.1 403 Forbidden!');
-            return json_encode(['message' => '您还有未完成的校对任务！']);
+            return response("Forbidden", 403)
+                    ->json(['message' => '您还有未完成的校对任务！']);
         }
 
         $result = DB::table('translation')
                 ->where('id', $request->input('id'))
                 ->update($data);
 
-        if ($result == false) {
-            header('HTTP/1.1 503 Service not available!');
-            return json_encode(['message' => '认领失败！']);
+        if ($result === false) {
+            return response("Service unavailable", 503);
         }
 
         LogController::writeTimeline(array(

@@ -21,8 +21,8 @@ class RecommendController extends Controller
     public function index(Request $request)
     {
         if (intval($request->input('status')) > 2) {
-            header("HTTP/1.1 400 Bad request!");
-            return json_encode(['message' => '参数错误！']);
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
         
         $recommends = DB::table('recommend')
@@ -65,7 +65,7 @@ class RecommendController extends Controller
                 'url'           => $request->input('url'),
                 'recommender'   => $request->input('recommender'),
                 'description'   => $request->input('description'),
-                'status'        => AWAITING,
+                'status'        => self::AWAITING,
                 'udate'         => date('Y-m-d H:i:s'),
                 'cdate'         => date('Y-m-d H:i:s')
             );
@@ -73,9 +73,8 @@ class RecommendController extends Controller
         $lastId = DB::table('recommend')
                     ->insertGetId($data);
 
-        if ( $lastId == false ) {
-            header("HTTP/1.1 503 Service Unavailable");
-            return;
+        if ( $lastId === false || $lastId === null ) {
+            return response("Service unavailable", 503);
         }
 
         return $this->show($lastId);
@@ -96,9 +95,9 @@ class RecommendController extends Controller
                         ->where('recommend.id', $id)
                         ->first();
 
-        if ( $recommend == false ) {
-            header("HTTP/1.1 400 Bad Request");
-            return json_encode(['message' => '参数错误！']);
+        if ( $recommend === null ) {
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
                         
         return json_encode($recommend);
@@ -125,11 +124,11 @@ class RecommendController extends Controller
                     ->value('uid');
 
         if ($record->status != 0) {
-            header("HTTP/1.1 403 forbidden");
-            return json_encode(['message' => '您推荐的文章已被管理员处理，无法操作！']);
+            return response("Forbidden", 403)
+                    ->json(['message' => '您推荐的文章已被管理员处理，无法操作！']);
         } elseif ($record->recommender != $user) {
-            header("HTTP/1.1 403 forbidden");
-            return json_encode(['message' => '您没有权限修改他人推荐的文章！']);
+            return response("Forbidden", 403)
+                    ->json(['message' => '您没有权限修改他人推荐的文章！']);
         }
 
         $this->isNotNull(array(
@@ -156,9 +155,8 @@ class RecommendController extends Controller
                         ->where('id', $id)
                         ->update($data);
 
-        if ( $result == false ) {
-            header("HTTP/1.1 503 Service Unavailable");
-            return;
+        if ( $result === false ) {
+            return response("Service unavailable", 503);
         }
 
         return $this->show($id);
@@ -173,32 +171,31 @@ class RecommendController extends Controller
     public function result(Request $request, $id, Mail $mail)
     {
         if (!is_numeric($id)) {
-            header("HTTP/1.1 400 Bad request");
-            return json_encode(['message' => '参数错误！']);
+            return response("Bad request", 400)
+                    ->json(['message' => '参数错误！']);
         }
 
         $data = array(
                 'comment'   => $request->input('opinion'),
-                'status'    => SUCCESS,
+                'status'    => self::SUCCESS,
                 'udate'     => date('Y-m-d H:i:s')
             );
 
         if ($request->input('result') == false) {
-            $data['status'] = FAILURE;
+            $data['status'] = self::FAILURE;
         }
 
         $res = DB::table('recommend')
                     ->where('id', $id)
                     ->update($data);
 
-        if ( $res == false ) {
-            header("HTTP/1.1 503 Service Unavailable");
-            return json_encode(['message' => '更新推荐结果失败！']);
+        if ( $res === false ) {
+            return response("Service unavailable", 503);
         }
 
         $mail->result($id);
         
-        if ( $data['status'] == FAILURE) {
+        if ( $data['status'] == self::FAILURE) {
             return;
         }
 
