@@ -26,6 +26,7 @@
                 <template slot="title">{{ user.name }}</template>
                 <el-menu-item index="user-home" :route="{ path: `/users/${user.id}` }">我的主页</el-menu-item>
                 <el-menu-item index="user-settings" :route="{ path: `/users/${user.id}#settings` }">个人设置</el-menu-item>
+                <el-menu-item v-if="user.admin" index="applications-texts" :route="{ path: '/applications/texts' }">试译文本管理</el-menu-item>
                 <el-menu-item index="logout" :route="{ path: '/auth/logout' }">退出</el-menu-item>
               </el-submenu>
             </template>
