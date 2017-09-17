@@ -54,7 +54,7 @@ const router = new Router({
       },
     },
     {
-      path: '/recommends',
+      path: '/recommends/new',
       name: 'Recommends',
       component: Recommends.New,
       meta: {

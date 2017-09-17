@@ -6,7 +6,7 @@
           <el-tab-pane v-for="tab in articlesTab" :label="tab.label" :name="tab.name" :key="tab.name">
             <article-item v-for="item in articles[tab.name]" :article="articles.data[item]" :key="item"></article-item>
             <div class="text-center no-content" v-if="noContent">
-              <router-link to="/recommends">没有找到喜欢的文章？不如给我们推荐几篇吧~</router-link>
+              <router-link to="/recommends/new">没有找到喜欢的文章？不如给我们推荐几篇吧~</router-link>
             </div>
             <div class="text-center load-more" v-if="showMoreBtn">
               <a href="javascript:;" @click="nextPage()">查看更多</a>
@@ -18,7 +18,7 @@
       <el-col class="grid__col-gutter" :span="6">
         <div class="card">
           <h3 class="card__title">{{ currentUser.translator ?  '推荐文章' : '加入我们' }}</h3>
-          <div><router-link :to="currentUser.translator ?  '/recommends' : '/applications/apply'"><img class="img-rounded" src="/static/images/join.jpg" alt=""></router-link></div>
+          <div><router-link :to="currentUser.translator ?  '/recommends/new' : '/applications/apply'"><img class="img-rounded" src="/static/images/join.jpg" alt=""></router-link></div>
         </div>
       </el-col>
     </el-row>
