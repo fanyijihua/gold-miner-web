@@ -7,10 +7,17 @@ const state = {
 const getters = {
   total(state, getters, rootState) {
     const { applications, recommends } = rootState
+    let result = 0
 
-    return state.system.length
-      + applications.applicants.id.length
-      + recommends.id.length
+    if (getters.currentUser.admin) {
+      result = state.system.length
+        + applications.applicants.id.length
+        + recommends.id.length
+    } else {
+      result = state.system.length
+    }
+
+    return result
   },
 }
 
