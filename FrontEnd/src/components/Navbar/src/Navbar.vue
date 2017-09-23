@@ -12,7 +12,7 @@
           <!-- <el-menu-item index="topics">优秀专题</el-menu-item> -->
           <li class="pull-right">
             <template v-if="logIn">
-              <el-menu-item v-if="user.translator" index="recomment" :route="{ path: '/recommends' }">推荐文章</el-menu-item>
+              <el-menu-item v-if="user.translator" index="recomment" :route="{ path: '/recommends/new' }">推荐文章</el-menu-item>
               <el-menu-item v-else index="Apply" :route="{ path: '/applications/apply' }">加入我们</el-menu-item>
               <el-menu-item class="navbar__messages" index="">
                 <el-badge class="item" :value="totalOfNotifications" v-popover:popover>
@@ -26,6 +26,7 @@
                 <template slot="title">{{ user.name }}</template>
                 <el-menu-item index="user-home" :route="{ path: `/users/${user.id}` }">我的主页</el-menu-item>
                 <el-menu-item index="user-settings" :route="{ path: `/users/${user.id}#settings` }">个人设置</el-menu-item>
+                <el-menu-item v-if="user.admin" index="applications-texts" :route="{ path: '/applications/texts' }">试译文本管理</el-menu-item>
                 <el-menu-item index="logout" :route="{ path: '/auth/logout' }">退出</el-menu-item>
               </el-submenu>
             </template>
