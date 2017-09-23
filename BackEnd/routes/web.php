@@ -66,7 +66,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 		Route::post('translations/claim/review', 'TranslationController@claimReview');
 		// 认领翻译任务
 		Route::post('translations/claim/translation', 'TranslationController@claimTranslation');
-	})
+	});
 	// 开放接口
 	// 执行用户登录
 	Route::get('users', 'UserController@index');
