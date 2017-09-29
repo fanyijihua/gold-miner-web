@@ -60,8 +60,6 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 		Route::put('recommends/{id}', 'RecommendController@update');
 		// 译者更新文章在掘金的分享信息
 		Route::patch('translations/{id}', 'TranslationController@post');
-		// 处理 GitHub WebHooks 请求信息
-		Route::post('translations/pr', 'TranslationController@handlePR');
 		// 认领校对任务
 		Route::post('translations/claim/review', 'TranslationController@claimReview');
 		// 认领翻译任务
@@ -94,6 +92,8 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 	Route::get('statistics/user/task/{id}', 'StatisticController@userTask');
 	// 提交译者申请
 	Route::post('applicants', 'ApplicantController@store');
+	// 处理 GitHub WebHooks 请求信息
+	Route::post('translations/pr', 'TranslationController@handlePR');
 });
 
 // 其他路由

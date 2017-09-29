@@ -14,7 +14,7 @@ class VerifyCsrfToken extends BaseVerifier
      */
     protected $except = [
         //
-        "translations/pr"
+        "api/translations/pr"
     ];
 
     public function handle($request, Closure $next)
