@@ -505,9 +505,7 @@ class TranslationController extends Controller
      */
     public function getPRFile($pull_request)
     {
-        $diff_url = $pull_request['diff_url'];
-        preg_match("/^diff --git a\/(.*?) b\/(.*?)\n/", $this->sendRequest($diff_url, 'GET'), $file);
-
-        return $file[1];
+        preg_match("/.*?添加文章 (.*)\.md.*?/", $pull_request['title'], $file);
+        return $file[1] . '.md';
     }
 }
