@@ -97,13 +97,14 @@ class TranslationController extends Controller
      */
     public function handlePR(Request $request)
     {
-        $payload = $request->input('payload');
+        $pull_request = $request->input('pull_request');
+        $action = $request->input('action');
         // 处理 GitHub Repo 管理员发起的 PR
         // PR被 merge 时更新文章为待认领状态
         $admin = array_filter(explode(",", env('GITHUB_ADMIN_USERNAME')));
-        if (in_array($payload->pull_request->user->login, $admin)) {
-            if ($payload->action == 'closed' || $payload->pull_request->merged != false) {
-                $result = $this->requestTranslate($request);
+        if (in_array($pull_request['user']['login'], $admin)) {
+            if ($action == 'closed' || $pull_request['merged'] == true) {
+                $result = $this->requestTranslate($pull_request);
 
                 if ($result == false) {
                     return response("Service unavailable", 503);
@@ -111,16 +112,16 @@ class TranslationController extends Controller
             }
         // 处理其他人发起的 PR
         } else {
-            // PR 被 merge 时更新文章为发布（翻译完成）状态
-            if ($payload->action == 'closed' || $payload->pull_request->merged != false) {
-                $result = $this->requestPost($request);
+            // PR 被 merge 时更新文章为翻译完成状态
+            if ($action == 'closed' || $pull_request['merged'] == true) {
+                $result = $this->requestPost($pull_request);
 
                 if ($result == false) {
                     return response("Service unavailable", 503);
                 }
             // PR 被创建时更新文章为待校对状态
-            } elseif ($payload->action = 'opened') {
-                $result = $this->requestReview($request);
+            } elseif ($action = 'opened') {
+                $result = $this->requestReview($pull_request);
 
                 if ($result == false) {
                     return response("Service unavailable", 503);
@@ -173,10 +174,9 @@ class TranslationController extends Controller
             'cdate'     => date("Y-m-d H:i:s"),
         );
 
-        $translationId = DB::table('translation')
-            ->insertGetId($data);
+        $translationId = DB::table('translation')->insertGetId($data);
 
-        if ($translationId === false || $translationId === null) {
+        if ($translationId == false) {
             return response("Service unavailable", 503);
         }
 
@@ -335,12 +335,12 @@ class TranslationController extends Controller
 
     /**
      * 请求翻译 （修改文章为待认领状态）
-     * @param  Request $request PR 触发的 WebHooks 请求
+     * @param  $pull_request PR 触发的 WebHooks 请求
      * @return boolean
      */
-    public function requestTranslate(Request $request)
+    public function requestTranslate($pull_request)
     {
-        $file = $this->getPRFile($request->input('payload'));
+        $file = $this->getPRFile($pull_request);
         $data = array(
             'status'    => self::READY,
             'udate'     => date('Y-m-d H:i:s')
@@ -392,14 +392,14 @@ class TranslationController extends Controller
 
     /**
      * 请求校对 （修改文章为待校对状态）
-     * @param  Request $request PR 触发的 WebHooks 请求
+     * @param  $pull_request PR 触发的 WebHooks 请求
      * @return boolean
      */
-    public function requestReview(Request $request)
+    public function requestReview($pull_request)
     {
-        $file = $this->getPRFile($request->input('payload'));
+        $file = $this->getPRFile($pull_request);
         $data = array(
-            'pr'        => $this->getPR($request->input('payload'))->id,
+            'pr'        => $pull_request['id'],
             'status'    => self::TRANSLATED,
             'udate'     => date('Y-m-d H:i:s')
         );
@@ -455,14 +455,14 @@ class TranslationController extends Controller
 
     /**
      * 翻译完成 
-     * @param  Request $request PR 触发的 WebHooks 请求
+     * @param  $pull_request PR 触发的 WebHooks 请求
      * @return boolean
      */
-    public function requestPost(Request $request)
+    public function requestPost($pull_request)
     {
-        $file = $this->getPRFile($request->input('payload'));
+        $file = $this->getPRFile($pull_request);
         $data = array(
-            'title'     => $this->getPR($request->input('payload'))->title,
+            'title'     => $pull_request['title'],
             'udate'     => date('Y-m-d H:i:s')
         );
 
@@ -503,21 +503,11 @@ class TranslationController extends Controller
      * @param  object   $payload PR 触发的 WebHooks 中的请求内容
      * @return string   修改的文件名 
      */
-    public function getPRFile($payload)
+    public function getPRFile($pull_request)
     {
-        $diff_url = $payload->pull_request->diff_url;
+        $diff_url = $pull_request['diff_url'];
         preg_match("/^diff --git a\/(.*?) b\/(.*?)\n/", $this->sendRequest($diff_url, 'GET'), $file);
 
         return $file[1];
-    }
-
-    /**
-     * 获取 WebHooks 请求中 PR 的信息
-     * @param  Object   $payload    PR 触发的 WebHooks 请求内容
-     * @return object   PR 信息
-     */
-    public function getPR($payload)
-    {
-        return $payload->pull_request;
     }
 }
