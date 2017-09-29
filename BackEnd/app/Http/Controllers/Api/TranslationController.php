@@ -259,10 +259,12 @@ class TranslationController extends Controller
                 '校对积分'  => $request->input('rscore'),
                 '翻译时长'  => $request->input('tduration'),
                 '校对时长'  => $request->input('rduration'),
-                '文章字数'  => $request->input('word')
+                '文章字数'  => $request->input('word'),
+                '标题'     => $request->input('title')
         ));
 
         $data = array(
+                'title'         => $request->input('title'),
                 'tscore'        => $request->input('tscore'),
                 'rscore'        => $request->input('rscore'),
                 'tduration'     => $request->input('tduration'),
