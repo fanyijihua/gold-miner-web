@@ -60,31 +60,33 @@ class TranslationController extends Controller
                         ->json(['message' => '参数错误！']);
         }
 
-        $involedUsers = array();
-        foreach ($translations as $v) {
-            $involedUsers[] = $v->translator;
-            $involedUsers[] = $v->reviewer1;
-            $involedUsers[] = $v->reviewer2;
-            $involedUsers[] = $v->recommender;
-        }
-
-        $involedUsers = array_unique($involedUsers);
-        
-        $userList = DB::table('user')
-                    ->select('id', 'name', 'avatar')
-                    ->whereIn('id', $involedUsers)
-                    ->get();
-
-        $user = array(null);
-        foreach ($userList as $u) {
-            $user[$u->id] = $u;
-        }
-
-        foreach ($translations as $k => $t) {
-            $translations[$k]->translator  = $user[$t->translator];
-            $translations[$k]->reviewer1   = $user[$t->reviewer1];
-            $translations[$k]->reviewer2   = $user[$t->reviewer2];
-            $translations[$k]->recommender = $user[$t->recommender];
+        if (count($translations) > 0) {
+            $involedUsers = array();
+            foreach ($translations as $v) {
+                $involedUsers[] = $v->translator;
+                $involedUsers[] = $v->reviewer1;
+                $involedUsers[] = $v->reviewer2;
+                $involedUsers[] = $v->recommender;
+            }
+    
+            $involedUsers = array_unique($involedUsers);
+            
+            $userList = DB::table('user')
+                        ->select('id', 'name', 'avatar')
+                        ->whereIn('id', $involedUsers)
+                        ->get();
+    
+            $user = array();
+            foreach ($userList as $u) {
+                $user[$u->id] = $u;
+            }
+    
+            foreach ($translations as $k => $t) {
+                $translations[$k]->translator ? $translations[$k]->translator = $user[$t->translator] : "";
+                $translations[$k]->reviewer1 ? $translations[$k]->reviewer1 = $user[$t->reviewer1] : "";
+                $translations[$k]->reviewer2 ? $translations[$k]->reviewer2 = $user[$t->reviewer2] : "";
+                $translations[$k]->recommender ? $translations[$k]->recommender = $user[$t->recommender] : "";
+            }
         }
 
         return json_encode($translations);
@@ -500,7 +502,7 @@ class TranslationController extends Controller
 
     /**
      * 获取 PR 中被修改文件的文件名
-     * @param  object   $payload PR 触发的 WebHooks 中的请求内容
+     * @param  object   $pull_request PR 触发的 WebHooks 中的请求内容
      * @return string   修改的文件名 
      */
     public function getPRFile($pull_request)
