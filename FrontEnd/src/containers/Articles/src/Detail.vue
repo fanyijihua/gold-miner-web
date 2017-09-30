@@ -97,7 +97,7 @@ export default {
   },
   computed: {
     ...mapState(['articles']),
-    ...mapGetters(['currentUser']),
+    ...mapGetters(['currentUser', 'logIn']),
     timeline() {
       try {
         return JSON.parse(this.article.timeline)
@@ -158,7 +158,7 @@ export default {
     claimTranslation() {
       let action
 
-      if (!this.currentUser.logIn) {
+      if (!this.logIn) {
         return this.$message.error('请先登录再来认领吧~')
       }
 
