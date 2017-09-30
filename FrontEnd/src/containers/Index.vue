@@ -84,6 +84,7 @@ export default {
       }).then((data) => {
         if (data.length) {
           this.showMoreBtn = true
+          this.noContent = false
         } else {
           this.showMoreBtn = false
 
