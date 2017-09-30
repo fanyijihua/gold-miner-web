@@ -58,13 +58,14 @@ export default {
   }
 
   &__author {
-    width: 10%;
+    width: 100px;
     padding: 10px;
     @include border-box();
 
     img {
-      width: 100%;
-      height: 100%;
+      display: inline-block;
+      width: 60px;
+      height: 60px;
     }
   }
 
@@ -75,10 +76,6 @@ export default {
     color: $primary;
   }
 
-  &__cont {
-    padding-left: 10%;
-  }
-
   &__title {
     padding: 8px 0 5px;
     margin: 0;
@@ -87,8 +84,14 @@ export default {
   }
 
   &__description {
+    height: 40px;
     margin: 0;
     font-size: 14px;
+    overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     color: $silver;
   }
 
