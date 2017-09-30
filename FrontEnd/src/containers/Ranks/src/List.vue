@@ -7,7 +7,7 @@
             <ranking-list :data="ranking.recommend.month">
               <ranking-column prop="index" label="排名"></ranking-column>
               <ranking-column prop="name" label="译者"></ranking-column>
-              <ranking-column prop="num" label="翻译文章"></ranking-column>
+              <ranking-column prop="num" label="文章数量"></ranking-column>
             </ranking-list>
           </card>
         </el-col>
@@ -16,7 +16,7 @@
             <ranking-list :data="ranking.recommend.year">
               <ranking-column prop="index" label="排名"></ranking-column>
               <ranking-column prop="name" label="译者"></ranking-column>
-              <ranking-column prop="num" label="翻译文章"></ranking-column>
+              <ranking-column prop="num" label="文章数量"></ranking-column>
             </ranking-list>
           </card>
         </el-col>
@@ -25,7 +25,7 @@
             <ranking-list :data="ranking.recommend.total">
               <ranking-column prop="index" label="排名"></ranking-column>
               <ranking-column prop="name" label="译者"></ranking-column>
-              <ranking-column prop="num" label="翻译文章"></ranking-column>
+              <ranking-column prop="num" label="文章数量"></ranking-column>
             </ranking-list>
           </card>
         </el-col>
@@ -38,7 +38,7 @@
             <ranking-list :data="ranking.translate.month">
               <ranking-column prop="index" label="排名"></ranking-column>
               <ranking-column prop="name" label="译者"></ranking-column>
-              <ranking-column prop="num" label="翻译文章"></ranking-column>
+              <ranking-column prop="num" label="文章数量"></ranking-column>
             </ranking-list>
           </card>
         </el-col>
@@ -47,7 +47,7 @@
             <ranking-list :data="ranking.translate.year">
               <ranking-column prop="index" label="排名"></ranking-column>
               <ranking-column prop="name" label="译者"></ranking-column>
-              <ranking-column prop="num" label="翻译文章"></ranking-column>
+              <ranking-column prop="num" label="文章数量"></ranking-column>
             </ranking-list>
           </card>
         </el-col>
@@ -56,7 +56,7 @@
             <ranking-list :data="ranking.translate.total">
               <ranking-column prop="index" label="排名"></ranking-column>
               <ranking-column prop="name" label="译者"></ranking-column>
-              <ranking-column prop="num" label="翻译文章"></ranking-column>
+              <ranking-column prop="num" label="文章数量"></ranking-column>
             </ranking-list>
           </card>
         </el-col>
@@ -69,7 +69,7 @@
             <ranking-list :data="ranking.review.month">
               <ranking-column prop="index" label="排名"></ranking-column>
               <ranking-column prop="name" label="译者"></ranking-column>
-              <ranking-column prop="num" label="翻译文章"></ranking-column>
+              <ranking-column prop="num" label="文章数量"></ranking-column>
             </ranking-list>
           </card>
         </el-col>
@@ -78,7 +78,7 @@
             <ranking-list :data="ranking.review.year">
               <ranking-column prop="index" label="排名"></ranking-column>
               <ranking-column prop="name" label="译者"></ranking-column>
-              <ranking-column prop="num" label="翻译文章"></ranking-column>
+              <ranking-column prop="num" label="文章数量"></ranking-column>
             </ranking-list>
           </card>
         </el-col>
@@ -87,7 +87,7 @@
             <ranking-list :data="ranking.review.total">
               <ranking-column prop="index" label="排名"></ranking-column>
               <ranking-column prop="name" label="译者"></ranking-column>
-              <ranking-column prop="num" label="翻译文章"></ranking-column>
+              <ranking-column prop="num" label="文章数量"></ranking-column>
             </ranking-list>
           </card>
         </el-col>
