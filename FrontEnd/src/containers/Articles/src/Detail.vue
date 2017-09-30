@@ -31,6 +31,9 @@
     </div>
     <el-dialog title="编辑文章" :visible.sync="dialog.isVisible" @close="closeDialog()">
       <el-form :model="dialog.data" label-width="140px">
+        <el-form-item label="文章标题">
+          <el-input v-model="dialog.data.title"></el-input>
+        </el-form-item>
         <el-form-item label="文章封面">
           <el-input v-model="dialog.data.poster"></el-input>
         </el-form-item>
@@ -71,12 +74,16 @@ export default {
   name: 'ArticleDetail',
   data() {
     return {
-      article: {},
+      article: {
+        recommender: {},
+        translator: {},
+      },
       loading: false,
       dialog: {
         isVisible: false,
         loading: false,
         data: {
+          title: '',
           poster: '',
           description: '',
           tduration: 1,
@@ -144,7 +151,6 @@ export default {
         return this.$message.success('更新成功')
       }).catch((err) => {
         this.dialog.loading = false
-        this.closeDialog()
         return this.$message.error(err.message)
       })
     },
