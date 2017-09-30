@@ -3,21 +3,22 @@
     <ul class="footer__list container">
       <li class="footer__item">
         <h2 class="footer__title">GitHub</h2>
-        <div class="footer__body"><a target="_blank " href=""><span>仓库地址</span></a></div>
+        <div class="footer__body"><a target="_blank" href="https://github.com/sqrthree/gold-miner-web"><span>仓库地址</span></a></div>
       </li>
       <li class="footer__item">
         <h2 class="footer__title"><span>相关站点</span></h2>
-        <div class="footer__body"><a href="">掘金</a><span> - </span><span>一个只有高手分享的社区</span></div>
-        <div class="footer__body"><a href="">掘金翻译计划</a><span> - </span><span> GitHub 仓库</span></div>
+        <div class="footer__body"><a href="https://juejin.im/">掘金</a><span> - </span><span>一个只有高手分享的社区</span></div>
+        <div class="footer__body"><a href="https://github.com/xitu/gold-miner/">掘金翻译计划</a><span> - </span><span> GitHub 仓库</span></div>
       </li>
       <li class="footer__item">
         <h2 class="footer__title"><span>社区</span></h2>
-        <div class="footer__body"><a href=""><span>意见反馈</span></a></div>
-        <div class="footer__body"><a href=""><span>报告 bug</span></a></div>
+        <div class="footer__body"><a href="https://github.com/sqrthree/gold-miner-web/issues/new?title=[%E6%84%8F%E8%A7%81%E5%8F%8D%E9%A6%88]"><span>意见反馈</span></a></div>
+        <div class="footer__body"><a href="https://github.com/sqrthree/gold-miner-web/issues/new"><span>报告 bug</span></a></div>
       </li>
       <li class="footer__item">
         <h2 class="footer__title">Copyright © 2017 掘金</h2>
         <div class="footer__body"><span>掘金翻译计划出品 · 社区驱动</span></div>
+        <div class="footer__body"><a href="https://github.com/leviding">LeviDing</a><span> - </span><span>翻译计划管理员</span></div>
         <div class="footer__body"><a href="https://github.com/Romeo0906">王子建</a><span> - </span><span>核心开发者</span></div>
         <div class="footer__body"><a href="https://github.com/sqrthree">根号三</a><span> - </span><span>核心开发者</span></div>
       </li>
