@@ -27,7 +27,7 @@ class TranslationController extends Controller
                 $translations = DB::table('translation')
                                 ->join('recommend', 'translation.rid', '=', 'recommend.id')
                                 ->join('category', 'recommend.category', '=', 'category.id')
-                                ->select('translation.id', 'translation.file', 'translation.title', 'translation.description', 'translation.link', 'translation.poster', 'translation.tscore', 'translation.rscore', 'translation.tduration', 'translation.rduration', 'translation.word', 'translation.translator', 'translation.reviewer1', 'translation.reviewer2', 'translation.pr', 'translation.status', 'category.category', 'recommend.title as oTitle', 'recommend.url as oUrl', 'recommend.recommender', 'recommend.description as oDescription')
+                                ->select('translation.id', 'translation.file', 'translation.title', 'translation.description', 'translation.link', 'translation.poster', 'translation.tscore', 'translation.rscore', 'translation.tduration', 'translation.rduration', 'translation.word', 'translation.translator', 'translation.reviewer1', 'translation.reviewer2', 'translation.pr', 'translation.status', 'translation.udate', 'category.category', 'recommend.title as oTitle', 'recommend.url as oUrl', 'recommend.recommender', 'recommend.description as oDescription', 'recommend.cdate as oCdate')
                                 ->where('translation.status', self::READY)
                                 ->orWhere('translation.status', '2')
                                 ->orderBy('translation.udate', 'ASC')
@@ -38,23 +38,23 @@ class TranslationController extends Controller
                 $translations = DB::table('translation')
                                 ->join('recommend', 'translation.rid', '=', 'recommend.id')
                                 ->join('category', 'recommend.category', '=', 'category.id')
-                                ->select('translation.id', 'translation.file', 'translation.title', 'translation.description', 'translation.link', 'translation.poster', 'translation.tscore', 'translation.rscore', 'translation.tduration', 'translation.rduration', 'translation.word', 'translation.translator', 'translation.reviewer1', 'translation.reviewer2', 'translation.pr', 'translation.status', 'category.category', 'recommend.title as oTitle', 'recommend.url as oUrl', 'recommend.recommender', 'recommend.description as oDescription')
+                                ->select('translation.id', 'translation.file', 'translation.title', 'translation.description', 'translation.link', 'translation.poster', 'translation.tscore', 'translation.rscore', 'translation.tduration', 'translation.rduration', 'translation.word', 'translation.translator', 'translation.reviewer1', 'translation.reviewer2', 'translation.pr', 'translation.status', 'translation.udate', 'category.category', 'recommend.title as oTitle', 'recommend.url as oUrl', 'recommend.recommender', 'recommend.description as oDescription', 'recommend.cdate as oCdate')
                                 ->where('translation.status', self::TRANSLATING)
                                 ->orWhere('translation.status', '3')
                                 ->orderBy('translation.udate', 'ASC')
                                 ->get();
                 break;
-            
+
             case 'posted':
                 $translations = DB::table('translation')
                                 ->join('recommend', 'translation.rid', '=', 'recommend.id')
                                 ->join('category', 'recommend.category', '=', 'category.id')
-                                ->select('translation.id', 'translation.file', 'translation.title', 'translation.description', 'translation.link', 'translation.poster', 'translation.tscore', 'translation.rscore', 'translation.tduration', 'translation.rduration', 'translation.word', 'translation.translator', 'translation.reviewer1', 'translation.reviewer2', 'translation.pr', 'translation.status', 'category.category', 'recommend.title as oTitle', 'recommend.url as oUrl', 'recommend.recommender', 'recommend.description as oDescription')
+                                ->select('translation.id', 'translation.file', 'translation.title', 'translation.description', 'translation.link', 'translation.poster', 'translation.tscore', 'translation.rscore', 'translation.tduration', 'translation.rduration', 'translation.word', 'translation.translator', 'translation.reviewer1', 'translation.reviewer2', 'translation.pr', 'translation.status', 'translation.udate', 'category.category', 'recommend.title as oTitle', 'recommend.url as oUrl', 'recommend.recommender', 'recommend.description as oDescription', 'recommend.cdate as oCdate')
                                 ->where('translation.status', self::POSTED)
                                 ->orderBy('translation.udate', 'ASC')
                                 ->get();
                 break;
-            
+
             default:
                 return response("Bad request", 400)
                         ->json(['message' => '参数错误！']);
@@ -68,19 +68,19 @@ class TranslationController extends Controller
                 $involedUsers[] = $v->reviewer2;
                 $involedUsers[] = $v->recommender;
             }
-    
+
             $involedUsers = array_unique($involedUsers);
-            
+
             $userList = DB::table('user')
                         ->select('id', 'name', 'avatar')
                         ->whereIn('id', $involedUsers)
                         ->get();
-    
+
             $user = array();
             foreach ($userList as $u) {
                 $user[$u->id] = $u;
             }
-    
+
             foreach ($translations as $k => $t) {
                 $translations[$k]->translator ? $translations[$k]->translator = $user[$t->translator] : "";
                 $translations[$k]->reviewer1 ? $translations[$k]->reviewer1 = $user[$t->reviewer1] : "";
@@ -295,9 +295,9 @@ class TranslationController extends Controller
             return response("Bad request", 400)
                     ->json(['message' => '参数错误！']);
         }
-        
+
         $this->isNotNull(array(
-                '用户 ID'   => $request->input('uid'),  
+                '用户 ID'   => $request->input('uid'),
                 '文章链接'  => $request->input('link'),
                 '文章简介'  => $request->input('description')
         ));
@@ -458,7 +458,7 @@ class TranslationController extends Controller
     }
 
     /**
-     * 翻译完成 
+     * 翻译完成
      * @param  $pull_request PR 触发的 WebHooks 请求
      * @return boolean
      */
@@ -505,7 +505,7 @@ class TranslationController extends Controller
     /**
      * 获取 PR 中被修改文件的文件名
      * @param  object   $pull_request PR 触发的 WebHooks 中的请求内容
-     * @return string   修改的文件名 
+     * @return string   修改的文件名
      */
     public function getPRFile($pull_request)
     {

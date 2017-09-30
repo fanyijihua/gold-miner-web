@@ -1,18 +1,22 @@
 <template>
   <div class="article__item clearfix">
-    <div class="article__author pull-left text-center" v-if="article.translator">
+    <div class="article__author pull-left text-center" v-if="article.status === 0">
+      <img class="img-responsive img-circle" :src="article.recommender.avatar" alt="">
+      <router-link class="article__author-username" :to="`/users/${article.recommender.id}`">{{ article.recommender.name }}</router-link>
+    </div>
+    <div class="article__author pull-left text-center" v-if="article.status !== 0">
       <img class="img-responsive img-circle" :src="article.translator.avatar" alt="">
       <router-link class="article__author-username" :to="`/users/${article.translator.id}`">{{ article.translator.name }}</router-link>
     </div>
     <div class="article__cont">
-      <h3 class="article__title">{{ article.title }}</h3>
+      <h3 class="article__title">{{ article.title || article.oTitle }}</h3>
       <slot name="meta"></slot>
-      <p class="article__description">{{ article.description }}</p>
+      <p class="article__description">{{ article.description || article.oDescription }}</p>
       <div class="article__footer clearfix">
         <slot name="footer">
           <div class="article__tags pull-left">
             <span class="article__tag">{{ article.category }}</span>
-            <span class="article__tag">{{ article.cdate }}</span>
+            <span class="article__tag">{{ article.status === 0 ? article.oCdate : article.udate}}</span>
           </div>
           <div class="article__links pull-right">
             <a class="article__link" v-if="article.status === 4" :href="article.link || `https://github.com/xitu/gold-miner/blob/master/TODO/${article.file}`" target="_blank">阅读全文</a>
