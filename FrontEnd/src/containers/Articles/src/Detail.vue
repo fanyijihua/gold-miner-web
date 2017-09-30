@@ -7,7 +7,7 @@
           <a class="article__link" :href="`https://github.com/xitu/gold-miner/tree/master/TODO/${article.file}`">Markdown 文件</a>
         </div>
         <div slot="footer" class="article__tags">
-          <span class="article__tag">推荐于 {{ article.cdate }}</span>
+          <span class="article__tag">推荐于 {{ article.oCdate }}</span>
           <span class="article__tag">{{ article.category }}</span>
           <span class="article__tag">翻译时间：{{ article.tduration }} 天</span>
           <span class="article__tag">校对时间：{{ article.rduration }} 天</span>
