@@ -9,7 +9,7 @@
               <router-link to="/recommends/new">没有找到喜欢的文章？不如给我们推荐几篇吧~</router-link>
             </div>
             <div class="text-center load-more" v-if="showMoreBtn">
-              <a href="javascript:;" @click="nextPage()">查看更多</a>
+              <a class="load-more__btn" href="javascript:;" @click="nextPage()">{{ showMoreBtnLoading ? '加载中...' : '浏览更多'}}</a>
               <div class="line"></div>
             </div>
           </el-tab-pane>
@@ -53,6 +53,7 @@ export default {
       page: 1,
       noContent: false,
       showMoreBtn: false,
+      showMoreBtnLoading: false,
     }
   },
   computed: {
@@ -74,7 +75,11 @@ export default {
     nextPage() {
       this.page += 1
 
-      this.renderArticles()
+      this.showMoreBtnLoading = true
+
+      this.renderArticles().then(() => {
+        this.showMoreBtnLoading = false
+      })
     },
 
     renderArticles() {
@@ -129,22 +134,19 @@ export default {
 .load-more {
   height: 60px;
   margin: 60px 0;
+}
 
-  .line {
-    margin-top: -30px;
-    height: 1px;
-    background-color: $silver-extra-light;
-  }
-
-  a {
-    display: inline-block;
-    height: 60px;
-    line-height: 60px;
-    padding: 0 20px;
-    font-size: 14px;
-    background-color: #fff;
-    color: $silver-extra-light;
-  }
+.load-more__btn {
+  display: inline-block;
+  padding: 10px 50px;
+  font-size: 14px;
+  border: 1px solid $primary;
+  border-radius: 4px;
+  color: $primary;
+}
+.load-more__btn:hover {
+  color: #fff;
+  background-color: $primary;
 }
 
 .no-content {
