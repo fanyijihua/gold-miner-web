@@ -7,7 +7,7 @@ export const fetchArticles = function fetchArticles(status, options) {
 }
 
 export const fetchArticleWithId = function fetchArticleWithId(id) {
-  return axios.get(`/api/translations/${id}`)
+  return axios.get(`/api/translations/show/${id}`)
 }
 
 export const updateArticleWithId = function updateArticleWithId(id, data, isAdmin) {
