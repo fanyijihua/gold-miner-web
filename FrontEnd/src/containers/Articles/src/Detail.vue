@@ -3,7 +3,7 @@
     <div class="article-detail__information">
       <article-item :article="article" :key="article.id">
         <div slot="meta" class="article__links article-detail__meta">
-          <a class="article__link" :href="article.originalUrl">原文链接</a>
+          <a class="article__link" :href="article.oUrl" target="_blank">原文链接</a>
           <a class="article__link" :href="`https://github.com/xitu/gold-miner/tree/master/TODO/${article.file}`">Markdown 文件</a>
         </div>
         <div slot="footer" class="article__tags">
