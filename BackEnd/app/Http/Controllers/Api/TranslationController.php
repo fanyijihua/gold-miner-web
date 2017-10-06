@@ -31,6 +31,8 @@ class TranslationController extends Controller
                                 ->where('translation.status', self::READY)
                                 ->orWhere('translation.status', '2')
                                 ->orderBy('translation.udate', 'ASC')
+                                ->skip($this->start)
+                                ->take($this->offset)
                                 ->get();
                 break;
 
@@ -42,6 +44,8 @@ class TranslationController extends Controller
                                 ->where('translation.status', self::TRANSLATING)
                                 ->orWhere('translation.status', '3')
                                 ->orderBy('translation.udate', 'ASC')
+                                ->skip($this->start)
+                                ->take($this->offset)
                                 ->get();
                 break;
 
@@ -52,6 +56,8 @@ class TranslationController extends Controller
                                 ->select('translation.id', 'translation.file', 'translation.title', 'translation.description', 'translation.link', 'translation.poster', 'translation.tscore', 'translation.rscore', 'translation.tduration', 'translation.rduration', 'translation.word', 'translation.translator', 'translation.reviewer1', 'translation.reviewer2', 'translation.pr', 'translation.status', 'translation.udate', 'category.category', 'recommend.title as oTitle', 'recommend.url as oUrl', 'recommend.recommender', 'recommend.description as oDescription', 'recommend.cdate as oCdate')
                                 ->where('translation.status', self::POSTED)
                                 ->orderBy('translation.udate', 'ASC')
+                                ->skip($this->start)
+                                ->take($this->offset)
                                 ->get();
                 break;
 
@@ -232,10 +238,10 @@ class TranslationController extends Controller
             $user[$u->id] = $u;
         }
 
-        $translation->translator  = $user[$translation->translator];
-        $translation->reviewer1   = $user[$translation->reviewer1];
-        $translation->reviewer2   = $user[$translation->reviewer2];
-        $translation->recommender = $user[$translation->recommender];
+        $translation->translator ? $translation->translator = $user[$translation->translator] : "";
+        $translation->reviewer1 ? $translation->reviewer1 = $user[$translation->reviewer1] : "";
+        $translation->reviewer2 ? $translation->reviewer2 = $user[$translation->reviewer2] : "";
+        $translation->recommender ? $translation->recommender = $user[$translation->recommender] : "";
         $translation->timeline    = LogController::readTimeline($id);
 
         return json_encode($translation);
