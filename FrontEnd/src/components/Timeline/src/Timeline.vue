@@ -3,7 +3,12 @@
     <li class="timeline__item" v-for="item in data">
       <div class="timeline__tail"></div>
       <div class="timeline__head"></div>
-      <div class="timeline__content">{{ `${item.user} 于 ${item.time} ${item.action}` }}</div>
+      <div class="timeline__content">{{ `${item.name} 于 ${item.cdate} ${item.operation}` }}</div>
+    </li>
+    <li class="timeline__item timeline__item--pending">
+      <div class="timeline__tail"></div>
+      <div class="timeline__head"></div>
+      <div class="timeline__content">等你来战</div>
     </li>
   </ul>
 </template>
@@ -36,6 +41,10 @@ export default {
       .timeline__tail {
         display: none;
       }
+    }
+
+    &--pending {
+      color: #108ee9;
     }
   }
 

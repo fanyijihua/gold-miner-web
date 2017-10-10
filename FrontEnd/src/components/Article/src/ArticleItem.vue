@@ -76,6 +76,10 @@ export default {
     color: $primary;
   }
 
+  &__cont {
+    margin-left: 100px;
+  }
+
   &__title {
     padding: 8px 0 5px;
     margin: 0;
@@ -84,7 +88,7 @@ export default {
   }
 
   &__description {
-    height: 40px;
+    max-height: 40px;
     margin: 0;
     font-size: 14px;
     overflow : hidden;

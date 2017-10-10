@@ -4,7 +4,7 @@
       <article-item :article="article" :key="article.id">
         <div slot="meta" class="article__links article-detail__meta">
           <a class="article__link" :href="article.oUrl" target="_blank">原文链接</a>
-          <a class="article__link" :href="`https://github.com/xitu/gold-miner/tree/master/TODO/${article.file}`">Markdown 文件</a>
+          <a class="article__link" :href="`https://github.com/xitu/gold-miner/tree/master/TODO/${article.file}`" target="_blank">Markdown 文件</a>
         </div>
         <div slot="footer" class="article__tags">
           <span class="article__tag">推荐于 {{ article.oCdate }}</span>
@@ -26,7 +26,7 @@
         <h3 class="timeline__title">时间线</h3>
       </div>
       <div class="timeline__body">
-        <timeline :data="timeline"></timeline>
+        <timeline :data="article.timeline"></timeline>
       </div>
     </div>
     <el-dialog title="编辑文章" :visible.sync="dialog.isVisible" @close="closeDialog()">
@@ -98,13 +98,6 @@ export default {
   computed: {
     ...mapState(['articles']),
     ...mapGetters(['currentUser', 'logIn']),
-    timeline() {
-      try {
-        return JSON.parse(this.article.timeline)
-      } catch (err) {
-        return []
-      }
-    },
   },
   methods: {
     mapStatusToText(status) {
@@ -156,6 +149,8 @@ export default {
     },
 
     claimTranslation() {
+      let feedback = ''
+      let taskUrl = ''
       let action
 
       if (!this.logIn) {
@@ -171,11 +166,17 @@ export default {
           id: this.article.id,
           uid: this.currentUser.id,
         })
+
+        feedback = `该文章的 Markdown 文件名为 ${this.article.file}，你可以在我们的 GitHub 仓库中找到该文件，如果你不知道如何操作，请参考 github.com/xitu/gold-miner/wiki 中的相关教程，或联系管理员。`
+        taskUrl = `https://github.com/xitu/gold-miner/tree/master/TODO/${this.article.file}`
       } else if (this.article.status === 2) {
         action = articleServices.claimReview({
           id: this.article.id,
           uid: this.currentUser.id,
         })
+
+        feedback = `该文章的校对地址为 github.com/xitu/gold-miner/pull/${this.article.pr}，如果你不知道如何操作，请参考 github.com/xitu/gold-miner/wiki 中的相关教程，或联系管理员。`
+        taskUrl = `https://github.com/xitu/gold-miner/pull/${this.article.pr}`
       } else {
         return null
       }
@@ -184,7 +185,16 @@ export default {
 
       return action.then(() => {
         this.loading = false
-        this.$message.success('申请成功')
+
+        this.$alert(feedback, '申请成功', {
+          type: 'success',
+          confirmButtonText: '查看详情',
+          callback: (action) => {
+            if (action === 'confirm') {
+              window.open(taskUrl)
+            }
+          },
+        })
       }).catch((err) => {
         this.loading = false
         this.$message.error(err.message)
@@ -211,7 +221,7 @@ export default {
 @import "~styles/exports";
 
 .article-detail {
-  width: 70%;
+  width: 80%;
 
   &__information {
     padding: 20px;
