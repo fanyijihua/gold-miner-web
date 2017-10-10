@@ -62,8 +62,8 @@ class TranslationController extends Controller
                 break;
 
             default:
-                return response("Bad request", 400)
-                        ->json(['message' => '参数错误！']);
+                return response()
+                        ->json(['message' => '参数错误！'], 400);
         }
 
         if (count($translations) > 0) {
@@ -208,8 +208,8 @@ class TranslationController extends Controller
     public function show($id)
     {
         if (!is_numeric($id)) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
 
         $translation = DB::table('translation')
@@ -256,8 +256,8 @@ class TranslationController extends Controller
     public function update(Request $request, $id)
     {
         if (!is_numeric($id)) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
 
         $this->isNotNull(array(
@@ -298,8 +298,8 @@ class TranslationController extends Controller
     public function post(Request $request, $id)
     {
         if (!is_numeric($id)) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
 
         $this->isNotNull(array(
@@ -380,8 +380,8 @@ class TranslationController extends Controller
         );
 
         if (LogController::checkTimeline($request->input('uid'), '认领翻译', 1)) {
-            return response("Forbidden", 403)
-                    ->json(['message' => '您还有未完成的翻译任务！']);
+            return response()
+                    ->json(['message' => '您还有未完成的翻译任务！'], 403);
         }
 
         $result = DB::table('translation')
@@ -443,8 +443,8 @@ class TranslationController extends Controller
             );
 
         if (LogController::checkTimeline($request->input('uid'), '认领校对', 3)) {
-            return response("Forbidden", 403)
-                    ->json(['message' => '您还有未完成的校对任务！']);
+            return response()
+                    ->json(['message' => '您还有未完成的校对任务！'], 403);
         }
 
         $result = DB::table('translation')

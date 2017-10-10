@@ -73,8 +73,8 @@ class UserSettingController extends Controller
     			->update($data);
 
         if($res === false){
-            return response("Service unavailable", 503)
-                    ->json(['message' => '修改用户设置失败！']);
+            return response()
+                    ->json(['message' => '修改用户设置失败！'], 503);
         }
 
     }

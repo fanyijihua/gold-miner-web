@@ -84,8 +84,8 @@ class ArticleController extends Controller
                         ->first();
 
         if ( $article === null ) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
                         
         return json_encode($article);
@@ -158,8 +158,8 @@ class ArticleController extends Controller
                     ->value('status');
 
         if ( $currentStatus === null ) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
 
         $result = DB::table('article')
@@ -210,8 +210,8 @@ class ArticleController extends Controller
                         ->first();
 
         if ( $article === null ) {
-            return response("Bad request", 400)
-                    ->json(['message' => '本分类下暂无试译文章！']);
+            return response()
+                    ->json(['message' => '本分类下暂无试译文章！'], 400);
         }
                         
         return json_encode($article);

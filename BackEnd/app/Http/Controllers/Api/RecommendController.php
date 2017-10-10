@@ -21,8 +21,8 @@ class RecommendController extends Controller
     public function index(Request $request)
     {
         if (intval($request->input('status')) > 2) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
         
         $recommends = DB::table('recommend')
@@ -96,8 +96,8 @@ class RecommendController extends Controller
                         ->first();
 
         if ( $recommend === null ) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
                         
         return json_encode($recommend);
@@ -124,11 +124,11 @@ class RecommendController extends Controller
                     ->value('uid');
 
         if ($record->status != 0) {
-            return response("Forbidden", 403)
-                    ->json(['message' => '您推荐的文章已被管理员处理，无法操作！']);
+            return response()
+                    ->json(['message' => '您推荐的文章已被管理员处理，无法操作！'], 403);
         } elseif ($record->recommender != $user) {
-            return response("Forbidden", 403)
-                    ->json(['message' => '您没有权限修改他人推荐的文章！']);
+            return response()
+                    ->json(['message' => '您没有权限修改他人推荐的文章！'], 403);
         }
 
         $this->isNotNull(array(
@@ -171,8 +171,8 @@ class RecommendController extends Controller
     public function result(Request $request, $id, Mail $mail)
     {
         if (!is_numeric($id)) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
 
         $data = array(

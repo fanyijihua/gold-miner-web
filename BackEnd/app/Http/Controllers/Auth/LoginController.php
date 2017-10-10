@@ -41,8 +41,8 @@ class LoginController extends Controller
         $result = DB::table('userToken')->where('token', $token)->delete();
 
         if ($result === false) {
-            return response("Service unavailable", 503)
-                    ->json(['message' => '退出失败！']);
+            return response()
+                    ->json(['message' => '退出失败！'], 503);
         }
     }
 }

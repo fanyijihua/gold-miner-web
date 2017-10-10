@@ -19,8 +19,8 @@ class ApplicantController extends Controller
     public function index(Request $request)
     {
         if (intval($request->input('status')) > 2) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
         
         $applicants = DB::table('applicant')
@@ -96,8 +96,8 @@ class ApplicantController extends Controller
                         ->first();
 
         if ( $applicant === null ) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
 
         return json_encode($applicant);
@@ -112,8 +112,8 @@ class ApplicantController extends Controller
     public function update(Request $request, $id, Mail $mail)
     {
         if (!is_numeric($id)) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
 
         $data = array(
@@ -159,8 +159,8 @@ class ApplicantController extends Controller
                         ->first();
 
         if ($applicant === null || strpos($request->input("code"), ":expired")) {
-            return response("Bad request", 400)
-                    ->json(["message" => "邀请码不合法！"]);
+            return response()
+                    ->json(["message" => "邀请码不合法！"], 400);
         }
 
         DB::transaction(function () {
