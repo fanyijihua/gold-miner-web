@@ -68,6 +68,8 @@ export default {
 
     toggleTab() {
       this.page = 1
+      this.noContent = false
+      this.showMoreBtn = false
 
       this.renderArticles()
     },
@@ -83,17 +85,23 @@ export default {
     },
 
     renderArticles() {
+      const perpage = 10
+
       return this.fetchArticles({
         type: this.activeTab,
         page: this.page,
+        perpage,
       }).then((data) => {
-        if (data.length) {
-          this.showMoreBtn = true
-          this.noContent = false
-        } else {
+        if (data.length === 0) {
+          if (this.page === 1) {
+            this.noContent = true
+          } else {
+            this.$message.warning('已经到底啦~')
+          }
+        } else if (data.length < perpage) {
           this.showMoreBtn = false
-
-          this.noContent = (this.page === 1)
+        } else {
+          this.showMoreBtn = true
         }
 
         return Promise.resolve(data)
