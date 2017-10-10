@@ -215,7 +215,7 @@ class TranslationController extends Controller
         $translation = DB::table('translation')
                         ->join('recommend', 'translation.rid', '=', 'recommend.id')
                         ->join('category', 'recommend.category', '=', 'category.id')
-                        ->select('translation.id', 'translation.file', 'translation.title', 'translation.description', 'translation.link', 'translation.poster', 'translation.tscore', 'translation.rscore', 'translation.tduration', 'translation.rduration', 'translation.word', 'translation.translator', 'translation.reviewer1', 'translation.reviewer2', 'translation.pr', 'translation.status', 'category.category', 'recommend.title as oTitle', 'recommend.url as oUrl', 'recommend.recommender', 'recommend.description as oDescription')
+                        ->select('translation.id', 'translation.file', 'translation.title', 'translation.description', 'translation.link', 'translation.poster', 'translation.tscore', 'translation.rscore', 'translation.tduration', 'translation.rduration', 'translation.word', 'translation.translator', 'translation.reviewer1', 'translation.reviewer2', 'translation.pr', 'translation.status', 'translation.udate', 'category.category', 'recommend.title as oTitle', 'recommend.url as oUrl', 'recommend.recommender', 'recommend.description as oDescription', 'recommend.cdate as oCdate')
                         ->where('translation.id', $id)
                         ->first();
 
