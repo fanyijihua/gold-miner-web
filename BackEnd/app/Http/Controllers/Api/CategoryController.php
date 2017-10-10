@@ -66,8 +66,8 @@ class CategoryController extends Controller
                     ->first();
 
         if ( $category === null ) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
 
         return json_encode($category);

@@ -154,8 +154,8 @@ class UserController extends Controller
     public function show($id)
     {
         if (!is_numeric($id)) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
 
         $user = DB::table('user')
@@ -165,8 +165,8 @@ class UserController extends Controller
                     ->first();
 
         if ($user === null) {
-            return response("Service unavailable", 503)
-                    ->json(['message' => ' 获取用户信息失败！']);
+            return response()
+                    ->json(['message' => ' 获取用户信息失败！'], 503);
         }
 
         return json_encode($user);
@@ -212,8 +212,8 @@ class UserController extends Controller
                     ->first();
 
         if ($userInfo == false) {
-            return response("Service unavailable", 503)
-                    ->json(['message' => '拉取用户信息失败！']);
+            return response()
+                    ->json(['message' => '拉取用户信息失败！'], 503);
         }
 
         return json_encode($userInfo);
@@ -227,8 +227,8 @@ class UserController extends Controller
     public function loadUserById($userId)
     {
         if (!is_numeric($userId)) {
-            return response("Bad request", 400)
-                    ->json(['message' => '参数错误！']);
+            return response()
+                    ->json(['message' => '参数错误！'], 400);
         }
 
         $userInfo = DB::table('user')
