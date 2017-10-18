@@ -67,7 +67,8 @@ class Controller extends BaseController
                 CURLOPT_HTTPHEADER      =>  array(
                         'Content-type'      =>  'application/x-www-form-urlencoded'                    ),
                 // CURLOPT_HEADER          =>  true,
-                CURLOPT_RETURNTRANSFER  =>  true
+                CURLOPT_RETURNTRANSFER  =>  true,
+                CURLOPT_FOLLOWLOCATION  =>  true
             );
         
         $query = http_build_query($params);
