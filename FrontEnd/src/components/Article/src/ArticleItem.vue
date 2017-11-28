@@ -1,22 +1,22 @@
 <template>
   <router-link class="article__item clearfix" :to="`/articles/${article.id}/details`">
     <div class="article__poster">
-      <img src="/static/images/join.jpg" alt="">
+      <img :src="article.poster" alt="">
     </div>
     <div class="article__content">
       <h3 class="article__title">{{ article.title || article.oTitle }}</h3>
       <p class="article__intro">{{ article.description || article.oDescription }}</p>
-    </div>
-    <div class="article__footer clearfix">
-      <div class="pull-left">
-        <span class="article__user-info">{{ article.status === 0 ? article.recommender.name : article.translator.name }} · </span>
-        <span class="article__tag">{{ article.category }} · </span>
-        <span class="article__date">{{ article.status === 0 ? article.oCdate : article.udate }}</span>
-      </div>
-      <div class="pull-right">
-        <slot name="info">
-          <span class="article__action">{{ mapStatusToText(article.status) }}</span>
-        </slot>
+      <div class="article__footer clearfix">
+        <div class="pull-left">
+          <span class="article__user-info">{{ article.status === 0 ? article.recommender.name : article.translator.name }} · </span>
+          <span class="article__tag">{{ article.category }} · </span>
+          <span class="article__date">{{ article.status === 0 ? article.oCdate : article.udate }}</span>
+        </div>
+        <div class="pull-right">
+          <slot name="info">
+            <span class="article__action">{{ mapStatusToText(article.status) }}</span>
+          </slot>
+        </div>
       </div>
     </div>
   </router-link>
@@ -63,13 +63,16 @@ export default {
   &__poster {
     float: left;
     width: 260px;
-    margin-right: 20px;
   }
 
   &__poster img {
     width: 100%;
     height: auto;
     border-radius: 4px;
+  }
+
+  &__content {
+    margin-left: 280px;
   }
 
   &__title {
