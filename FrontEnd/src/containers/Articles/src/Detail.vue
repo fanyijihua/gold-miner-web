@@ -2,22 +2,22 @@
   <div class="article-detail container">
     <div class="article-detail__information">
       <article-item :article="article" :key="article.id">
-        <div slot="meta" class="article__links article-detail__meta">
+        <div slot="info" class="article__tags">
+          <span class="article__tag" v-if="article.status === 0">翻译时限：{{ article.tduration }}</span>
+          <span class="article__tag" v-if="article.status === 0">奖励积分：{{ article.tscore }}</span>
+          <span class="article__tag" v-if="article.status === 2">校对时限：{{ article.rduration }}</span>
+          <span class="article__tag" v-if="article.status === 2">奖励积分：{{ article.rscore }}</span>
+        </div>
+      </article-item>
+      <div class="article-detail__footer clearfix">
+        <div class="article__links article-detail__meta pull-left">
           <a class="article__link" :href="article.oUrl" target="_blank">原文链接</a>
           <a class="article__link" :href="`https://github.com/xitu/gold-miner/tree/master/TODO/${article.file}`" target="_blank">Markdown 文件</a>
         </div>
-        <div slot="footer" class="article__tags">
-          <span class="article__tag">推荐于 {{ article.oCdate }}</span>
-          <span class="article__tag">{{ article.category }}</span>
-          <span class="article__tag">翻译时间：{{ article.tduration }} 天</span>
-          <span class="article__tag">校对时间：{{ article.rduration }} 天</span>
-          <span class="article__tag">翻译积分：{{ article.tscore }}</span>
-          <span class="article__tag">校对积分：{{ article.rscore }}</span>
+        <div class="article-detail__toolbar pull-right">
+          <el-button class="article-detail__toolbtn" type="primary" @click="claimTranslation" :loading="loading">{{ mapStatusToText(article.status) || '加载中' }}</el-button>
+          <el-button class="article-detail__toolbtn" @click="showDialog()" v-if="currentUser.admin">编辑</el-button>
         </div>
-      </article-item>
-      <div class="article-detail__toolbar clearfix">
-        <el-button class="article-detail__toolbtn pull-right" type="primary" @click="claimTranslation" :loading="loading">{{ mapStatusToText(article.status) || '加载中' }}</el-button>
-        <el-button class="article-detail__toolbtn pull-right" @click="showDialog()" v-if="currentUser.admin">编辑</el-button>
       </div>
     </div>
     <div class="timeline">
@@ -230,20 +230,40 @@ export default {
     background-color: $drak-white;
   }
 
-  &__meta {
-    margin-bottom: 10px;
-  }
-
   &__icon {
     font-size: 24px;
   }
 
-  &__toolbar {
-    margin-top: 30px;
-  }
-
   &__toolbtn {
     margin-left: 10px;
+  }
+
+  &__footer {
+    margin-top: 20px;
+  }
+}
+
+.article__links {
+  padding-left: 20px;
+  line-height: 36px;
+}
+.article__link {
+  font-size: 14px;
+  color: $silver;
+
+  &:after {
+    margin: 0 6px 0 10px;
+    content: "|";
+    color: #c0ccda;
+  }
+
+  &:last-child:after {
+    display: none;
+    content: "";
+  }
+
+  &:hover {
+    color: $primary;
   }
 }
 
