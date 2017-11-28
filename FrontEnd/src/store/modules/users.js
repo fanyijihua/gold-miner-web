@@ -51,9 +51,7 @@ const mutations = {
    * @param {Object} payload 需要更新的用户信息
    */
   updateUserInfo(state, payload) {
-    state.data = assign({}, state.data, {
-      [payload.id]: payload,
-    })
+    state.data[payload.id] = assign({}, state.data[payload.id], payload)
   },
 }
 
