@@ -26,22 +26,25 @@
       </ul>
     </div>
     <el-row class="main grid__row-gutter">
-      <el-col class="grid__col-gutter" :span="18">
+      <el-col class="grid__col-guttern" :span="18" v-loading="loading">
         <ul class="article">
-          <!-- <li class="article__item" v-for="i in 3">
-            <div class="article__month">2017.01</div>
+          <li class="article__item" v-for="list, date in articles">
+            <div class="article__month">{{ date }}</div>
             <ul class="article__list">
-              <li class="article__body">
-                <article-item v-for="item in articles" :article="item" :key="item"></article-item>
+              <li class="article__body" v-for="item in list">
+                <article-item :article="item" :key="item"></article-item>
               </li>
             </ul>
-          </li> -->
+          </li>
         </ul>
+        <div class="text-center load-more" v-if="showMoreBtn">
+          <a class="load-more__btn" href="javascript:;" @click="getArticles">{{ loading ? '加载中...' : '浏览更多'}}</a>
+        </div>
       </el-col>
       <el-col class="grid__col-gutter" :span="6">
         <div class="card">
-          <h3 class="card__title">加入我们</h3>
-          <div><img class="img-rounded" src="/static/images/join.jpg" alt=""></div>
+          <h3 class="card__title">{{ currentUser.translator ?  '推荐文章' : '加入我们' }}</h3>
+          <div><router-link :to="currentUser.translator ?  '/recommends/new' : '/applications/apply'"><img class="img-rounded" src="/static/images/join.jpg" alt=""></router-link></div>
         </div>
       </el-col>
     </el-row>
@@ -51,6 +54,24 @@
 <script>
 import assign from 'lodash/assign'
 import * as statisticService from '@/services/statistics'
+import * as articleService from '@/services/articles'
+import { mapGetters } from 'vuex'
+
+const formatDataWithMonth = function formatDataWithMonth(data) {
+  const result = {}
+
+  data.forEach((item) => {
+    const date = item.udate.substring(0, 7)
+
+    if (!result[date]) {
+      result[date] = []
+    }
+
+    result[date].push(item)
+  })
+
+  return result
+}
 
 export default {
   name: 'ArticleList',
@@ -61,29 +82,46 @@ export default {
         words: 0,
         articles: 0,
       },
-      articles: [
-        {
-          id: 1,
-          title: '带快算',
-          description: '区叫强界和议花转万七党点安。音立过际度始事质还容知已。文电计相海王志一立地精将展实要。三图候五取音部具受适则门。',
-          category: 'iOS',
-          author: {
-            id: 1,
-            username: '根号三',
-            avatar: '/static/images/default-avatar.png',
-          },
-          status: 2,
-          meta: {
-            createdAt: '28 分钟前',
-          },
-        },
-      ],
+      articles: {},
+      loading: false,
+      showMoreBtn: false,
+      page: 1,
     }
+  },
+  computed: {
+    ...mapGetters(['currentUser']),
+  },
+  methods: {
+    getArticles() {
+      this.loading = true
+
+      articleService.fetchArticles('posted', {
+        page: this.page,
+        per_page: 100,
+      }).then((data) => {
+        this.loading = false
+
+        if (data.length) {
+          this.showMoreBtn = true
+          this.page += 1
+        } else {
+          this.showMoreBtn = false
+          this.$message.warning('已经没有更多内容啦~')
+        }
+
+        assign(this.articles, formatDataWithMonth(data))
+      }).catch((err) => {
+        this.loading = false
+        return this.$message.error(err.message)
+      })
+    },
   },
   created() {
     statisticService.fetchOverview().then((data) => {
       assign(this.overview, data)
     }).catch(err => this.$message.error(err.message))
+
+    this.getArticles()
   },
 }
 </script>
@@ -147,6 +185,7 @@ export default {
 
 .article {
   padding-right: 30px;
+  min-height: 260px;
 
   &,
   &__list {
@@ -170,5 +209,22 @@ export default {
     width: 100%;
     height: 200px;
   }
+}
+.load-more {
+  height: 60px;
+  margin: 60px 0;
+}
+
+.load-more__btn {
+  display: inline-block;
+  padding: 10px 50px;
+  font-size: 14px;
+  border: 1px solid $primary;
+  border-radius: 4px;
+  color: $primary;
+}
+.load-more__btn:hover {
+  color: #fff;
+  background-color: $primary;
 }
 </style>
