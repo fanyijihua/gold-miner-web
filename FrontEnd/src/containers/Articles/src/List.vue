@@ -93,16 +93,18 @@ export default {
   },
   methods: {
     getArticles() {
+      const perPage = 100
+
       this.loading = true
 
       articleService.fetchArticles('posted', {
         page: this.page,
-        per_page: 100,
+        per_page: perPage,
       }).then((data) => {
         this.loading = false
 
         if (data.length) {
-          this.showMoreBtn = true
+          this.showMoreBtn = (data.length >= perPage)
           this.page += 1
         } else {
           this.showMoreBtn = false
