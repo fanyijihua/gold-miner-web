@@ -10,7 +10,6 @@
             </div>
             <div class="text-center load-more" v-if="showMoreBtn">
               <a class="load-more__btn" href="javascript:;" @click="nextPage()">{{ showMoreBtnLoading ? '加载中...' : '浏览更多'}}</a>
-              <div class="line"></div>
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -143,7 +142,6 @@ export default {
   height: 60px;
   margin: 60px 0;
 }
-
 .load-more__btn {
   display: inline-block;
   padding: 10px 50px;

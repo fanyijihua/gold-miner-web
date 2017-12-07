@@ -15,7 +15,15 @@
           <a class="article__link" :href="`https://github.com/xitu/gold-miner/tree/master/TODO/${article.file}`" target="_blank">Markdown 文件</a>
         </div>
         <div class="article-detail__toolbar pull-right">
-          <el-button class="article-detail__toolbtn" type="primary" @click="claimTranslation" :loading="loading">{{ mapStatusToText(article.status) || '加载中' }}</el-button>
+          <el-button class="article-detail__toolbtn" type="primary" v-if="article.status === 0" @click="claim" :loading="loading">认领翻译</el-button>
+          <el-button class="article-detail__toolbtn" type="primary" v-if="article.status === 1">正在翻译</el-button>
+          <el-button class="article-detail__toolbtn" type="primary" v-if="article.status === 2" @click="claim" :loading="loading">认领校对</el-button>
+          <a :href="`https://github.com/xitu/gold-miner/pull/${article.pr}`" v-if="article.status === 3" target="_blank">
+            <el-button class="article-detail__toolbtn" type="primary">正在校对</el-button>
+          </a>
+          <a :href="article.link || `https://github.com/xitu/gold-miner/tree/master/TODO/${article.file}`" v-if="article.status === 4" target="_blank">
+            <el-button class="article-detail__toolbtn" type="primary">阅读译文</el-button>
+          </a>
           <el-button class="article-detail__toolbtn" @click="showDialog()" v-if="currentUser.admin">编辑</el-button>
         </div>
       </div>
@@ -100,18 +108,6 @@ export default {
     ...mapGetters(['currentUser', 'logIn']),
   },
   methods: {
-    mapStatusToText(status) {
-      const texts = {
-        0: '认领翻译',
-        1: '正在翻译',
-        2: '认领校对',
-        3: '正在校对',
-        4: '阅读全文',
-      }
-
-      return texts[status]
-    },
-
     showDialog() {
       this.dialog.isVisible = true
 
@@ -148,7 +144,7 @@ export default {
       })
     },
 
-    claimTranslation() {
+    claim() {
       let feedback = ''
       let taskUrl = ''
       let action
@@ -177,8 +173,6 @@ export default {
 
         feedback = `该文章的校对地址为 github.com/xitu/gold-miner/pull/${this.article.pr}，如果你不知道如何操作，请参考 github.com/xitu/gold-miner/wiki 中的相关教程，或联系管理员。`
         taskUrl = `https://github.com/xitu/gold-miner/pull/${this.article.pr}`
-      } else {
-        return null
       }
 
       this.loading = true
